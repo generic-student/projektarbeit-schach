@@ -1,17 +1,19 @@
 #include "tcp_connection.hpp"
+#include <boost/bind/bind.hpp>
 #include <iostream>
+#include <string>
 
 namespace sm::io
 {
 
+    TcpConnection::TcpConnection(boost::asio::io_context &io_context)
+        : m_socket(io_context)
+    {
+    }
+
     boost::shared_ptr<TcpConnection> TcpConnection::create(boost::asio::io_context &io_context)
     {
         return boost::shared_ptr<TcpConnection>(new TcpConnection(io_context));
-    }
-
-    boost::asio::ip::tcp::socket &TcpConnection::getSocket()
-    {
-        return m_socket;
     }
 
     void TcpConnection::startRead()
@@ -24,42 +26,47 @@ namespace sm::io
                                                   boost::asio::placeholders::error,
                                                   boost::asio::placeholders::bytes_transferred));
     }
-    
-    void TcpConnection::setHandleReadCallback(read_write_callback callback)
-    {
-        m_handleReadCallback = callback;
-    }
-    
-    void TcpConnection::setHandleWriteCallback(read_write_callback callback)
-    {
-        m_handleWriteCallback = callback;
-    }
 
-    void TcpConnection::terminate()
+    boost::asio::ip::tcp::socket &TcpConnection::getSocket()
     {
-        m_socket.close();
-    }
-
-    TcpConnection::TcpConnection(boost::asio::io_context &io_context)
-        : m_socket(io_context)
-    {
+        return m_socket;
     }
 
     void TcpConnection::handleWrite(const boost::system::error_code &error, size_t bytes_transferred)
     {
-        m_handleWriteCallback(error, bytes_transferred, std::string());
+        m_engine.handleUciWrite(error, bytes_transferred);
     }
 
     void TcpConnection::handleRead(const boost::system::error_code &error, std::size_t bytes_transferred)
     {
-        std::string line;
-
-        if(!error) {
+        //get the data that the client sent
+        std::string data;
+        if (!error)
+        {
             std::istream is(&m_inputBuffer);
-            std::getline(is, line);
+            std::getline(is, data);
         }
 
-        m_handleReadCallback(error, bytes_transferred, line);
+        //get the response from the engine
+        std::string response = m_engine.handleUciRead(error, bytes_transferred, data);
+
+        //send the response back to the client
+        boost::asio::async_write(m_socket, boost::asio::buffer(response),
+                                         boost::bind(&TcpConnection::handleWrite, shared_from_this(),
+                                                     boost::asio::placeholders::error,
+                                                     boost::asio::placeholders::bytes_transferred));
+
+        //keep on reading new messages as long as the client has not quit and the engine is still running
+        if(m_engine.isRunning() && !error) {
+            startRead();
+        } else {
+            std::cout << "Error on receive: " << error.message() << "\n";
+
+            m_socket.close();
+        }
+
+        //this scope contains legacy code TODO: remove
+        {
         // if (!m_keepAlive)
         //     return;
 
@@ -93,6 +100,7 @@ namespace sm::io
         //     // terminate the connection with the client
         //     terminate();
         // }
+        }
     }
 
 }

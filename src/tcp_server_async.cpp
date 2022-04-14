@@ -1,6 +1,5 @@
 #include "tcp_server_async.hpp"
 #include <iostream>
-#include "uci.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -21,16 +20,6 @@ namespace sm::io
         //start the async execution
         m_ioContext.run();
     }
-    
-    void TcpServerAsync::setHandleReadCallback(TcpConnection::read_write_callback callback)
-    {
-        m_handleReadCallback = callback;
-    }
-    
-    void TcpServerAsync::setHandleWriteCallback(TcpConnection::read_write_callback callback)
-    {
-        m_handleWriteCallback = callback;
-    }
 
     /**
      * @brief start accepting connections asynchronously
@@ -38,14 +27,9 @@ namespace sm::io
      */
     void TcpServerAsync::startAccept()
     {
-        boost::shared_ptr<TcpConnection> new_connection =
-            TcpConnection::create(m_ioContext);
+        boost::shared_ptr<TcpConnection> new_connection = TcpConnection::create(m_ioContext);
 
-        if(!m_handleReadCallback.empty())
-            new_connection->setHandleReadCallback(m_handleReadCallback);
-        if(!m_handleWriteCallback.empty())
-            new_connection->setHandleWriteCallback(m_handleWriteCallback);
-
+        //wait for other connections
         m_acceptor.async_accept(new_connection->getSocket(),
                                boost::bind(&TcpServerAsync::handleAccept, this, new_connection,
                                            boost::asio::placeholders::error));

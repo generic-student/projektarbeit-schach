@@ -1,9 +1,8 @@
 #pragma once
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
-#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 #include "tcp_connection.hpp"
-#include <memory>
 
 namespace sm::io
 {
@@ -16,8 +15,6 @@ namespace sm::io
         void setPort(boost::asio::ip::port_type port_num);
 
         void run();
-        void setHandleReadCallback(TcpConnection::read_write_callback callback);
-        void setHandleWriteCallback(TcpConnection::read_write_callback callback);
 
     private:
         void startAccept();
@@ -28,8 +25,5 @@ namespace sm::io
         boost::asio::io_context &m_ioContext;
         boost::asio::ip::tcp::acceptor m_acceptor;
         boost::asio::ip::port_type m_port;
-
-        TcpConnection::read_write_callback m_handleReadCallback;
-        TcpConnection::read_write_callback m_handleWriteCallback;
     };
 }

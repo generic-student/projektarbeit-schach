@@ -20,7 +20,9 @@ bool handle_read(tcp::socket& socket, boost::system::error_code& error) {
     else if (error)
         throw boost::system::system_error(error); // Some other error.
 
+    std::cout << "response: ";
     std::cout.write(buf.data(), len);
+    std::cout << std::endl;
     return true;
 }
 
@@ -39,9 +41,9 @@ int main(int argc, char *argv[])
     ClientState state = ClientState::SENDING;
     try
     {
-        if (argc != 4)
+        if (argc != 3)
         {
-            std::cerr << "Usage: client <host> <port> <message>" << std::endl;
+            std::cerr << "Usage: client <host> <port>" << std::endl;
             return 1;
         }
 
@@ -58,23 +60,18 @@ int main(int argc, char *argv[])
         for (;;)
         {
             boost::system::error_code error;
-            bool stop = false;
 
-            switch(state) {
-                case ClientState::SENDING:
-                    stop = !handle_write(socket, std::string(argv[3])+"\n", error);
-                    state = ClientState::RECEIVING;
-                    break;
-                case ClientState::RECEIVING:
-                    stop = !handle_read(socket, error);
-                    state = ClientState::SENDING;
-                    break;
-            }
+            //first send a message and then receive the response
+            std::string input;
+            std::cout << ">> ";
+            std::getline(std::cin, input);
+            input.append("\n");
 
-            if(stop) {
-                break;
-            }
+            //send a message
+            if(!handle_write(socket, input, error)) break;
 
+            //receive the response
+            if(!handle_read(socket, error)) break;
             
         }
     }
