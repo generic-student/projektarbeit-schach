@@ -1,2 +1,2 @@
 # projektarbeit-schach
-Projektarbeit
+Projektarbeit Schach
