@@ -1,6 +1,6 @@
 #include "uci.hpp"
 
-namespace api::uci
+namespace sm::uci
 {
 
     /**

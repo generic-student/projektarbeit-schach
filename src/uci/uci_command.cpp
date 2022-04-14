@@ -1,6 +1,6 @@
 #include "uci_command.hpp"
 
-namespace engine::uci
+namespace sm::uci
 {
     Command::Command(const Command::Type type, const std::map<std::string, std::string>& args)
         : m_type(type), m_args(args)

@@ -1,16 +1,21 @@
-#include "uci_interface.hpp"
+// #include "uci_interface.hpp"
 
-namespace engine::uci
-{
-    bool UciInterface::pollMessages(std::string* out_string)
-    {
-        if(m_messageBuffer.empty()) {
-            return false;
-        }
+// namespace sm::uci
+// {
+//     UciInterface::UciInterface(int port)
+//     {
+        
+//     }
 
-        *out_string = m_messageBuffer.front();
-        m_messageBuffer.pop();
+//     bool UciInterface::pollMessages(std::string* out_string)
+//     {
+//         if(m_messageBuffer.empty()) {
+//             return false;
+//         }
 
-        return true;
-    }
-}
+//         *out_string = m_messageBuffer.front();
+//         m_messageBuffer.pop();
+
+//         return true;
+//     }
+// }

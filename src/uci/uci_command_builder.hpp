@@ -2,7 +2,7 @@
 #include <string>
 #include "uci_command.hpp"
 
-namespace engine::uci
+namespace sm::uci
 {
     class CommandBuilder
     {

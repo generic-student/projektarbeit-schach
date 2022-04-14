@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <regex>
 
-namespace engine::uci
+namespace sm::uci
 {
     const std::unordered_map<const Command::Type, const std::string> COMMAND_VALIDATION_MAP = {
         {Command::Type::UCI, "^(uci)$"},

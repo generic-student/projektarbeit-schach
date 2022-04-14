@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 
-namespace engine::uci
+namespace sm::uci
 {
     class Command
     {
