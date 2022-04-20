@@ -7,3 +7,6 @@ Makefile
 *.vcxproj
 *.sln
 *.filters
+*.obj
+*.user
+.vs/**
