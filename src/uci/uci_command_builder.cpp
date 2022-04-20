@@ -1,26 +1,30 @@
 #include "uci_command_builder.hpp"
-#include <unordered_map>
+#include <array>
 #include <regex>
 
-namespace sm::uci
+namespace sm
 {
-    const std::unordered_map<const Command::Type, const std::string> COMMAND_VALIDATION_MAP = {
-        {Command::Type::UCI, "^(uci)$"},
-        {Command::Type::DEBUG, "^(debug) (on|off)$"},
-        {Command::Type::ISREADY, "^(isready)$"},
-        {Command::Type::SETOPTION, "^(setoption) name (.*?)(\\svalue .*)?$"},
-        {Command::Type::POSITION, "^(position)\\s?(.*)?$"}
-    };
+    namespace uci
+    {
+        const std::array<const std::string, 5U> COMMAND_VALIDATION_MAP = {
+            "^(uci)$",
+            "^(debug) (on|off)$",
+            "^(isready)$",
+            "^(setoption) name (.*?)(\\svalue .*)?$",
+            "^(position)\\s?(.*)?$"
+        };
 
-    Command CommandBuilder::fromString(const std::string& command_str)
-    {        
-        for(const auto it : COMMAND_VALIDATION_MAP) {
-            if(std::regex_match(command_str, std::regex(it.second))) {            
-                return Command(it.first, {});
+        Command CommandBuilder::fromString(const std::string &command_str)
+        {
+            for(size_t i = 0; i < COMMAND_VALIDATION_MAP.size(); i++) {
+                if (std::regex_match(command_str, std::regex(COMMAND_VALIDATION_MAP[i])))
+                {
+                    return Command((Command::Type)i, {});
+                }
             }
-        }
 
-        //the command is not in the list of valid commands
-        return Command(Command::Type::INVALID, {});
+            // the command is not in the list of valid commands
+            return Command(Command::Type::INVALID, {});
+        }
     }
 }

@@ -1,3 +1,6 @@
 external/**
 build/**
+obj/**
 .vscode/**
+Makefile
+*.make

@@ -2,40 +2,18 @@
 #include <string>
 #include "uci_command.hpp"
 
-namespace sm::uci
+namespace sm
 {
-    class CommandBuilder
+    namespace uci
     {
-    public:
-        enum class CommandType
+        class CommandBuilder
         {
-            UCI,
-            DEBUG,
-            ISREADY,
-            SETOPTION,
-            POSITION,
-            GO_PONDER,
-            GO_WTIME,
-            GO_BTIME,
-            GO_WINC,
-            GO_BINC,
-            GO_MOVESTOGO,
-            GO_DEPTH,
-            GO_NODES,
-            GO_MATE,
-            GO_MOVETIME,
-            GO_INFINITE,
-            STOP,
-            PONDERHIT,
-            QUIT
+        public:
+            static Command fromString(const std::string &command_str);
+
+        private:
+            explicit CommandBuilder() = default;
+            virtual ~CommandBuilder() = default;
         };
-    public:
-        static Command fromString(const std::string& command_str);
-
-    private:
-        explicit CommandBuilder() = default;
-        virtual ~CommandBuilder() = default;
-        
-
-    };
+    }
 }
