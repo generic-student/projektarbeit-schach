@@ -10,3 +10,5 @@ Makefile
 *.obj
 *.user
 .vs/**
+*.txt
+*.bat
