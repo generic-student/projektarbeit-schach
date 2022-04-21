@@ -6,15 +6,16 @@ namespace sm
 {
     namespace uci
     {
-        const std::array<const std::string, 5U> COMMAND_VALIDATION_MAP = {
+        const std::array<const std::string, 6U> COMMAND_VALIDATION_MAP = {
             "^(uci)$",
             "^(debug) (on|off)$",
             "^(isready)$",
             "^(setoption) name (.*?)(\\svalue .*)?$",
-            "^(position)\\s?(.*)?$"
+            "^(position)\\s?(.*)?$",
+            "^(quit)$"
         };
 
-        Command CommandBuilder::fromString(const std::string &command_str)
+        Command CommandBuilder::build(const std::string &command_str)
         {
             for(size_t i = 0; i < COMMAND_VALIDATION_MAP.size(); i++) {
                 if (std::regex_match(command_str, std::regex(COMMAND_VALIDATION_MAP[i])))

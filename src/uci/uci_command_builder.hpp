@@ -9,7 +9,7 @@ namespace sm
         class CommandBuilder
         {
         public:
-            static Command fromString(const std::string &command_str);
+            static Command build(const std::string &command_str);
 
         private:
             explicit CommandBuilder() = default;

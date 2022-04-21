@@ -16,6 +16,7 @@ namespace sm
                 ISREADY,
                 SETOPTION,
                 POSITION,
+                QUIT,
                 GO_PONDER,
                 GO_WTIME,
                 GO_BTIME,
@@ -29,7 +30,6 @@ namespace sm
                 GO_INFINITE,
                 STOP,
                 PONDERHIT,
-                QUIT,
                 INVALID
             };
 
