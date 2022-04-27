@@ -626,6 +626,11 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY)
     return moves;
 }
 
+bool Chessposition::checkValidMove(Move move)
+{
+    return false;
+}
+
 
 //   e1e2
 //   e2xe3
