@@ -1,0 +1,14 @@
+external/**
+build/**
+obj/**
+.vscode/**
+Makefile
+*.make
+*.vcxproj
+*.sln
+*.filters
+*.obj
+*.user
+.vs/**
+*.txt
+*.bat
