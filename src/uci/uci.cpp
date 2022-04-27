@@ -21,14 +21,39 @@ namespace sm
             case Command::UCI:
                 handleUciCommand();
                 break;
+            case Command::UCI_DEBUG:
+                handleDebugCommand();
+                break;
+            case Command::ISREADY:
+                handleIsReadyCommand();
+                break;
+            case Command::SETOPTION:
+                handleSetOptionCommand();
+                break;
+            case Command::POSITION:
+                handlePositionCommand();
+                break;
             case Command::QUIT:
                 handleQuitCommand();
                 break;
-            case Command::INVALID:
-                std::cout << "invalid command!" << std::endl;
+            case Command::GO:
+                handleGoCommand();
                 break;
+            case Command::STOP:
+                handleStopCommand();
+                break;
+            case Command::PONDERHIT:
+                handlePonderhitCommand();
+                break;
+            case Command::REGISTER:
+                handleRegisterCommand();
+                break;
+            case Command::UCINEWGAME:
+                handleUciNewGameCommand();
+                break;
+            case Command::INVALID:
             default:
-                std::cout << "command not implemented yet" << std::endl;
+                std::cout << "invalid command!" << std::endl;
                 break;
             }
         }
@@ -48,6 +73,26 @@ namespace sm
             std::cout << "uciok" << std::endl;
         }
         
+        void UniversalChessInterface::handleDebugCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleIsReadyCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleSetOptionCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handlePositionCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
         void UniversalChessInterface::handleQuitCommand()
         {
             m_mutex.lock();
@@ -56,6 +101,31 @@ namespace sm
             m_mutex.unlock();
 
             std::cout << "quit ok" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleGoCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleStopCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handlePonderhitCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleRegisterCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
+        }
+        
+        void UniversalChessInterface::handleUciNewGameCommand()
+        {
+            std::cout << "command not implemented yet" << std::endl;
         }
     }
 }

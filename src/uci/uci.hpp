@@ -15,7 +15,16 @@ namespace sm
 
             private:
                 void handleUciCommand();
+                void handleDebugCommand();
+                void handleIsReadyCommand();
+                void handleSetOptionCommand();
+                void handlePositionCommand();
                 void handleQuitCommand();
+                void handleGoCommand();
+                void handleStopCommand();
+                void handlePonderhitCommand();
+                void handleRegisterCommand();
+                void handleUciNewGameCommand();
 
             private:
                 bool m_isReady = false;
