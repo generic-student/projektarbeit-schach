@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <map>
+#include <vector>
 
 namespace sm
 {
@@ -17,24 +17,16 @@ namespace sm
                 SETOPTION,
                 POSITION,
                 QUIT,
-                GO_PONDER,
-                GO_WTIME,
-                GO_BTIME,
-                GO_WINC,
-                GO_BINC,
-                GO_MOVESTOGO,
-                GO_DEPTH,
-                GO_NODES,
-                GO_MATE,
-                GO_MOVETIME,
-                GO_INFINITE,
+                GO,
                 STOP,
                 PONDERHIT,
+                REGISTER,
+                UCINEWGAME,
                 INVALID
             };
 
         public:
-            explicit Command(const Command::Type type, const std::map<std::string, std::string> &args);
+            explicit Command(const Command::Type type, const std::vector<std::string> &args);
             explicit Command() = default;
             virtual ~Command() = default;
 
@@ -43,7 +35,7 @@ namespace sm
 
         private:
             Command::Type m_type = Command::Type::INVALID;
-            std::map<std::string, std::string> m_args;
+            std::vector<std::string> m_args;
         };
     }
 }
