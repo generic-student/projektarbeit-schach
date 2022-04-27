@@ -15,8 +15,8 @@ namespace sm {
             virtual ~IChessInterface() = default;
             void start();
 
-            virtual void resolve_command_sync(const std::string& command_str) = 0;
-            virtual void resolve_command_async(const std::string& command_str) = 0;
+            virtual void resolveCommandSync(const std::string& command_str) = 0;
+            virtual void resolveCommandAsync(const std::string& command_str) = 0;
 
         protected:
             bool m_isRunning = false;
