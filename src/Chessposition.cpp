@@ -14,6 +14,7 @@ bool Chessposition::isViableMove(std::string p_Move)
 
 std::list<Move> Chessposition::getValidMoves(int _startX, int _startY)
 {
+    // Comment
     std::list<Move> moves;
     Move m;
     m.startX = _startX;
