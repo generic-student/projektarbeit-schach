@@ -2,6 +2,7 @@
 #include <string>
 #include <array>
 #include "move.hpp"
+#include <list>
 
 class Chessposition
 {
@@ -26,7 +27,8 @@ public:
 	int getMoveNumber();
 	float getPositionEvaluation();
 	bool isViableMove(std::string p_Move);		// move is in form "old Position"-"new Position"  (e3-e4)
-
+	std::list<Move> getValidMoves(int _startX, int _startY);
+	bool checkValidMove(Move move);
 
 private:
 
