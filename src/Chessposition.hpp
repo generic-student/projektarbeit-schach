@@ -21,7 +21,7 @@ private:
 	//Methoden
 public:
 	std::string getFEN();
-	
+	char getType(int x, int y);
 	int getActivePlayer();
 	int getMoveNumber();
 	float getPositionEvaluation();

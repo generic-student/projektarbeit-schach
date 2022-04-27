@@ -6,7 +6,7 @@ struct Move {
 	int targetX;
 	int targetY;
 
-	bool capture;
+	bool capture = false;
 
-	char promotion;
+	char promotion = '\0';
 };
