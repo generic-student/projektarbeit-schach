@@ -1,10 +1,11 @@
 #include "uci_command.hpp"
+#include <iostream>
 
 namespace sm
 {
     namespace uci
     {
-        Command::Command(const Command::Type type, const std::map<std::string, std::string> &args)
+        Command::Command(const Command::Type type, const std::vector<std::string> &args)
             : m_type(type), m_args(args)
         {
         }
@@ -17,6 +18,16 @@ namespace sm
         void Command::setType(Command::Type type)
         {
             m_type = type;
+        }
+        
+        const std::vector<std::string>& Command::getArgs() const
+        {
+            return m_args;
+        }
+        
+        void Command::setArgs(const std::vector<std::string>& args)
+        {
+            m_args = args;
         }
     }
 }

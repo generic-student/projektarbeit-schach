@@ -15,13 +15,32 @@ namespace sm
     {
         return m_author;
     }
+    
+    bool Engine::inDebugMode() const
+    {
+        return m_debugMode;
+    }
+    
+    void Engine::setDebugMode(bool debug)
+    {
+        m_debugMode = debug;
+    }
+    
+    bool Engine::isReady() const
+    {
+        return m_ready;
+    }
+    
+    void Engine::setOption(const std::string& option, const std::string& value)
+    {
+        throw "Invalid Option";
+    }
 
-    float Engine::evaluateBoard(std::array<std::array<char, 8>, 8> currentBoard)
+    float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard)
     {
         float score = 0.0f;
         // TODO: 
         // King Safety
-        // Material
         // Piece Activity
         // Pawn Structure
 
@@ -82,15 +101,25 @@ namespace sm
 
         if (blackBishops >= 2)
         {
-            score += -((int)(blackBishops / 2));
+            score += -((int)(blackBishops / 2)) * 0.25f;
         }
         if (whiteBishops >= 2)
         {
-            score += (int)(whiteBishops / 2);
+            score += ((int)(whiteBishops / 2)) * 0.25f;
         }
 
 
         return score;
+    }
+    
+    Chessposition& Engine::getPosition()
+    {
+        return m_position;
+    }
+    
+    const Chessposition& Engine::getPosition() const
+    {
+        return m_position;
     }
 
 
