@@ -15,4 +15,24 @@ namespace sm
     {
         return m_author;
     }
+    
+    bool Engine::inDebugMode() const
+    {
+        return m_debugMode;
+    }
+    
+    void Engine::setDebugMode(bool debug)
+    {
+        m_debugMode = debug;
+    }
+    
+    bool Engine::isReady() const
+    {
+        return m_ready;
+    }
+    
+    void Engine::setOption(const std::string& option, const std::string& value)
+    {
+        throw "Invalid Option";
+    }
 }

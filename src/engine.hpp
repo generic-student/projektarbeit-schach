@@ -13,9 +13,16 @@ namespace sm {
 
             const std::string getID() const;
             const std::string getAuthor() const;
+            bool inDebugMode() const;
+            void setDebugMode(bool debug);
+            bool isReady() const;
+            void setOption(const std::string& option, const std::string& value);
 
         private:
             const std::string m_id = "SchwachMatt 0.1";
             const std::string m_author = "No U";
+
+            bool m_debugMode = false;
+            bool m_ready = true;
     };
 }

@@ -19,5 +19,15 @@ namespace sm
         {
             m_type = type;
         }
+        
+        const std::vector<std::string>& Command::getArgs() const
+        {
+            return m_args;
+        }
+        
+        void Command::setArgs(const std::vector<std::string>& args)
+        {
+            m_args = args;
+        }
     }
 }

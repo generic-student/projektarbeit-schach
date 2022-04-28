@@ -6,50 +6,50 @@
 namespace sm
 {
     namespace uci
-    {   
+    {
         UniversalChessInterface::UniversalChessInterface()
             : IChessInterface()
         {
         }
-        
-        void UniversalChessInterface::resolveCommandSync(const std::string& command_str)
+
+        void UniversalChessInterface::resolveCommandSync(const std::string &command_str)
         {
             Command command = sm::uci::CommandBuilder::build(command_str);
 
             switch (command.getType())
             {
             case Command::UCI:
-                handleUciCommand();
+                handleUciCommand(command);
                 break;
             case Command::UCI_DEBUG:
-                handleDebugCommand();
+                handleDebugCommand(command);
                 break;
             case Command::ISREADY:
-                handleIsReadyCommand();
+                handleIsReadyCommand(command);
                 break;
             case Command::SETOPTION:
-                handleSetOptionCommand();
+                handleSetOptionCommand(command);
                 break;
             case Command::POSITION:
-                handlePositionCommand();
+                handlePositionCommand(command);
                 break;
             case Command::QUIT:
-                handleQuitCommand();
+                handleQuitCommand(command);
                 break;
             case Command::GO:
-                handleGoCommand();
+                handleGoCommand(command);
                 break;
             case Command::STOP:
-                handleStopCommand();
+                handleStopCommand(command);
                 break;
             case Command::PONDERHIT:
-                handlePonderhitCommand();
+                handlePonderhitCommand(command);
                 break;
             case Command::REGISTER:
-                handleRegisterCommand();
+                handleRegisterCommand(command);
                 break;
             case Command::UCINEWGAME:
-                handleUciNewGameCommand();
+                handleUciNewGameCommand(command);
                 break;
             case Command::INVALID:
             default:
@@ -57,73 +57,117 @@ namespace sm
                 break;
             }
         }
-        
-        void UniversalChessInterface::resolveCommandAsync(const std::string& command_str)
+
+        void UniversalChessInterface::resolveCommandAsync(const std::string &command_str)
         {
             throw "Error: Method not implemented!";
         }
-        
-        void UniversalChessInterface::handleUciCommand()
+
+        void UniversalChessInterface::handleUciCommand(Command &cmd)
         {
             std::cout << "id name " << m_pEngine->getID() << std::endl;
             std::cout << "id author " << m_pEngine->getAuthor() << std::endl;
 
-            //TODO: send the settings which the engine supports via the options command
+            // TODO: send the settings which the engine supports via the options command
 
             std::cout << "uciok" << std::endl;
         }
-        
-        void UniversalChessInterface::handleDebugCommand()
+
+        void UniversalChessInterface::handleDebugCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            if (cmd.getArgs().front() == "on")
+            {
+                m_pEngine->setDebugMode(true);
+            }
+            else if (cmd.getArgs().front() == "off")
+            {
+                m_pEngine->setDebugMode(false);
+            }
+            else
+            {
+                throw "UCI Exception: debug can either be on or off";
+            }
         }
-        
-        void UniversalChessInterface::handleIsReadyCommand()
+
+        //TODO: Check what this function should actually do
+        void UniversalChessInterface::handleIsReadyCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            //check if the engine is currently doing a calculation
+            if(m_pEngine->isReady()) {
+                std::cout << "readyok" << std::endl;
+            }
         }
-        
-        void UniversalChessInterface::handleSetOptionCommand()
+
+        void UniversalChessInterface::handleSetOptionCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            const std::string& name = cmd.getArgs()[0];
+            const std::string& value = cmd.getArgs()[1];
+
+            m_pEngine->setOption(name, value);
         }
-        
-        void UniversalChessInterface::handlePositionCommand()
+
+        void UniversalChessInterface::handlePositionCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            const std::string& pos = cmd.getArgs()[0];
+            bool fromStart = (pos == "startpos");
+
+            std::string moves_str = cmd.getArgs()[1];
+            std::vector<std::string> moves;
+            size_t idx_move;
+            while((idx_move = moves_str.find(" ")) != std::string::npos) {
+                moves.push_back(moves_str.substr(0, idx_move));
+                moves_str.erase(0, idx_move+1);
+            }
+            moves.push_back(moves_str);
+
+            //set the position of the board to "pos"
+
+            //play the given moves
+
+            std::cout << "command not fully implemented yet" << std::endl;
         }
-        
-        void UniversalChessInterface::handleQuitCommand()
+
+        void UniversalChessInterface::handleQuitCommand(Command &cmd)
         {
             m_mutex.lock();
             m_isRunning = false;
-            //cancle all running calculations
+            // cancle all running calculations
             m_mutex.unlock();
 
             std::cout << "quit ok" << std::endl;
         }
+
+        void UniversalChessInterface::handleGoCommand(Command &cmd)
+        {
+            GoSubcommandData subcommandData;
+            const std::vector<std::string>&  args = cmd.getArgs();
+            for(const std::string& arg : args) {
+            }
+
+            std::cout << "command not fully implemented yet" << std::endl;
+        }
         
-        void UniversalChessInterface::handleGoCommand()
+        void UniversalChessInterface::handleGoSubcommand(const std::string& subcommand)
+        {
+            
+        }
+
+        void UniversalChessInterface::handleStopCommand(Command &cmd)
         {
             std::cout << "command not implemented yet" << std::endl;
         }
-        
-        void UniversalChessInterface::handleStopCommand()
+
+        void UniversalChessInterface::handlePonderhitCommand(Command &cmd)
         {
             std::cout << "command not implemented yet" << std::endl;
         }
-        
-        void UniversalChessInterface::handlePonderhitCommand()
+
+        void UniversalChessInterface::handleRegisterCommand(Command &cmd)
         {
             std::cout << "command not implemented yet" << std::endl;
         }
-        
-        void UniversalChessInterface::handleRegisterCommand()
-        {
-            std::cout << "command not implemented yet" << std::endl;
-        }
-        
-        void UniversalChessInterface::handleUciNewGameCommand()
+
+        void UniversalChessInterface::handleUciNewGameCommand(Command &cmd)
         {
             std::cout << "command not implemented yet" << std::endl;
         }
