@@ -6,31 +6,66 @@ namespace sm
     {
     }
     
+    /**
+     * @brief the id of the engine
+     * 
+     * @return const std::string 
+     */
     const std::string Engine::getID() const
     {
         return m_id;
     }
     
+    /**
+     * @brief the author of the engine
+     * 
+     * @return const std::string 
+     */
     const std::string Engine::getAuthor() const
     {
         return m_author;
     }
     
+    /**
+     * @brief is the engine is currently in debug mode
+     * 
+     * @return true 
+     * @return false 
+     */
     bool Engine::inDebugMode() const
     {
         return m_debugMode;
     }
     
+    /**
+     * @brief set if the engine should be put into debug mode.
+     * In debug mode the engine sends a bunch of extra information via the chess-interface
+     * 
+     * @param debug 
+     */
     void Engine::setDebugMode(bool debug)
     {
         m_debugMode = debug;
     }
     
+    /**
+     * @brief Status if the engine is ready or not
+     * 
+     * @return true if the engine is ready
+     * @return false if the engine is not ready
+     */
     bool Engine::isReady() const
     {
         return m_ready;
     }
     
+    /**
+     * @brief Set the value of a given option to a specific value.
+     * This function will throw an exception if the option does not exist
+     * 
+     * @param option the option to be set
+     * @param value the value of the option
+     */
     void Engine::setOption(const std::string& option, const std::string& value)
     {
         throw "Invalid Option";
@@ -112,11 +147,21 @@ namespace sm
         return score;
     }
     
+    /**
+     * @brief return a reference to the Chessposition object
+     * 
+     * @return Chessposition& 
+     */
     Chessposition& Engine::getPosition()
     {
         return m_position;
     }
     
+    /**
+     * @brief return a constant reference to the Chessposition object
+     * 
+     * @return const Chessposition& 
+     */
     const Chessposition& Engine::getPosition() const
     {
         return m_position;
