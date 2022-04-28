@@ -10,10 +10,13 @@ class Chessposition
 public :
 	static const std::string STARTPOS_FEN;
 
+	explicit Chessposition();
+	explicit Chessposition(const std::string& fen);
+	explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
+
 private:
-	unsigned int m_activePlayer;
-	unsigned int m_moveNumber;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
-    std::string m_FENString;
+	unsigned int m_activePlayer = 0;
+	unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
 	std::array<std::array<char, 8>, 8> m_position;
 	std::array<std::array<int, 8>, 8> m_moveCount;
 	
@@ -24,7 +27,7 @@ public:
 	void setActivePlayer(int p_id);
 	const std::array<std::array<int, 8>, 8>& getMoveCount() const;
 	const std::array<std::array<char, 8>, 8>& getPosition() const;
-	const std::string& getFEN() const;
+	std::string getFEN() const;
 	char getType(int p_x, int p_y) const;
 	int getMoveCountPos(int p_x, int p_y) const;
 	int getActivePlayer() const;
@@ -36,5 +39,4 @@ private:
 	Move parseMove(std::string p_Move);
 
 };
-
 

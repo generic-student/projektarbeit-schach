@@ -5,9 +5,7 @@ const std::string Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPP
 
 void Chessposition::setFEN(std::string p_FEN)
 {
-    m_FENString = p_FEN;
-
-    m_position = sm::ChessHelper::fenToArray(m_FENString);
+    m_position = sm::ChessHelper::fenToArray(p_FEN);
 }
 
 void Chessposition::setActivePlayer(int p_id)
@@ -25,9 +23,9 @@ const std::array<std::array<char, 8>, 8>& Chessposition::getPosition() const
     return m_position;
 }
 
-const std::string& Chessposition::getFEN() const
+std::string Chessposition::getFEN() const
 {
-    return m_FENString;
+    return sm::ChessHelper::arrayToFen(m_position);
 }
 
 char Chessposition::getType(int p_x, int p_y) const
@@ -705,4 +703,22 @@ Move Chessposition::parseMove(std::string p_Move)
     }
     
     return m;
+}
+
+Chessposition::Chessposition()
+    : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN))
+{
+    
+}
+
+Chessposition::Chessposition(const std::string& fen)
+    : m_position(sm::ChessHelper::fenToArray(fen))
+{
+    
+}
+
+Chessposition::Chessposition(const std::array<std::array<char, 8>, 8>& pos)
+    : m_position(pos)
+{
+    
 }
