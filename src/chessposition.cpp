@@ -2,6 +2,8 @@
 
 #pragma region Getter_Setter
 
+const char* Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+
 void Chessposition::setFEN(std::string p_FEN)
 {
     m_FENString = p_FEN;
@@ -14,61 +16,56 @@ void Chessposition::setActivePlayer(int p_id)
     m_activePlayer = p_id;
 }
 
-std::array<std::array<int, 8>, 8>& Chessposition::getMoveCount()
+const std::array<std::array<int, 8>, 8>& Chessposition::getMoveCount() const
 {
     return m_moveCount;
 }
 
-std::array<std::array<char, 8>, 8>& Chessposition::getPosition()
+const std::array<std::array<char, 8>, 8>& Chessposition::getPosition() const
 {
     return m_position;
 }
 
-std::string Chessposition::getFEN()
+const std::string& Chessposition::getFEN() const
 {
-    return std::string();
+    return m_FENString;
 }
 
-char Chessposition::getType(int p_x, int p_y)
+char Chessposition::getType(int p_x, int p_y) const
 {
     return m_position[p_x][p_y];
 }
 
-int Chessposition::getMoveCountPos(int p_x, int p_y)
+int Chessposition::getMoveCountPos(int p_x, int p_y) const
 {
     return m_moveCount[p_x][p_y];
 }
 
-int Chessposition::getActivePlayer()
+int Chessposition::getActivePlayer() const
 {
     return m_activePlayer;
 }
 
-int Chessposition::getMoveNumber()
+int Chessposition::getMoveNumber() const
 {
     return m_moveNumber;
 }
 
-float Chessposition::getPositionEvaluation()
-{
-    return m_positionEvaluation;
-}
-
 #pragma endregion
 
-bool Chessposition::isViableMove(std::string p_Move)
+bool Chessposition::isViableMove(const Move& move) const
 {
-    Move m = parseMove(p_Move);
+    const Move& m = move;
     int type = 0;
     char figureChr;
     char figureChrTrgt;
 
-    //Ausfiltern wenn Move außerhalb des Feldes ist
+    //Ausfiltern wenn Move auï¿½erhalb des Feldes ist
     if ((m.targetX > 7 || m.targetX < 0) || (m.targetY > 7 || m.targetY < 0))
     {
         return false;
     }
-    //Ausfiltern wenn start Position außerhalb des Feldes ist
+    //Ausfiltern wenn start Position auï¿½erhalb des Feldes ist
     if ((m.startX > 7 || m.startX < 0) || (m.startY > 7 || m.startY < 0))
     {
         return false;
@@ -77,7 +74,7 @@ bool Chessposition::isViableMove(std::string p_Move)
     figureChr = getType(m.startX, m.startY);
     figureChrTrgt = getType(m.targetX, m.targetY);
 
-    //überprüfen ob an der Prosition eine Figur des aktiven Spielers steht
+    //ï¿½berprï¿½fen ob an der Prosition eine Figur des aktiven Spielers steht
     switch (getActivePlayer())
     {
     case 0:
@@ -132,7 +129,7 @@ bool Chessposition::isViableMove(std::string p_Move)
         break;
     }
 
-    //Überprüfen, ob der Move für die jeweilige Figur gältig ist
+    //ï¿½berprï¿½fen, ob der Move fï¿½r die jeweilige Figur gï¿½ltig ist
 
     int difX = m.targetX - m.startX;
     int difY = m.targetY - m.startY;
@@ -141,18 +138,18 @@ bool Chessposition::isViableMove(std::string p_Move)
         /*
             Bauern Logik
 
-            zuerst prüfen welcher Spieler an der reihe ist.
+            zuerst prï¿½fen welcher Spieler an der reihe ist.
 
-            wenn er diagonal geht prüfen
-            Danach prüfen ob der Bauer gerade oder diagonal geht (x Koordinate ändert sich),
-            Dann überprüfen, ob der Bauer genau ein Feld Diagonal geht (x und y Koordinate genau 1 unterschied, für y Koordinate je nach Farbe +1 oder -1)
-            zuletzt überprüfen ob auf dem Feld eine Figur der anderen Farbe steht.
+            wenn er diagonal geht prï¿½fen
+            Danach prï¿½fen ob der Bauer gerade oder diagonal geht (x Koordinate ï¿½ndert sich),
+            Dann ï¿½berprï¿½fen, ob der Bauer genau ein Feld Diagonal geht (x und y Koordinate genau 1 unterschied, fï¿½r y Koordinate je nach Farbe +1 oder -1)
+            zuletzt ï¿½berprï¿½fen ob auf dem Feld eine Figur der anderen Farbe steht.
 
-            Für gerade prüfen ob es eine oder zwei Felder nach vorne geht (Y-Koordinate 1 oder 2 geändert)
+            Fï¿½r gerade prï¿½fen ob es eine oder zwei Felder nach vorne geht (Y-Koordinate 1 oder 2 geï¿½ndert)
 
-            Wenn es 2 sind prüfen ob es der erste move dieses Bauern ist
+            Wenn es 2 sind prï¿½fen ob es der erste move dieses Bauern ist
 
-            wenn es einen nach vorne geht prüfen, ob das Feld frei ist.
+            wenn es einen nach vorne geht prï¿½fen, ob das Feld frei ist.
 
 
              */
@@ -225,7 +222,7 @@ bool Chessposition::isViableMove(std::string p_Move)
                 //mehr als 1 nach vorne
                 if (difY != -1)
                     return false;
-                //Prüfen ob gegnerische figur auf dem feld 
+                //Prï¿½fen ob gegnerische figur auf dem feld 
                 if (figureChrTrgt < 97 || figureChrTrgt == '\0')
                     return false;
                 break;
@@ -238,17 +235,17 @@ bool Chessposition::isViableMove(std::string p_Move)
         /*
             Turm Logik
 
-            prüfen ob der Turm nur gerade geht (entweder x oder y Koordinate bleibt gleich)
+            prï¿½fen ob der Turm nur gerade geht (entweder x oder y Koordinate bleibt gleich)
 
-            dann Prüfen, ob der weg frei ist (Koordinate um 1 erhöhen und prüfen, ob das Feld frei ist)
+            dann Prï¿½fen, ob der weg frei ist (Koordinate um 1 erhï¿½hen und prï¿½fen, ob das Feld frei ist)
 
-            zuletz prüfen, ob das Ziel feld frei ist, oder eine Figur der anderen Farbe drauf ist
+            zuletz prï¿½fen, ob das Ziel feld frei ist, oder eine Figur der anderen Farbe drauf ist
              */
     case 2:
         if (difX != 0 && difY != 0)
             return false;
 
-        //prüfen ob der weg frei ist gerade
+        //prï¿½fen ob der weg frei ist gerade
         if (difX > 0)
         {
             for (int i = m.startX; i < m.targetX; i++)
@@ -286,7 +283,7 @@ bool Chessposition::isViableMove(std::string p_Move)
             }
         }
         
-        //prüfen, dass auf dem Zielfeld keine eigene figur steht
+        //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
         case 0:
@@ -303,13 +300,13 @@ bool Chessposition::isViableMove(std::string p_Move)
 
         /*
 
-            Läufer Logik
+            Lï¿½ufer Logik
 
-           prüfen ob der Läufer diagonal geht (x und y Veränderung ist gleich)
+           prï¿½fen ob der Lï¿½ufer diagonal geht (x und y Verï¿½nderung ist gleich)
 
-           danach prüfen ob der Weg zum ziel frei ist (Sowohl x und y koordinate immer um 1 dem ziel annähern und prüfen ob das feld frei ist)
+           danach prï¿½fen ob der Weg zum ziel frei ist (Sowohl x und y koordinate immer um 1 dem ziel annï¿½hern und prï¿½fen ob das feld frei ist)
 
-           zuletzt prüfen, ob das ziel Feld Frei ist, oder eine Figur der anderen Farbe drauf ist
+           zuletzt prï¿½fen, ob das ziel Feld Frei ist, oder eine Figur der anderen Farbe drauf ist
 
             */
     case 3:
@@ -317,7 +314,7 @@ bool Chessposition::isViableMove(std::string p_Move)
         if ((difX*difX) != (difY*difY))
             return false;
         
-        //prüfen ob weg frei ist diagonal
+        //prï¿½fen ob weg frei ist diagonal
         //unten rechts
         if (difX > 0 && difY > 0)
         {
@@ -372,7 +369,7 @@ bool Chessposition::isViableMove(std::string p_Move)
         }
 
 
-        //prüfen, dass auf dem Zielfeld keine eigene figur steht
+        //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
         case 0:
@@ -388,9 +385,9 @@ bool Chessposition::isViableMove(std::string p_Move)
 
 
         /*
-            König Logik
+            Kï¿½nig Logik
 
-            prüfen ob ob der König maximal ein feld geht (prüfen ob x und y Veränderung <=1 )
+            prï¿½fen ob ob der Kï¿½nig maximal ein feld geht (prï¿½fen ob x und y Verï¿½nderung <=1 )
 
              */
     case 4:
@@ -398,7 +395,7 @@ bool Chessposition::isViableMove(std::string p_Move)
         if ((difX * difX) > 1 || (difY * difY) > 1)
             return false;
 
-        //prüfen, dass auf dem Zielfeld keine eigene figur steht
+        //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
         case 0:
@@ -417,13 +414,13 @@ bool Chessposition::isViableMove(std::string p_Move)
 
             Springer Logik
 
-            prüfen ob der Springer ein Koordinate um 2 und die andere um 1 verändert
-            danach prüfen, ob das Zielfeld leer ist, oder eine Figur der andern Farbe drauf ist.
+            prï¿½fen ob der Springer ein Koordinate um 2 und die andere um 1 verï¿½ndert
+            danach prï¿½fen, ob das Zielfeld leer ist, oder eine Figur der andern Farbe drauf ist.
 
             */
     case 5:
 
-        //prüfen, dass auf dem Zielfeld keine eigene figur steht
+        //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
         case 0:
@@ -447,19 +444,19 @@ bool Chessposition::isViableMove(std::string p_Move)
 
         /*
 
-            Königin Logik
+            Kï¿½nigin Logik
 
-            Läufer, oder Turm muss passen, also nicht beide falsch
+            Lï¿½ufer, oder Turm muss passen, also nicht beide falsch
 
             */
     case 6:
 
-        //prüfen ob sie Diagonal oder gerade geht, abhängig davon dann Turm obder Läufer logik wählen
-        //Läufer
+        //prï¿½fen ob sie Diagonal oder gerade geht, abhï¿½ngig davon dann Turm obder Lï¿½ufer logik wï¿½hlen
+        //Lï¿½ufer
         if ((difX * difX) == (difY * difY))
         {
 
-            //prüfen ob weg frei ist diagonal
+            //prï¿½fen ob weg frei ist diagonal
             //unten rechts
             if (difX > 0 && difY > 0)
             {
@@ -514,7 +511,7 @@ bool Chessposition::isViableMove(std::string p_Move)
             }
 
 
-            //prüfen, dass auf dem Zielfeld keine eigene figur steht
+            //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
             case 0:
@@ -536,7 +533,7 @@ bool Chessposition::isViableMove(std::string p_Move)
         //Turm
         else
         {
-            //prüfen ob der weg frei ist gerade
+            //prï¿½fen ob der weg frei ist gerade
             if (difX > 0)
             {
                 for (int i = m.startX; i < m.targetX; i++)
@@ -574,7 +571,7 @@ bool Chessposition::isViableMove(std::string p_Move)
                 }
             }
 
-            //prüfen, dass auf dem Zielfeld keine eigene figur steht
+            //prï¿½fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
             case 0:
@@ -595,7 +592,7 @@ bool Chessposition::isViableMove(std::string p_Move)
     return false;
 }
 
-std::list<Move> Chessposition::getValidMoves(int _startX, int _startY)
+std::list<Move> Chessposition::getValidMoves(int _startX, int _startY) const
 {
     // Comment
     std::list<Move> moves;
@@ -645,7 +642,7 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY)
                         break;
                     }
 
-                    if (checkValidMove(m))
+                    if (isViableMove(m))
                     {
                         moves.push_back(m);
                     }

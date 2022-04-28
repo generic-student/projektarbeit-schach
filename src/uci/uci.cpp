@@ -121,11 +121,14 @@ namespace sm
             moves.push_back(moves_str);
 
             //set the position of the board to "pos"
-            if(!fromStart) {
-                //m_pEngine->getPosition().setFEN(pos);
+            if(fromStart) {
+                m_pEngine->getPosition().setFEN(Chessposition::STARTPOS_FEN);
+            } else {
+                m_pEngine->getPosition().setFEN(pos);
             }
 
             //play the given moves
+            //std::cout << "evalutated fenstring: " << m_pEngine->evaluateBoard();
 
             std::cout << "command not fully implemented yet" << std::endl;
         }
@@ -145,6 +148,7 @@ namespace sm
             GoSubcommandData subcommandData;
             const std::vector<std::string>&  args = cmd.getArgs();
             for(const std::string& arg : args) {
+
             }
 
             std::cout << "command not fully implemented yet" << std::endl;
