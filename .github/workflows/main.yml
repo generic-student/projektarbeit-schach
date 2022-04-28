@@ -34,6 +34,29 @@ jobs:
       # Premake
       - name: Premake gmake2
         run: premake5 gmake2
+      
+      # Create the external/ folder
+      - name: Makedir external
+        run: mkdir external
+        
+      - name: Cache Boost_1.77
+        id: boost-cache
+        uses: actions/cache@v2
+        with:
+          path: external/boost_1_77_0
+          key: external-boost-1_77
+          
+      - name: Get Boost
+        if: steps.boost-cache.outputs.cache-hit != 'true'
+        run: wget https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.zip -P external
+      
+      - name: Get unzip
+        if: steps.boost-cache.outputs.cache-hit != 'true'
+        run: sudo apt-get install zip unzip
+        
+      - name: Extract Boost
+        if: steps.boost-cache.outputs.cache-hit != 'true'
+        run: unzip external/boost_1_77_0.zip -d external
 
       # Runs a set of commands using the runners shell
       - name: Run build
