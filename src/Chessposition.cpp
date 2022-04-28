@@ -1,29 +1,60 @@
-#include "Chessposition.hpp"
+#include "chessposition.hpp"
+
+#pragma region Getter_Setter
+
+void Chessposition::setFEN(std::string p_FEN)
+{
+    m_FENString = p_FEN;
+
+    FENToArray(p_FEN);
+}
+
+void Chessposition::setActivePlayer(int p_id)
+{
+    m_activePlayer = p_id;
+}
+
+std::array<std::array<int, 8>, 8>& Chessposition::getMoveCount()
+{
+    return m_moveCount;
+}
+
+std::array<std::array<char, 8>, 8>& Chessposition::getPosition()
+{
+    return m_position;
+}
 
 std::string Chessposition::getFEN()
 {
     return std::string();
 }
 
-char Chessposition::getType(int x, int y)
+char Chessposition::getType(int p_x, int p_y)
 {
-    return m_Position[x][y];
+    return m_position[p_x][p_y];
+}
+
+int Chessposition::getMoveCountPos(int p_x, int p_y)
+{
+    return m_moveCount[p_x][p_y];
 }
 
 int Chessposition::getActivePlayer()
 {
-    return 0;
+    return m_activePlayer;
 }
 
 int Chessposition::getMoveNumber()
 {
-    return 0;
+    return m_moveNumber;
 }
 
 float Chessposition::getPositionEvaluation()
 {
-    return 0.0f;
+    return m_positionEvaluation;
 }
+
+#pragma endregion
 
 bool Chessposition::isViableMove(std::string p_Move)
 {
@@ -626,21 +657,11 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY)
     return moves;
 }
 
-bool Chessposition::checkValidMove(Move move)
-{
-    return false;
-}
-
-
-//   e1e2
-//   e2xe3
-//   e2e3
-//   e7e8R
-//   e7xe8Q R B N
-
+#pragma region Hilfsmethoden
 
 void Chessposition::FENToArray(std::string)
 {
+
 }
 
 std::string Chessposition::arrayToFEN()
@@ -703,3 +724,5 @@ Move Chessposition::parseMove(std::string p_Move)
     
     return m;
 }
+
+#pragma endregion
