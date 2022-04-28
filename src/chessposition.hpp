@@ -31,6 +31,7 @@ public:
 	int getMoveNumber() const;
 	bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
 	std::list<Move> getValidMoves(int _startX, int _startY) const;
+	bool applyMove(const Move& move, bool validate);
 
 private:
 	Move parseMove(std::string p_Move);

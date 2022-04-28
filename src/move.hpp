@@ -1,12 +1,15 @@
 #pragma once
 
 struct Move {
-	int startX;
-	int startY;
-	int targetX;
-	int targetY;
+	int startCol;
+	int startRow;
+	int targetCol;
+	int targetRow;
 
 	bool capture = false;
+	int captureRow;
+	int captureCol;
+
 
 	char promotion = '\0';
 };

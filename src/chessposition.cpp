@@ -58,18 +58,18 @@ bool Chessposition::isViableMove(const Move& move) const
     char figureChrTrgt;
 
     //Ausfiltern wenn Move au�erhalb des Feldes ist
-    if ((m.targetX > 7 || m.targetX < 0) || (m.targetY > 7 || m.targetY < 0))
+    if ((m.targetCol > 7 || m.targetCol < 0) || (m.targetRow > 7 || m.targetRow < 0))
     {
         return false;
     }
     //Ausfiltern wenn start Position au�erhalb des Feldes ist
-    if ((m.startX > 7 || m.startX < 0) || (m.startY > 7 || m.startY < 0))
+    if ((m.startCol > 7 || m.startCol < 0) || (m.startRow > 7 || m.startRow < 0))
     {
         return false;
     }
 
-    figureChr = getType(m.startX, m.startY);
-    figureChrTrgt = getType(m.targetX, m.targetY);
+    figureChr = getType(m.startCol, m.startRow);
+    figureChrTrgt = getType(m.targetCol, m.targetRow);
 
     //�berpr�fen ob an der Prosition eine Figur des aktiven Spielers steht
     switch (getActivePlayer())
@@ -128,8 +128,8 @@ bool Chessposition::isViableMove(const Move& move) const
 
     //�berpr�fen, ob der Move f�r die jeweilige Figur g�ltig ist
 
-    int difX = m.targetX - m.startX;
-    int difY = m.targetY - m.startY;
+    int difX = m.targetCol - m.startCol;
+    int difY = m.targetRow - m.startRow;
     switch (type)
     {
         /*
@@ -163,7 +163,7 @@ bool Chessposition::isViableMove(const Move& move) const
                     return false;
                 break;
             case 2:
-                if (m.startY != 1)
+                if (m.startRow != 1)
                     return false;
                 if (figureChrTrgt != '\0')
                     return false;
@@ -200,7 +200,7 @@ bool Chessposition::isViableMove(const Move& move) const
                     return false;
                 break;
             case -2:
-                if (m.startY != 6)
+                if (m.startRow != 6)
                     return false;
                 if (figureChrTrgt != '\0')
                     return false;
@@ -245,36 +245,36 @@ bool Chessposition::isViableMove(const Move& move) const
         //pr�fen ob der weg frei ist gerade
         if (difX > 0)
         {
-            for (int i = m.startX; i < m.targetX; i++)
+            for (int i = m.startCol; i < m.targetCol; i++)
             {
-                char c = getType(i, m.startY);
+                char c = getType(i, m.startRow);
                 if (c != '\0')
                     return false;
             }
         }
         else if (difX < 0)
         {
-            for (int i = m.startX; i > m.targetX; i--)
+            for (int i = m.startCol; i > m.targetCol; i--)
             {
-                char c = getType(i, m.startY);
+                char c = getType(i, m.startRow);
                 if (c != '\0')
                     return false;
             }
         }
         if (difY > 0)
         {
-            for (int i = m.startY; i < m.targetY; i++)
+            for (int i = m.startRow; i < m.targetRow; i++)
             {
-                char c = getType(i, m.startY);
+                char c = getType(i, m.startRow);
                 if (c != '\0')
                     return false;
             }
         }
         else if (difY < 0)
         {
-            for (int i = m.startY; i > m.targetY; i--)
+            for (int i = m.startRow; i > m.targetRow; i--)
             {
-                char c = getType(i, m.startY);
+                char c = getType(i, m.startRow);
                 if (c != '\0')
                     return false;
             }
@@ -315,9 +315,9 @@ bool Chessposition::isViableMove(const Move& move) const
         //unten rechts
         if (difX > 0 && difY > 0)
         {
-            for (int j = m.startY; j < m.targetY; j++)
+            for (int j = m.startRow; j < m.targetRow; j++)
             {
-                for (int i = m.startX; i < m.targetX; i++)
+                for (int i = m.startCol; i < m.targetCol; i++)
                 {
                     char c = getType(i, j);
                     if (c != '\0')
@@ -328,9 +328,9 @@ bool Chessposition::isViableMove(const Move& move) const
         //oben links
         else if (difX < 0 && difY < 0)
         {
-            for (int j = m.startY; j > m.targetY; j--)
+            for (int j = m.startRow; j > m.targetRow; j--)
             {
-                for (int i = m.startX; i > m.targetX; i--)
+                for (int i = m.startCol; i > m.targetCol; i--)
                 {
                     char c = getType(i, j);
                     if (c != '\0')
@@ -341,9 +341,9 @@ bool Chessposition::isViableMove(const Move& move) const
         //oben rechts
         else if (difX > 0 && difY < 0)
         {
-            for (int j = m.startY; j > m.targetY; j--)
+            for (int j = m.startRow; j > m.targetRow; j--)
             {
-                for (int i = m.startY; i < m.targetY; i++)
+                for (int i = m.startRow; i < m.targetRow; i++)
                 {
                     char c = getType(i, j);
                     if (c != '\0')
@@ -354,9 +354,9 @@ bool Chessposition::isViableMove(const Move& move) const
         //unten links
         else if (difX < 0 && difY >0)
         {
-            for (int j = m.startY; j > m.targetY; j++)
+            for (int j = m.startRow; j > m.targetRow; j++)
             {
-                for (int i = m.startY; i > m.targetY; i--)
+                for (int i = m.startRow; i > m.targetRow; i--)
                 {
                     char c = getType(i, j);
                     if (c != '\0')
@@ -457,9 +457,9 @@ bool Chessposition::isViableMove(const Move& move) const
             //unten rechts
             if (difX > 0 && difY > 0)
             {
-                for (int j = m.startY; j < m.targetY; j++)
+                for (int j = m.startRow; j < m.targetRow; j++)
                 {
-                    for (int i = m.startX; i < m.targetX; i++)
+                    for (int i = m.startCol; i < m.targetCol; i++)
                     {
                         char c = getType(i, j);
                         if (c != '\0')
@@ -470,9 +470,9 @@ bool Chessposition::isViableMove(const Move& move) const
             //oben links
             else if (difX < 0 && difY < 0)
             {
-                for (int j = m.startY; j > m.targetY; j--)
+                for (int j = m.startRow; j > m.targetRow; j--)
                 {
-                    for (int i = m.startX; i > m.targetX; i--)
+                    for (int i = m.startCol; i > m.targetCol; i--)
                     {
                         char c = getType(i, j);
                         if (c != '\0')
@@ -483,9 +483,9 @@ bool Chessposition::isViableMove(const Move& move) const
             //oben rechts
             else if (difX > 0 && difY < 0)
             {
-                for (int j = m.startY; j > m.targetY; j--)
+                for (int j = m.startRow; j > m.targetRow; j--)
                 {
-                    for (int i = m.startY; i < m.targetY; i++)
+                    for (int i = m.startRow; i < m.targetRow; i++)
                     {
                         char c = getType(i, j);
                         if (c != '\0')
@@ -496,9 +496,9 @@ bool Chessposition::isViableMove(const Move& move) const
             //unten links
             else if (difX < 0 && difY >0)
             {
-                for (int j = m.startY; j > m.targetY; j++)
+                for (int j = m.startRow; j > m.targetRow; j++)
                 {
-                    for (int i = m.startY; i > m.targetY; i--)
+                    for (int i = m.startRow; i > m.targetRow; i--)
                     {
                         char c = getType(i, j);
                         if (c != '\0')
@@ -533,36 +533,36 @@ bool Chessposition::isViableMove(const Move& move) const
             //pr�fen ob der weg frei ist gerade
             if (difX > 0)
             {
-                for (int i = m.startX; i < m.targetX; i++)
+                for (int i = m.startCol; i < m.targetCol; i++)
                 {
-                    char c = getType(i, m.startY);
+                    char c = getType(i, m.startRow);
                     if (c != '\0')
                         return false;
                 }
             }
             else if (difX < 0)
             {
-                for (int i = m.startX; i > m.targetX; i--)
+                for (int i = m.startCol; i > m.targetCol; i--)
                 {
-                    char c = getType(i, m.startY);
+                    char c = getType(i, m.startRow);
                     if (c != '\0')
                         return false;
                 }
             }
             if (difY > 0)
             {
-                for (int i = m.startY; i < m.targetY; i++)
+                for (int i = m.startRow; i < m.targetRow; i++)
                 {
-                    char c = getType(i, m.startY);
+                    char c = getType(i, m.startRow);
                     if (c != '\0')
                         return false;
                 }
             }
             else if (difY < 0)
             {
-                for (int i = m.startY; i > m.targetY; i--)
+                for (int i = m.startRow; i > m.targetRow; i--)
                 {
-                    char c = getType(i, m.startY);
+                    char c = getType(i, m.startRow);
                     if (c != '\0')
                         return false;
                 }
@@ -594,15 +594,15 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY) const
     // Comment
     std::list<Move> moves;
     Move m;
-    m.startX = _startX;
-    m.startY = _startY;
+    m.startCol = _startX;
+    m.startRow = _startY;
 
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            m.targetX = i;
-            m.targetY = j;
+            m.targetCol = i;
+            m.targetRow = j;
             for (int c = 0; c < 2; c++)
             {
                 switch (c)
@@ -651,6 +651,49 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY) const
     return moves;
 }
 
+/**
+* @brief Apply a move to the current board position.
+* 
+* @param move: The move that is to be applied.
+* @param validate: If this is set, the move is validated before application.
+* 
+* @return Returns false if the move was not valid. Otherwise returns true if the move was applied.
+*/
+bool Chessposition::applyMove(const Move& move, bool validate)
+{
+    if (validate && !isViableMove(move))
+    {
+        return false;
+    }
+
+    // CAPTURE the target
+    if (move.capture)
+    {
+        m_position[move.captureRow][move.captureCol] = 0;
+    }
+
+    // MOVE the chess piece
+    if (move.promotion != '\0')
+    {
+        // PROMOTION
+        m_position[move.targetRow][move.targetCol] = move.promotion;
+    }
+    else
+    {
+        m_position[move.targetRow][move.targetCol] = m_position[move.startRow][move.startCol];
+    }
+
+    m_position[move.startRow][move.startCol] = '\0';
+
+
+    //  update moveCount
+    m_moveCount[move.targetRow][move.targetCol] = m_moveCount[move.startRow][move.startCol] + 1;
+    m_moveCount[move.startRow][move.startCol] = 0;
+
+    return true;
+
+}
+
 Move Chessposition::parseMove(std::string p_Move)
 {
     Move m;
@@ -689,16 +732,16 @@ Move Chessposition::parseMove(std::string p_Move)
 
         switch (i)
         {
-        case 0:m.startX = c;
+        case 0:m.startCol = c;
             break;
 
-        case 1:m.startY = c;
+        case 1:m.startRow = c;
             break;
 
-        case 3:m.targetX = c;
+        case 3:m.targetCol = c;
             break;
 
-        case 4:m.targetY = c;
+        case 4:m.targetRow = c;
             break;
 
         }
