@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <array>
+#include "Chessposition.hpp"
 namespace sm {
     /**
      * @brief The engine class contains all the functions and algorithms
@@ -26,6 +27,8 @@ namespace sm {
             * @return float: Returns the evaluation value as a float.
             */
             float evaluateBoard(std::array<std::array<char, 8>, 8> currentBoard);
+            Chessposition& getPosition();
+            const Chessposition& getPosition() const;
 
         private:
             const std::string m_id = "SchwachMatt 0.1";
@@ -33,5 +36,7 @@ namespace sm {
 
             bool m_debugMode = false;
             bool m_ready = true;
+
+            Chessposition m_position;
     };
 }

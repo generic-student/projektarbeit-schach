@@ -121,6 +121,9 @@ namespace sm
             moves.push_back(moves_str);
 
             //set the position of the board to "pos"
+            if(!fromStart) {
+                //m_pEngine->getPosition().setFEN(pos);
+            }
 
             //play the given moves
 

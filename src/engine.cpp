@@ -112,6 +112,16 @@ namespace sm
 
         return score;
     }
+    
+    Chessposition& Engine::getPosition()
+    {
+        return m_position;
+    }
+    
+    const Chessposition& Engine::getPosition() const
+    {
+        return m_position;
+    }
 
 
     
