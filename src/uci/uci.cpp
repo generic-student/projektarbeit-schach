@@ -2,6 +2,7 @@
 #include "uci_command_builder.hpp"
 #include <iostream>
 #include <mutex>
+#include "../chess_helper.hpp"
 
 namespace sm
 {
@@ -121,14 +122,17 @@ namespace sm
             moves.push_back(moves_str);
 
             //set the position of the board to "pos"
+            Chessposition& chessposition = m_pEngine->getPosition();
             if(fromStart) {
-                m_pEngine->getPosition().setFEN(Chessposition::STARTPOS_FEN);
+                chessposition.setFEN(Chessposition::STARTPOS_FEN);
             } else {
-                m_pEngine->getPosition().setFEN(pos);
+                chessposition.setFEN(pos);
             }
 
+            ChessHelper::drawPositionInTerminal(chessposition.getPosition());
+
             //play the given moves
-            //std::cout << "evalutated fenstring: " << m_pEngine->evaluateBoard();
+            std::cout << "evalutated fenstring: " << m_pEngine->evaluateBoard(chessposition.getPosition()) << std::endl;
 
             std::cout << "command not fully implemented yet" << std::endl;
         }

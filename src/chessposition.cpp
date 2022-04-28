@@ -1,14 +1,13 @@
 #include "chessposition.hpp"
+#include "chess_helper.hpp"
 
-#pragma region Getter_Setter
-
-const char* Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+const std::string Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 
 void Chessposition::setFEN(std::string p_FEN)
 {
     m_FENString = p_FEN;
 
-    FENToArray(p_FEN);
+    m_position = sm::ChessHelper::fenToArray(m_FENString);
 }
 
 void Chessposition::setActivePlayer(int p_id)
@@ -50,8 +49,6 @@ int Chessposition::getMoveNumber() const
 {
     return m_moveNumber;
 }
-
-#pragma endregion
 
 bool Chessposition::isViableMove(const Move& move) const
 {
@@ -654,18 +651,6 @@ std::list<Move> Chessposition::getValidMoves(int _startX, int _startY) const
     return moves;
 }
 
-#pragma region Hilfsmethoden
-
-void Chessposition::FENToArray(std::string)
-{
-
-}
-
-std::string Chessposition::arrayToFEN()
-{
-    return std::string();
-}
-
 Move Chessposition::parseMove(std::string p_Move)
 {
     Move m;
@@ -721,5 +706,3 @@ Move Chessposition::parseMove(std::string p_Move)
     
     return m;
 }
-
-#pragma endregion

@@ -8,7 +8,7 @@ class Chessposition
 {
 	//Variablen
 public :
-	static const char* STARTPOS_FEN;
+	static const std::string STARTPOS_FEN;
 
 private:
 	unsigned int m_activePlayer;
@@ -33,9 +33,6 @@ public:
 	std::list<Move> getValidMoves(int _startX, int _startY) const;
 
 private:
-
-	void FENToArray(std::string); //TODO
-	std::string arrayToFEN();     //TODO
 	Move parseMove(std::string p_Move);
 
 };

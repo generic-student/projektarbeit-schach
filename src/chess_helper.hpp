@@ -7,25 +7,14 @@ namespace sm
 {
     class ChessHelper
     {
+    private:
+        explicit ChessHelper() = default;
+        virtual ~ChessHelper() = default;
+
     public:
-        static void drawPositionInTerminal(const std::array<std::array<char, 8U>, 8U> &position)
-        {
-            for (size_t i = 0; i < 8U; i++)
-            {
-                std::cout << "|";
-                for (size_t j = 0; j < 8U; j++)
-                {
-                    if (position[i][j] == '\0')
-                    {
-                        std::cout << " |";
-                    }
-                    else
-                    {
-                        std::cout << position[i][j] << "|";
-                    }
-                }
-                std::cout << std::endl;
-            }
-        }
+        static void drawPositionInTerminal(const std::array<std::array<char, 8U>, 8U> &position);
+        static std::array<std::array<char, 8>, 8> fenToArray(const std::string& fen);
+        static std::string arrayToFen(const std::array<std::array<char, 8>, 8>& position);
     };
+
 } // namespace sm

@@ -11,7 +11,7 @@ namespace sm
             "^debug (on|off)$",
             "^isready$",
             "^setoption name (.*?)(?:\\svalue (.+))?$",
-            "^position (startpos|[a-hA-H0-9]+) moves ((?:[a-hA-H0-9\\+]{4,6}\\s?)*)",
+            "^position (startpos|[a-hA-H1-8\\/]+) moves ((?:[a-hA-H0-9\\+]{4,6}\\s?)*)",
             "^quit$",
             "^go(?: (?:(infinite)|(searchmoves (?:[a-hA-H0-8\\+]{4,6}\\s?)+)|(ponder)|(wtime \\d+)|(btime \\d+)|(winc -?\\d+)|(binc -?\\d+)|(movestogo \\d+)|(depth \\d+)|(nodes \\d+)|(mate \\d+)|(movetime \\d+)|(infinite)))+$",
             "^stop$",
