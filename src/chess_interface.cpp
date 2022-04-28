@@ -14,7 +14,7 @@ namespace sm
             std::string input;
             std::getline(std::cin, input);
 
-            resolve_command_sync(input);
+            resolveCommandSync(input);
         }
     }
 }

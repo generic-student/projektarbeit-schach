@@ -10,12 +10,12 @@ namespace sm
             public:
                 explicit UniversalChessInterface();
 
-                virtual void resolve_command_sync(const std::string& command_str);
-                virtual void resolve_command_async(const std::string& command_str);
+                virtual void resolveCommandSync(const std::string& command_str);
+                virtual void resolveCommandAsync(const std::string& command_str);
 
             private:
-                void handle_uci_command();
-                void handle_quit_command();
+                void handleUciCommand();
+                void handleQuitCommand();
 
             private:
                 bool m_isReady = false;

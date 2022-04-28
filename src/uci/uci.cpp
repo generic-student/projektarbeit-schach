@@ -12,17 +12,17 @@ namespace sm
         {
         }
         
-        void UniversalChessInterface::resolve_command_sync(const std::string& command_str)
+        void UniversalChessInterface::resolveCommandSync(const std::string& command_str)
         {
             Command command = sm::uci::CommandBuilder::build(command_str);
 
             switch (command.getType())
             {
             case Command::UCI:
-                handle_uci_command();
+                handleUciCommand();
                 break;
             case Command::QUIT:
-                handle_quit_command();
+                handleQuitCommand();
                 break;
             case Command::INVALID:
                 std::cout << "invalid command!" << std::endl;
@@ -33,12 +33,12 @@ namespace sm
             }
         }
         
-        void UniversalChessInterface::resolve_command_async(const std::string& command_str)
+        void UniversalChessInterface::resolveCommandAsync(const std::string& command_str)
         {
             throw "Error: Method not implemented!";
         }
         
-        void UniversalChessInterface::handle_uci_command()
+        void UniversalChessInterface::handleUciCommand()
         {
             std::cout << "id name " << m_pEngine->getID() << std::endl;
             std::cout << "id author " << m_pEngine->getAuthor() << std::endl;
@@ -48,7 +48,7 @@ namespace sm
             std::cout << "uciok" << std::endl;
         }
         
-        void UniversalChessInterface::handle_quit_command()
+        void UniversalChessInterface::handleQuitCommand()
         {
             m_mutex.lock();
             m_isRunning = false;
