@@ -182,7 +182,25 @@ bool Chessposition::isViableMove(const Move& move) const
                     return false;
                 //keine generische Figur auf dem Feld
                 if (figureChrTrgt > 90 || figureChrTrgt == '\0')
+                {
+                    //En Passant
+                    if (m_previousMove.targetCol == m.targetCol)
+                    {
+                        if (m_moveCount[m_previousMove.targetCol][m_previousMove.targetRow] == 1)
+                        {
+                            if (m.targetRow == 5 || m.targetRow == 2)
+                            {
+                                if (m_position[m_previousMove.targetCol][m_previousMove.targetRow] == 'P' || m_position[m_previousMove.targetCol][m_previousMove.targetRow] == 'p')
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+
                     return false;
+                }
                 break;
             default:
                 return false;
@@ -277,7 +295,7 @@ bool Chessposition::isViableMove(const Move& move) const
                     return false;
             }
         }
-        
+
         //pr�fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
@@ -306,9 +324,9 @@ bool Chessposition::isViableMove(const Move& move) const
             */
     case 3:
 
-        if ((difX*difX) != (difY*difY))
+        if ((difX * difX) != (difY * difY))
             return false;
-        
+
         //pr�fen ob weg frei ist diagonal
         //unten rechts
         if (difX > 0 && difY > 0)
@@ -388,8 +406,56 @@ bool Chessposition::isViableMove(const Move& move) const
     case 4:
 
         if ((difX * difX) > 1 || (difY * difY) > 1)
-            return false;
+        {
+            //Rocharde
+            //pruefen ob Koenig und Turm sich noch nicht bewegt haben
+            if (m_moveCount[m.startCol][m.startRow] == 0)
+            {
+                switch (m.targetCol)
+                {
+                case 1:
+                    if(m_moveCount[m.targetCol-2][m.startRow] == 0)
+                        break;
+                case 6:
+                    if (m_moveCount[m.targetCol +1][m.startRow] == 0)
+                        break;
+                default:
+                    return false;
+                }
 
+                if (m.startRow != m.targetRow)
+                    return false;
+                if (m.startRow != 0 && m.startRow != 7)
+                    return false;
+                if (m.startCol != 4)
+                    return false;
+                if (m.targetCol != 2 && m.targetCol != 6)
+                    return false;
+
+
+                //pruefen ob der weg frei ist
+                if (difX > 0)
+                {
+                    for (int i = m.startCol; i < m.targetCol; i++)
+                    {
+                        char c = getType(i, m.startRow);
+                        if (c != '\0')
+                            return false;
+                    }
+                }
+                else if (difX < 0)
+                {
+                    for (int i = m.startCol; i > m.targetCol-2; i--)
+                    {
+                        char c = getType(i, m.startRow);
+                        if (c != '\0')
+                            return false;
+                    }
+                }
+
+            }
+        }
+            
         //pr�fen, dass auf dem Zielfeld keine eigene figur steht
         switch (getActivePlayer())
         {
@@ -687,6 +753,8 @@ bool Chessposition::applyMove(const Move& move, bool validate)
     //  update moveCount
     m_moveCount[move.targetRow][move.targetCol] = m_moveCount[move.startRow][move.startCol] + 1;
     m_moveCount[move.startRow][move.startCol] = 0;
+
+    m_previousMove = move;
 
     return true;
 
