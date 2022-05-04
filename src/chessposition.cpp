@@ -760,62 +760,6 @@ bool Chessposition::applyMove(const Move& move, bool validate)
 
 }
 
-Move Chessposition::parseMove(std::string p_Move)
-{
-    Move m;
-    
-    //Capture abfangen
-    if (p_Move[2] == 'x')
-    {
-        p_Move.replace(3,1,"");
-        m.capture = false;
-    }
-    
-    //Promotion abfangen
-    if (p_Move.size() == 5)
-    {
-        m.promotion = p_Move[4];
-        p_Move = p_Move.substr(0, 4);
-    }
-
-
-    //Start und Ziel Position als integer coodieren
-    for (int i = 0; i < p_Move.size(); i++)
-    {
-        char c = p_Move[i];
-
-        //Ziffer zu int 
-        if (c > 48 && c < 58)
-        {
-            c = c - 49;
-        }    
-
-        //Buchstaben zu int
-        if (c > 96 && c < 123)
-        {
-            c = c -97 ;
-        }
-
-        switch (i)
-        {
-        case 0:m.startCol = c;
-            break;
-
-        case 1:m.startRow = c;
-            break;
-
-        case 3:m.targetCol = c;
-            break;
-
-        case 4:m.targetRow = c;
-            break;
-
-        }
-    }
-    
-    return m;
-}
-
 Chessposition::Chessposition()
     : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN))
 {

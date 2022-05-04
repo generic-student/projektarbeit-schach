@@ -18,7 +18,7 @@ private:
 	unsigned int m_activePlayer = 0;
 	unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
 	std::array<std::array<char, 8>, 8> m_position;
-	std::array<std::array<int, 8>, 8> m_moveCount;
+	std::array<std::array<int, 8>, 8> m_moveCount = std::array<std::array<int, 8>, 8>();
 	Move m_previousMove;
 	
 
@@ -39,9 +39,6 @@ public:
 	bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
 	std::list<Move> getValidMoves(int _startX, int _startY) const;
 	bool applyMove(const Move& move, bool validate);
-
-private:
-	Move parseMove(std::string p_Move);
 
 };
 

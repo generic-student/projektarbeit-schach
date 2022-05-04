@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 #include <iostream>
+#include "move.hpp"
 
 namespace sm
 {
@@ -15,6 +16,7 @@ namespace sm
         static void drawPositionInTerminal(const std::array<std::array<char, 8U>, 8U> &position);
         static std::array<std::array<char, 8>, 8> fenToArray(const std::string& fen);
         static std::string arrayToFen(const std::array<std::array<char, 8>, 8>& position);
+        static Move parseMove(std::string move_str);
     };
 
 } // namespace sm

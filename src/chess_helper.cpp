@@ -86,4 +86,66 @@ namespace sm
         return fen;
     }
 
+    /**
+    * @brief convert a string in long algebraic notation to a move
+    * 
+    * @param move_str move in long algebraic notation
+    * @return Move
+    */
+    Move ChessHelper::parseMove(std::string move_str)
+    {
+        Move m;
+
+        //Capture abfangen
+        if (move_str[2] == 'x')
+        {
+            move_str.replace(3, 1, "");
+            m.capture = false;
+        }
+
+        //Promotion abfangen
+        if (move_str.size() == 5)
+        {
+            m.promotion = move_str[4];
+            move_str = move_str.substr(0, 4);
+        }
+
+
+        //Start und Ziel Position als integer coodieren
+        for (int i = 0; i < move_str.size(); i++)
+        {
+            char c = move_str[i];
+
+            //Ziffer zu int 
+            if (c > 48 && c < 58)
+            {
+                c = c - 49;
+            }
+
+            //Buchstaben zu int
+            if (c > 96 && c < 123)
+            {
+                c = c - 97;
+            }
+
+            switch (i)
+            {
+            case 0:m.startCol = c;
+                break;
+
+            case 1:m.startRow = c;
+                break;
+
+            case 3:m.targetCol = c;
+                break;
+
+            case 4:m.targetRow = c;
+                break;
+
+            }
+        }
+
+        return m;
+    }
+
 }
