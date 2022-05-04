@@ -68,8 +68,8 @@ namespace sm {
             return false;
         }
 
-        figureChr = getType(m.startCol, m.startRow);
-        figureChrTrgt = getType(m.targetCol, m.targetRow);
+        figureChr = m_position[m.startRow][m.startCol];
+        figureChrTrgt = m_position[m.targetRow][m.targetCol];
 
         //�berpr�fen ob an der Prosition eine Figur des aktiven Spielers steht
         switch (getActivePlayer())
@@ -188,11 +188,11 @@ namespace sm {
                         //En Passant
                         if (m_previousMove.targetCol == m.targetCol)
                         {
-                            if (m_moveCount[m_previousMove.targetCol][m_previousMove.targetRow] == 1)
+                            if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
                             {
                                 if (m.targetRow == 5 || m.targetRow == 2)
                                 {
-                                    if (m_position[m_previousMove.targetCol][m_previousMove.targetRow] == 'P' || m_position[m_previousMove.targetCol][m_previousMove.targetRow] == 'p')
+                                    if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
                                     {
                                         break;
                                     }
@@ -265,7 +265,8 @@ namespace sm {
             {
                 for (int i = m.startCol; i < m.targetCol; i++)
                 {
-                    char c = getType(i, m.startRow);
+                    //char c = getType(i, m.startRow);
+                    char c = m_position[m.startRow][i];
                     if (c != '\0')
                         return false;
                 }
@@ -274,7 +275,8 @@ namespace sm {
             {
                 for (int i = m.startCol; i > m.targetCol; i--)
                 {
-                    char c = getType(i, m.startRow);
+                    //char c = getType(i, m.startRow);
+                    char c = m_position[m.startRow][i];
                     if (c != '\0')
                         return false;
                 }
@@ -283,7 +285,8 @@ namespace sm {
             {
                 for (int i = m.startRow; i < m.targetRow; i++)
                 {
-                    char c = getType(i, m.startRow);
+                    //char c = getType(i, m.startRow);
+                    char c = m_position[m.startRow][i];
                     if (c != '\0')
                         return false;
                 }
@@ -292,7 +295,8 @@ namespace sm {
             {
                 for (int i = m.startRow; i > m.targetRow; i--)
                 {
-                    char c = getType(i, m.startRow);
+                    //char c = getType(i, m.startRow);
+                    char c = m_position[m.startRow][i];
                     if (c != '\0')
                         return false;
                 }
@@ -337,7 +341,8 @@ namespace sm {
                 {
                     for (int i = m.startCol; i < m.targetCol; i++)
                     {
-                        char c = getType(i, j);
+                        //char c = getType(i, j);
+                        char c = m_position[j][i];
                         if (c != '\0')
                             return false;
                     }
@@ -350,7 +355,8 @@ namespace sm {
                 {
                     for (int i = m.startCol; i > m.targetCol; i--)
                     {
-                        char c = getType(i, j);
+                        //char c = getType(i, j);
+                        char c = m_position[j][i];
                         if (c != '\0')
                             return false;
                     }
@@ -363,7 +369,8 @@ namespace sm {
                 {
                     for (int i = m.startRow; i < m.targetRow; i++)
                     {
-                        char c = getType(i, j);
+                        //char c = getType(i, j);
+                        char c = m_position[j][i];
                         if (c != '\0')
                             return false;
                     }
@@ -376,7 +383,8 @@ namespace sm {
                 {
                     for (int i = m.startRow; i > m.targetRow; i--)
                     {
-                        char c = getType(i, j);
+                        //char c = getType(i, j);
+                        char c = m_position[j][i];
                         if (c != '\0')
                             return false;
                     }
@@ -411,15 +419,15 @@ namespace sm {
             {
                 //Rocharde
                 //pruefen ob Koenig und Turm sich noch nicht bewegt haben
-                if (m_moveCount[m.startCol][m.startRow] == 0)
+                if (m_moveCount[m.startRow][m.startCol] == 0)
                 {
                     switch (m.targetCol)
                     {
                     case 1:
-                        if (m_moveCount[m.targetCol - 2][m.startRow] == 0)
+                        if (m_moveCount[m.targetRow][m.startCol - 2] == 0)
                             break;
                     case 6:
-                        if (m_moveCount[m.targetCol + 1][m.startRow] == 0)
+                        if (m_moveCount[m.targetRow][m.startCol + 1] == 0)
                             break;
                     default:
                         return false;
@@ -440,7 +448,8 @@ namespace sm {
                     {
                         for (int i = m.startCol; i < m.targetCol; i++)
                         {
-                            char c = getType(i, m.startRow);
+                            //char c = getType(i, m.startRow);
+                            char c = m_position[m.startRow][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -449,7 +458,8 @@ namespace sm {
                     {
                         for (int i = m.startCol; i > m.targetCol - 2; i--)
                         {
-                            char c = getType(i, m.startRow);
+                            //char c = getType(i, m.startRow);
+                            char c = m_position[m.startRow][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -527,7 +537,8 @@ namespace sm {
                     {
                         for (int i = m.startCol; i < m.targetCol; i++)
                         {
-                            char c = getType(i, j);
+                            //char c = getType(i, j);
+                            char c = m_position[j][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -540,7 +551,8 @@ namespace sm {
                     {
                         for (int i = m.startCol; i > m.targetCol; i--)
                         {
-                            char c = getType(i, j);
+                            //char c = getType(i, j);
+                            char c = m_position[j][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -553,7 +565,8 @@ namespace sm {
                     {
                         for (int i = m.startRow; i < m.targetRow; i++)
                         {
-                            char c = getType(i, j);
+                            //char c = getType(i, j);
+                            char c = m_position[j][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -566,7 +579,8 @@ namespace sm {
                     {
                         for (int i = m.startRow; i > m.targetRow; i--)
                         {
-                            char c = getType(i, j);
+                            //char c = getType(i, j);
+                            char c = m_position[j][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -601,7 +615,8 @@ namespace sm {
                 {
                     for (int i = m.startCol; i < m.targetCol; i++)
                     {
-                        char c = getType(i, m.startRow);
+                        //char c = getType(i, m.startRow);
+                        char c = m_position[m.startRow][i];
                         if (c != '\0')
                             return false;
                     }
@@ -610,7 +625,8 @@ namespace sm {
                 {
                     for (int i = m.startCol; i > m.targetCol; i--)
                     {
-                        char c = getType(i, m.startRow);
+                        //char c = getType(i, m.startRow);
+                        char c = m_position[m.startRow][i];
                         if (c != '\0')
                             return false;
                     }
@@ -619,7 +635,8 @@ namespace sm {
                 {
                     for (int i = m.startRow; i < m.targetRow; i++)
                     {
-                        char c = getType(i, m.startRow);
+                        //char c = getType(i, m.startRow);
+                        char c = m_position[m.startRow][i];
                         if (c != '\0')
                             return false;
                     }
@@ -628,7 +645,8 @@ namespace sm {
                 {
                     for (int i = m.startRow; i > m.targetRow; i--)
                     {
-                        char c = getType(i, m.startRow);
+                        //char c = getType(i, m.startRow);
+                        char c = m_position[m.startRow][i];
                         if (c != '\0')
                             return false;
                     }
@@ -667,8 +685,8 @@ namespace sm {
                 Move m;
                 m.startRow = row;
                 m.startCol = column;
-                m.targetCol = i;
-                m.targetRow = j;
+                m.targetCol = j;
+                m.targetRow = i;
                 for (int c = 0; c < 2; c++)
                 {
                     switch (c)
