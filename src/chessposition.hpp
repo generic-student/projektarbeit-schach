@@ -34,12 +34,12 @@ namespace sm {
 
 		const std::array<std::array<int, 8>, 8>& getMoveCount() const;
 		const std::array<std::array<char, 8>, 8>& getPosition() const;
-		char getType(int p_x, int p_y) const;
+		char getType(int row, int column) const;
 	
-		int getMoveCountPos(int p_x, int p_y) const;
+		int getMoveCountPos(int row, int column) const;
 		int getMoveNumber() const;
 		bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
-		std::list<Move> getValidMoves(int _startX, int _startY) const;
+		std::list<Move> getValidMoves(int row, int column) const;
 		bool applyMove(const Move& move, bool validate);
 
 	};

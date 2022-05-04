@@ -30,14 +30,14 @@ namespace sm {
         return sm::ChessHelper::arrayToFen(m_position);
     }
 
-    char Chessposition::getType(int p_x, int p_y) const
+    char Chessposition::getType(int row, int column) const
     {
-        return m_position[p_x][p_y];
+        return m_position[row][column];
     }
 
-    int Chessposition::getMoveCountPos(int p_x, int p_y) const
+    int Chessposition::getMoveCountPos(int row, int column) const
     {
-        return m_moveCount[p_x][p_y];
+        return m_moveCount[row][column];
     }
 
     int Chessposition::getActivePlayer() const
@@ -655,18 +655,18 @@ namespace sm {
         return false;
     }
 
-    std::list<Move> Chessposition::getValidMoves(int _startX, int _startY) const
+    std::list<Move> Chessposition::getValidMoves(int row, int column) const
     {
         // Comment
         std::list<Move> moves;
-        Move m;
-        m.startCol = _startX;
-        m.startRow = _startY;
 
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
+                Move m;
+                m.startRow = row;
+                m.startCol = column;
                 m.targetCol = i;
                 m.targetRow = j;
                 for (int c = 0; c < 2; c++)
