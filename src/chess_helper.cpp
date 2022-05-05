@@ -148,4 +148,22 @@ namespace sm
         return m;
     }
 
+    std::string ChessHelper::moveToString(sm::Move p_move)
+    {
+        std::string out = "";
+        char c = p_move.startCol+97;
+        out += c;
+        c = p_move.startRow + 49;
+        out += c;
+        out += '-';
+        c = p_move.targetCol + 97;
+        out += c;
+        c = p_move.targetRow + 49;
+        out += c;
+        c = p_move.promotion;
+        out += ' ' + c;
+
+        return out;
+    }
+
 }

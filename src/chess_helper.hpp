@@ -17,6 +17,7 @@ namespace sm
         static std::array<std::array<char, 8>, 8> fenToArray(const std::string& fen);
         static std::string arrayToFen(const std::array<std::array<char, 8>, 8>& position);
         static Move parseMove(std::string move_str);
+        static std::string moveToString(sm::Move p_move);
         
     };
 
