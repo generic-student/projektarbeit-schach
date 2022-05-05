@@ -134,6 +134,21 @@ namespace sm {
             return false;
         }
 
+        if (m.capture)
+        {
+            switch (getActivePlayer())
+            {
+            case 0:
+                if (figureChrTrgt > 90 || figureChrTrgt == '\0')
+                    return false;
+                break;
+            case 1: 
+                if (figureChrTrgt < 97 || figureChrTrgt == '\0')
+                    return false;
+                break;
+            }
+        }
+
         //�berpr�fen, ob der Move f�r die jeweilige Figur g�ltig ist
         int difX = m.targetCol - m.startCol;
         int difY = m.targetRow - m.startRow;
@@ -856,6 +871,32 @@ namespace sm {
 
         return true;
 
+    }
+
+    std::array<std::array<bool, 8>, 8> Chessposition::generateThreadMap()
+    {
+        std::array<std::array<bool, 8>, 8> map;
+        for (auto& b : map)
+        {
+            for (auto& c : b)
+            {
+                c = false;
+            }
+        }
+
+        std::list<Move> viableMoves = getValidMoves();
+
+        for (auto m : viableMoves)
+        {
+            int x, y;
+
+            x = m.targetCol;
+            y = m.targetRow;
+
+            map[y][x] = true;
+        }
+        
+        return map;
     }
 
     Chessposition::Chessposition()
