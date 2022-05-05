@@ -74,6 +74,7 @@ namespace sm {
         //�berpr�fen ob an der Prosition eine Figur des aktiven Spielers steht
         switch (getActivePlayer())
         {
+            //weiß
         case 0:
             switch (figureChr)
             {
@@ -99,6 +100,8 @@ namespace sm {
                 return false;
             }
             break;
+
+            //schwarz
         case 1:
             switch (figureChr)
             {
@@ -126,8 +129,12 @@ namespace sm {
             break;
         }
 
-        //�berpr�fen, ob der Move f�r die jeweilige Figur g�ltig ist
+        if (m.promotion != '\0' && type != 1)
+        {
+            return false;
+        }
 
+        //�berpr�fen, ob der Move f�r die jeweilige Figur g�ltig ist
         int difX = m.targetCol - m.startCol;
         int difY = m.targetRow - m.startRow;
         switch (type)
@@ -207,6 +214,9 @@ namespace sm {
                 default:
                     return false;
                 }
+
+                if (m.promotion != '\0' && m.targetRow != 7)
+                    return false;
                 break;
             case 1:
 
@@ -239,11 +249,31 @@ namespace sm {
                         return false;
                     //Pr�fen ob gegnerische figur auf dem feld 
                     if (figureChrTrgt < 97 || figureChrTrgt == '\0')
+                    {
+                        //En Passant
+                        if (m_previousMove.targetCol == m.targetCol)
+                        {
+                            if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
+                            {
+                                if (m.targetRow == 5 || m.targetRow == 2)
+                                {
+                                    if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
                         return false;
+                    }
                     break;
                 default:
                     return false;
                 }
+                if (m.promotion != '\0' && m.targetRow != 0)
+                    return false;
+                break;
             }
             break;
 
@@ -286,7 +316,7 @@ namespace sm {
                 for (int i = m.startRow; i < m.targetRow; i++)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[m.startRow][i];
+                    char c = m_position[i][m.targetCol];
                     if (c != '\0')
                         return false;
                 }
@@ -296,7 +326,7 @@ namespace sm {
                 for (int i = m.startRow; i > m.targetRow; i--)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[m.startRow][i];
+                    char c = m_position[i][m.startCol];
                     if (c != '\0')
                         return false;
                 }
@@ -349,7 +379,7 @@ namespace sm {
                 }
             }
             //oben links
-            else if (difX < 0 && difY < 0)
+            if (difX < 0 && difY < 0)
             {
                 for (int j = m.startRow; j > m.targetRow; j--)
                 {
@@ -379,9 +409,9 @@ namespace sm {
             //unten links
             else if (difX < 0 && difY >0)
             {
-                for (int j = m.startRow; j > m.targetRow; j++)
+                for (int j = m.startRow; j < m.targetRow; j++)
                 {
-                    for (int i = m.startRow; i > m.targetRow; i--)
+                    for (int i = m.startCol; i > m.targetCol; i--)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -506,10 +536,11 @@ namespace sm {
                 break;
             }
 
-            if (difX == 2 && difY == 1)
+            if (abs(difX) == 2 && abs(difY) == 1)
                 break;
-            if (difY == 2 && difX == 1)
+            if (abs(difY) == 2 && abs(difX) == 1)
                 break;
+           
 
             return false;
             break;
@@ -563,7 +594,7 @@ namespace sm {
                 {
                     for (int j = m.startRow; j > m.targetRow; j--)
                     {
-                        for (int i = m.startRow; i < m.targetRow; i++)
+                        for (int i = m.startCol; i < m.targetCol; i++)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -575,9 +606,9 @@ namespace sm {
                 //unten links
                 else if (difX < 0 && difY >0)
                 {
-                    for (int j = m.startRow; j > m.targetRow; j++)
+                    for (int j = m.startRow; j < m.targetRow; j++)
                     {
-                        for (int i = m.startRow; i > m.targetRow; i--)
+                        for (int i = m.startCol; i > m.targetCol; i--)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -636,7 +667,7 @@ namespace sm {
                     for (int i = m.startRow; i < m.targetRow; i++)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[m.startRow][i];
+                        char c = m_position[i][m.startCol];
                         if (c != '\0')
                             return false;
                     }
@@ -646,7 +677,7 @@ namespace sm {
                     for (int i = m.startRow; i > m.targetRow; i--)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[m.startRow][i];
+                        char c = m_position[i][m.startCol];
                         if (c != '\0')
                             return false;
                     }
@@ -666,7 +697,7 @@ namespace sm {
                 }
                 break;
             }
-
+            
         }
 
         return true;
