@@ -41,7 +41,11 @@ namespace sm {
 		bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
 		std::list<Move> getValidMoves(int row, int column) const;
 		bool applyMove(const Move& move, bool validate);
-
+		bool checkIfKingIsAttacked(Move move);
+		std::array<std::array<bool, 8>, 8> generateThreadMap();
+		bool isPatt();
+		bool isMatt();
+		
 	};
 
 }
