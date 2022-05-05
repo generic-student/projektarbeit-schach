@@ -33,5 +33,7 @@ int main(int argc, char const *argv[])
         std::cout << sm::ChessHelper::moveToString(a) << std::endl;
     }
 
+    cp.generateThreatMap();
+
     return 0;
 }

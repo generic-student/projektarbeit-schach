@@ -10,6 +10,7 @@ namespace sm {
 	{
 		//Variablen
 	public :
+		enum Player { WHITE = 0, BLACK = 1 };
 		static const std::string STARTPOS_FEN;
 
 		explicit Chessposition();
@@ -17,7 +18,7 @@ namespace sm {
 		explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
 
 	private:
-		unsigned int m_activePlayer = 0;
+		Chessposition::Player m_activePlayer = Player::WHITE;
 		unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
 		std::array<std::array<char, 8>, 8> m_position;
 		std::array<std::array<int, 8>, 8> m_moveCount = std::array<std::array<int, 8>, 8>();
@@ -29,8 +30,8 @@ namespace sm {
 		void setFEN(std::string p_FEN);
 		std::string getFEN() const;
 
-		void setActivePlayer(int p_id);
-		int getActivePlayer() const;
+		void setActivePlayer(Chessposition::Player p_id);
+		Chessposition::Player getActivePlayer() const;
 
 		const std::array<std::array<int, 8>, 8>& getMoveCount() const;
 		const std::array<std::array<char, 8>, 8>& getPosition() const;
@@ -38,13 +39,13 @@ namespace sm {
 	
 		int getMoveCountPos(int row, int column) const;
 		int getMoveNumber() const;
-		bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
-		std::list<Move> getValidMovesForField(int row, int column) const;
-		std::list<Move> getValidMoves() const;
+		bool isViableMove(const Move& move, bool checkCaptureTarget = true) const;		// move is in form "old Position"-"new Position"  (e3-e4)
+		std::list<Move> getValidMovesForField(int row, int column, bool checkCaptureTarget = true) const;
+		std::list<Move> getValidMoves(bool checkCaptureTarget = true) const;
 		bool applyMove(const Move& move, bool validate);
 
-		bool checkIfKingIsAttacked(Move move);
-		std::array<std::array<bool, 8>, 8> generateThreadMap();
+		bool checkIfKingIsAttacked(Move move) const;
+		std::array<std::array<bool, 8>, 8> generateThreatMap();
 		bool isPatt();
 		bool isMatt();
 		

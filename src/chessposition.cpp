@@ -10,7 +10,7 @@ namespace sm {
         m_position = sm::ChessHelper::fenToArray(p_FEN);
     }
 
-    void Chessposition::setActivePlayer(int p_id)
+    void Chessposition::setActivePlayer(Chessposition::Player p_id)
     {
         m_activePlayer = p_id;
     }
@@ -40,7 +40,7 @@ namespace sm {
         return m_moveCount[row][column];
     }
 
-    int Chessposition::getActivePlayer() const
+    Chessposition::Player Chessposition::getActivePlayer() const
     {
         return m_activePlayer;
     }
@@ -50,7 +50,7 @@ namespace sm {
         return m_moveNumber;
     }
 
-    bool Chessposition::isViableMove(const Move& move) const
+    bool Chessposition::isViableMove(const Move& move, bool checkCaptureTarget) const
     {
         const Move& m = move;
         int type = 0;
@@ -75,34 +75,7 @@ namespace sm {
         switch (getActivePlayer())
         {
             //weiß
-        case 0:
-            switch (figureChr)
-            {
-            case 'p':
-                type = 1;
-                break;
-            case 'r':
-                type = 2;
-                break;
-            case 'b':
-                type = 3;
-                break;
-            case 'k':
-                type = 4;
-                break;
-            case 'n':
-                type = 5;
-                break;
-            case 'q':
-                type = 6;
-                break;
-            default:
-                return false;
-            }
-            break;
-
-            //schwarz
-        case 1:
+        case Player::WHITE:
             switch (figureChr)
             {
             case 'P':
@@ -127,6 +100,33 @@ namespace sm {
                 return false;
             }
             break;
+
+            //schwarz
+        case Player::BLACK:
+            switch (figureChr)
+            {
+            case 'p':
+                type = 1;
+                break;
+            case 'r':
+                type = 2;
+                break;
+            case 'b':
+                type = 3;
+                break;
+            case 'k':
+                type = 4;
+                break;
+            case 'n':
+                type = 5;
+                break;
+            case 'q':
+                type = 6;
+                break;
+            default:
+                return false;
+            }
+            break;
         }
 
         if (m.promotion != '\0' && type != 1)
@@ -134,16 +134,16 @@ namespace sm {
             return false;
         }
 
-        if (m.capture)
+        if (m.capture && checkCaptureTarget)
         {
             switch (getActivePlayer())
             {
-            case 0:
-                if (figureChrTrgt > 90 || figureChrTrgt == '\0')
+            case Player::WHITE:
+                if (figureChrTrgt < 97 || figureChrTrgt == '\0')
                     return false;
                 break;
-            case 1: 
-                if (figureChrTrgt < 97 || figureChrTrgt == '\0')
+            case Player::BLACK: 
+                if (figureChrTrgt > 90 || figureChrTrgt == '\0')
                     return false;
                 break;
             }
@@ -175,65 +175,7 @@ namespace sm {
         case 1:
             switch (getActivePlayer())
             {
-            case 0:
-
-                //Bauer geht nur einen nach vorne, bzw 2, wenn es das erste mal ist
-                switch (difY)
-                {
-                case 1:
-                    if (figureChrTrgt != '\0')
-                        return false;
-                    break;
-                case 2:
-                    if (m.startRow != 1)
-                        return false;
-                    if (figureChrTrgt != '\0')
-                        return false;
-                    break;
-                default:
-                    return false;
-                }
-
-                switch (difX)
-
-                {
-                case 0:
-                    break;
-                case 1:
-                case -1:
-                    //mehr als 1 nach vorne
-                    if (difY != 1)
-                        return false;
-                    //keine generische Figur auf dem Feld
-                    if (figureChrTrgt > 90 || figureChrTrgt == '\0')
-                    {
-                        //En Passant
-                        if (m_previousMove.targetCol == m.targetCol)
-                        {
-                            if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
-                            {
-                                if (m.targetRow == 5 || m.targetRow == 2)
-                                {
-                                    if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
-                }
-
-                if (m.promotion != '\0' && m.targetRow != 7)
-                    return false;
-                break;
-            case 1:
+            case Player::WHITE:
 
                 //Bauer geht nur einen nach vorne, bzw 2, wenn es das erste mal ist
                 switch (difY)
@@ -262,8 +204,65 @@ namespace sm {
                     //mehr als 1 nach vorne
                     if (difY != -1)
                         return false;
+                    //keine generische Figur auf dem Feld
+                    if ((figureChrTrgt < 97 || figureChrTrgt == '\0')&&checkCaptureTarget)
+                    {
+                        //En Passant
+                        if (m_previousMove.targetCol == m.targetCol)
+                        {
+                            if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
+                            {
+                                if (m.targetRow == 5 || m.targetRow == 2)
+                                {
+                                    if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+                }
+
+                if (m.promotion != '\0' && m.targetRow != 7)
+                    return false;
+                break;
+            case Player::BLACK:
+
+                //Bauer geht nur einen nach vorne, bzw 2, wenn es das erste mal ist
+                switch (difY)
+                {
+                case 1:
+                    if (figureChrTrgt != '\0')
+                        return false;
+                    break;
+                case 2:
+                    if (m.startRow != 1)
+                        return false;
+                    if (figureChrTrgt != '\0')
+                        return false;
+                    break;
+                default:
+                    return false;
+                }
+
+                switch (difX)
+
+                {
+                case 0:
+                    break;
+                case 1:
+                case -1:
+                    //mehr als 1 nach vorne
+                    if (difY != 1)
+                        return false;
                     //Pr�fen ob gegnerische figur auf dem feld 
-                    if (figureChrTrgt < 97 || figureChrTrgt == '\0')
+                    if ((figureChrTrgt > 90 || figureChrTrgt == '\0')&& checkCaptureTarget)
                     {
                         //En Passant
                         if (m_previousMove.targetCol == m.targetCol)
@@ -350,12 +349,12 @@ namespace sm {
             //pr�fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
-            case 0:
-                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+            case Player::WHITE:
+                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                     return false;
                 break;
-            case 1:
-                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+            case Player::BLACK:
+                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                     return false;
                 break;
             }
@@ -412,7 +411,7 @@ namespace sm {
             {
                 for (int j = m.startRow; j > m.targetRow; j--)
                 {
-                    for (int i = m.startRow; i < m.targetRow; i++)
+                    for (int i = m.startCol; i < m.targetCol; i++)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -440,12 +439,12 @@ namespace sm {
             //pr�fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
-            case 0:
-                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+            case Player::WHITE:
+                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                     return false;
                 break;
-            case 1:
-                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+            case Player::BLACK:
+                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                     return false;
                 break;
             }
@@ -516,12 +515,12 @@ namespace sm {
             //pr�fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
-            case 0:
-                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+            case Player::WHITE:
+                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                     return false;
                 break;
-            case 1:
-                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+            case Player::BLACK:
+                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                     return false;
                 break;
             }
@@ -541,12 +540,12 @@ namespace sm {
             //pr�fen, dass auf dem Zielfeld keine eigene figur steht
             switch (getActivePlayer())
             {
-            case 0:
-                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+            case Player::WHITE:
+                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                     return false;
                 break;
-            case 1:
-                if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+            case Player::BLACK:
+                if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                     return false;
                 break;
             }
@@ -637,12 +636,12 @@ namespace sm {
                 //pr�fen, dass auf dem Zielfeld keine eigene figur steht
                 switch (getActivePlayer())
                 {
-                case 0:
-                    if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+                case Player::WHITE:
+                    if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                         return false;
                     break;
-                case 1:
-                    if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+                case Player::BLACK:
+                    if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                         return false;
                     break;
                 }
@@ -701,12 +700,12 @@ namespace sm {
                 //pr�fen, dass auf dem Zielfeld keine eigene figur steht
                 switch (getActivePlayer())
                 {
-                case 0:
-                    if (figureChrTrgt != '\0' && figureChrTrgt > 97)
+                case Player::WHITE:
+                    if (figureChrTrgt != '\0' && figureChrTrgt < 90)
                         return false;
                     break;
-                case 1:
-                    if (figureChrTrgt != '\0' && figureChrTrgt < 90)
+                case Player::BLACK:
+                    if (figureChrTrgt != '\0' && figureChrTrgt > 97)
                         return false;
                     break;
                 }
@@ -715,69 +714,15 @@ namespace sm {
             
         }
 
-        return true;
+        return checkIfKingIsAttacked(m);
     }
 
-    std::list<Move> Chessposition::getValidMovesForField(int row, int column) const
+    std::list<Move> Chessposition::getValidMovesForField(int row, int column, bool checkCaptureTarget) const
     {
         // Comment
         std::list<Move> moves;
 
-        /*for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                Move m;
-                m.startRow = row;
-                m.startCol = column;
-                m.targetCol = j;
-                m.targetRow = i;
-                for (int c = 0; c < 2; c++)
-                {
-                    switch (c)
-                    {
-                    case 0:
-                        m.capture = false;
-                        break;
-                    case 1:
-                        m.capture = true;
-                    default:
-                        break;
-                    }
-
-                    for (int p = 0; p < 5; p++)
-                    {
-                        switch (p)
-                        {
-                        case 0:
-                            m.promotion = '\0';
-                            break;
-                        case 1:
-                            m.promotion = 'Q';
-                            break;
-                        case 2:
-                            m.promotion = 'R';
-                            break;
-                        case 3:
-                            m.promotion = 'B';
-                            break;
-                        case 4:
-                            m.promotion = 'N';
-                            break;
-                        default:
-                            break;
-                        }
-
-                        if (isViableMove(m))
-                        {
-                            moves.push_back(m);
-                        }
-                    }
-                }
-            }
-        }*/
-
-        auto addViableMoves = [&moves, &row, &column, this](const Move* pMoves, size_t count) -> void{
+        auto addViableMoves = [&moves, &row, &column, this, checkCaptureTarget](const Move* pMoves, size_t count) -> void{
             Move m;
             for (size_t i = 0; i < count; i++)
             {
@@ -789,7 +734,7 @@ namespace sm {
                 m.targetCol += column;
                 m.captureCol += column;
 
-                if(this->isViableMove(m)) {
+                if(this->isViableMove(m,checkCaptureTarget)) {
                     moves.push_back(m);
                 }
             }
@@ -828,13 +773,13 @@ namespace sm {
         return moves;
     }
 
-    std::list<Move> Chessposition::getValidMoves() const {
+    std::list<Move> Chessposition::getValidMoves(bool checkCaptureTarget) const {
         std::list<Move> moves;
         for (size_t i = 0; i < 8; i++)
         {
             for (size_t j = 0; j < 8; j++)
             {
-                moves.splice(moves.end(), getValidMovesForField(i, j));
+                moves.splice(moves.end(), getValidMovesForField(i, j, checkCaptureTarget));
             }
         }
         return moves;   
@@ -881,11 +826,55 @@ namespace sm {
 
         m_previousMove = move;
 
+        //update active Player
+        switch (getActivePlayer())
+        {
+        case Player::WHITE:
+                setActivePlayer(Player::BLACK);
+                break;
+        case Player::BLACK: 
+                setActivePlayer(Player::WHITE);
+                break;
+        }
+
         return true;
 
     }
 
-    std::array<std::array<bool, 8>, 8> Chessposition::generateThreadMap()
+    bool Chessposition::checkIfKingIsAttacked(Move move) const
+    {
+        Chessposition simulated = *this;
+
+        simulated.applyMove(move, false);
+
+        std::array<std::array<bool, 8>, 8> threat = simulated.generateThreatMap();
+
+        for (int i = 0; i<8;i++)
+        {
+            for (int j = 0; j<8; j++)
+            {
+                if (threat[i][j])
+                {
+                    switch (getActivePlayer())
+                    {
+                    case Player::WHITE:
+                        if (simulated.getType(i, j) == 'K')
+                            return true;
+                        break;
+                    case Player::BLACK:
+                        if (simulated.getType(i, j) == 'k')
+                            return true;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    std::array<std::array<bool, 8>, 8> Chessposition::generateThreatMap()
     {
         std::array<std::array<bool, 8>, 8> map;
         for (auto& b : map)
@@ -896,19 +885,31 @@ namespace sm {
             }
         }
 
-        std::list<Move> viableMoves = getValidMoves();
+        std::list<Move> viableMoves = getValidMoves(false);
 
         for (auto m : viableMoves)
         {
             int x, y;
-
-            x = m.targetCol;
-            y = m.targetRow;
-
-            map[y][x] = true;
+            if (m.capture)
+            {
+                x = m.captureCol;
+                y = m.captureRow;
+                map[y][x] = true;
+            }
+            
         }
         
         return map;
+    }
+
+    bool Chessposition::isPatt()
+    {
+
+        std::list<Move> viableMoves = getValidMoves();
+
+        if (viableMoves.size() == 0 )
+            return true;
+        return false;
     }
 
     Chessposition::Chessposition()
