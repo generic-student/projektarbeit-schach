@@ -17,14 +17,7 @@ int main(int argc, char const *argv[])
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    for (int i=0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            std::list<sm::Move> l = cp.getValidMoves(i, j);
-            allMoves.splice(allMoves.end(),l);
-        }
-    }
+    allMoves = cp.getValidMoves();
     
     auto stop = std::chrono::high_resolution_clock::now();
 

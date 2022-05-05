@@ -718,7 +718,7 @@ namespace sm {
         return true;
     }
 
-    std::list<Move> Chessposition::getValidMoves(int row, int column) const
+    std::list<Move> Chessposition::getValidMovesForField(int row, int column) const
     {
         // Comment
         std::list<Move> moves;
@@ -826,6 +826,18 @@ namespace sm {
         }
 
         return moves;
+    }
+
+    std::list<Move> Chessposition::getValidMoves() const {
+        std::list<Move> moves;
+        for (size_t i = 0; i < 8; i++)
+        {
+            for (size_t j = 0; j < 8; j++)
+            {
+                moves.splice(moves.end(), getValidMovesForField(i, j));
+            }
+        }
+        return moves;   
     }
 
     /**
