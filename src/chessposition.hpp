@@ -39,7 +39,8 @@ namespace sm {
 		int getMoveCountPos(int row, int column) const;
 		int getMoveNumber() const;
 		bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
-		std::list<Move> getValidMoves(int row, int column) const;
+		std::list<Move> getValidMovesForField(int row, int column) const;
+		std::list<Move> getValidMoves() const;
 		bool applyMove(const Move& move, bool validate);
 
 	};
