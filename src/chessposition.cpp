@@ -207,7 +207,7 @@ namespace sm {
                 default:
                     return false;
                 }
-
+                break;
             case 1:
 
                 //Bauer geht nur einen nach vorne, bzw 2, wenn es das erste mal ist
@@ -669,8 +669,7 @@ namespace sm {
 
         }
 
-
-        return false;
+        return true;
     }
 
     std::list<Move> Chessposition::getValidMoves(int row, int column) const
@@ -678,7 +677,7 @@ namespace sm {
         // Comment
         std::list<Move> moves;
 
-        for (int i = 0; i < 8; i++)
+        /*for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
@@ -730,6 +729,54 @@ namespace sm {
                     }
                 }
             }
+        }*/
+
+        auto addViableMoves = [&moves, &row, &column, this](const Move* pMoves, size_t count) -> void{
+            Move m;
+            for (size_t i = 0; i < count; i++)
+            {
+                m = pMoves[i];
+                m.startRow += row;
+                m.targetRow += row;
+                m.captureRow += row;
+                m.startCol += column;
+                m.targetCol += column;
+                m.captureCol += column;
+
+                if(this->isViableMove(m)) {
+                    moves.push_back(m);
+                }
+            }
+        };
+
+        switch(m_position[row][column]) {
+            case 'p':
+            case 'P':
+                addViableMoves(ChessHelper::PAWN_MOVES.data(), ChessHelper::PAWN_MOVES.size());
+                break;
+            case 'q':
+            case 'Q':
+                addViableMoves(ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size());
+                addViableMoves(ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size());
+                break;
+            case 'r':
+            case 'R':
+                addViableMoves(ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size());
+                break;
+            case 'n':
+            case 'N':
+                addViableMoves(ChessHelper::KNIGHT_MOVES.data(), ChessHelper::KNIGHT_MOVES.size());
+                break;
+            case 'b':
+            case 'B':
+                addViableMoves(ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size());
+                break;
+            case 'k':
+            case 'K':
+                addViableMoves(ChessHelper::KING_MOVES.data(), ChessHelper::KING_MOVES.size());
+                break;
+            default:
+                break;
         }
 
         return moves;
