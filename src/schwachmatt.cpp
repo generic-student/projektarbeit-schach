@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
 
     sm::Chessposition cp;
 
-    std::list<sm::Move> allMoves;
+    std::vector<sm::Move> allMoves;
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
         std::cout << sm::ChessHelper::moveToString(a) << std::endl;
     }
 
-    cp.generateThreatMap();
+    //cp.generateThreatMap();
 
     return 0;
 }

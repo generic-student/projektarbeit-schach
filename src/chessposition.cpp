@@ -1,5 +1,6 @@
 #include "chessposition.hpp"
 #include "chess_helper.hpp"
+#include <algorithm>
 
 namespace sm {
 
@@ -50,26 +51,25 @@ namespace sm {
         return m_moveNumber;
     }
 
-    bool Chessposition::isViableMove(const Move& move, bool checkCaptureTarget) const
+    bool Chessposition::isViableMove(const Move& move, bool checkCaptureTarget, bool checkKingSafety) const
     {
-        const Move& m = move;
         int type = 0;
         char figureChr;
         char figureChrTrgt;
 
         //Ausfiltern wenn Move au�erhalb des Feldes ist
-        if ((m.targetCol > 7 || m.targetCol < 0) || (m.targetRow > 7 || m.targetRow < 0))
+        if ((move.targetCol > 7 || move.targetCol < 0) || (move.targetRow > 7 || move.targetRow < 0))
         {
             return false;
         }
         //Ausfiltern wenn start Position au�erhalb des Feldes ist
-        if ((m.startCol > 7 || m.startCol < 0) || (m.startRow > 7 || m.startRow < 0))
+        if ((move.startCol > 7 || move.startCol < 0) || (move.startRow > 7 || move.startRow < 0))
         {
             return false;
         }
 
-        figureChr = m_position[m.startRow][m.startCol];
-        figureChrTrgt = m_position[m.targetRow][m.targetCol];
+        figureChr = m_position[move.startRow][move.startCol];
+        figureChrTrgt = m_position[move.targetRow][move.targetCol];
 
         //�berpr�fen ob an der Prosition eine Figur des aktiven Spielers steht
         switch (getActivePlayer())
@@ -129,12 +129,12 @@ namespace sm {
             break;
         }
 
-        if (m.promotion != '\0' && type != 1)
+        if (move.promotion != '\0' && type != 1)
         {
             return false;
         }
 
-        if (m.capture && checkCaptureTarget)
+        if (move.capture && checkCaptureTarget)
         {
             switch (getActivePlayer())
             {
@@ -150,8 +150,8 @@ namespace sm {
         }
 
         //�berpr�fen, ob der Move f�r die jeweilige Figur g�ltig ist
-        int difX = m.targetCol - m.startCol;
-        int difY = m.targetRow - m.startRow;
+        int difX = move.targetCol - move.startCol;
+        int difY = move.targetRow - move.startRow;
         switch (type)
         {
             /*
@@ -185,7 +185,7 @@ namespace sm {
                         return false;
                     break;
                 case -2:
-                    if (m.startRow != 6)
+                    if (move.startRow != 6)
                         return false;
                     if (figureChrTrgt != '\0')
                         return false;
@@ -208,11 +208,11 @@ namespace sm {
                     if ((figureChrTrgt < 97 || figureChrTrgt == '\0')&&checkCaptureTarget)
                     {
                         //En Passant
-                        if (m_previousMove.targetCol == m.targetCol)
+                        if (m_previousMove.targetCol == move.targetCol)
                         {
                             if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
                             {
-                                if (m.targetRow == 5 || m.targetRow == 2)
+                                if (move.targetRow == 5 || move.targetRow == 2)
                                 {
                                     if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
                                     {
@@ -229,7 +229,7 @@ namespace sm {
                     return false;
                 }
 
-                if (m.promotion != '\0' && m.targetRow != 7)
+                if (move.promotion != '\0' && move.targetRow != 7)
                     return false;
                 break;
             case Player::BLACK:
@@ -242,7 +242,7 @@ namespace sm {
                         return false;
                     break;
                 case 2:
-                    if (m.startRow != 1)
+                    if (move.startRow != 1)
                         return false;
                     if (figureChrTrgt != '\0')
                         return false;
@@ -265,11 +265,11 @@ namespace sm {
                     if ((figureChrTrgt > 90 || figureChrTrgt == '\0')&& checkCaptureTarget)
                     {
                         //En Passant
-                        if (m_previousMove.targetCol == m.targetCol)
+                        if (m_previousMove.targetCol == move.targetCol)
                         {
                             if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
                             {
-                                if (m.targetRow == 5 || m.targetRow == 2)
+                                if (move.targetRow == 5 || move.targetRow == 2)
                                 {
                                     if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
                                     {
@@ -285,7 +285,7 @@ namespace sm {
                 default:
                     return false;
                 }
-                if (m.promotion != '\0' && m.targetRow != 0)
+                if (move.promotion != '\0' && move.targetRow != 0)
                     return false;
                 break;
             }
@@ -307,40 +307,40 @@ namespace sm {
             //pr�fen ob der weg frei ist gerade
             if (difX > 0)
             {
-                for (int i = m.startCol; i < m.targetCol; i++)
+                for (int i = move.startCol; i < move.targetCol; i++)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[m.startRow][i];
+                    char c = m_position[move.startRow][i];
                     if (c != '\0')
                         return false;
                 }
             }
             else if (difX < 0)
             {
-                for (int i = m.startCol; i > m.targetCol; i--)
+                for (int i = move.startCol; i > move.targetCol; i--)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[m.startRow][i];
+                    char c = m_position[move.startRow][i];
                     if (c != '\0')
                         return false;
                 }
             }
             if (difY > 0)
             {
-                for (int i = m.startRow; i < m.targetRow; i++)
+                for (int i = move.startRow; i < move.targetRow; i++)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[i][m.targetCol];
+                    char c = m_position[i][move.targetCol];
                     if (c != '\0')
                         return false;
                 }
             }
             else if (difY < 0)
             {
-                for (int i = m.startRow; i > m.targetRow; i--)
+                for (int i = move.startRow; i > move.targetRow; i--)
                 {
                     //char c = getType(i, m.startRow);
-                    char c = m_position[i][m.startCol];
+                    char c = m_position[i][move.startCol];
                     if (c != '\0')
                         return false;
                 }
@@ -381,9 +381,9 @@ namespace sm {
             //unten rechts
             if (difX > 0 && difY > 0)
             {
-                for (int j = m.startRow; j < m.targetRow; j++)
+                for (int j = move.startRow; j < move.targetRow; j++)
                 {
-                    for (int i = m.startCol; i < m.targetCol; i++)
+                    for (int i = move.startCol; i < move.targetCol; i++)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -395,9 +395,9 @@ namespace sm {
             //oben links
             if (difX < 0 && difY < 0)
             {
-                for (int j = m.startRow; j > m.targetRow; j--)
+                for (int j = move.startRow; j > move.targetRow; j--)
                 {
-                    for (int i = m.startCol; i > m.targetCol; i--)
+                    for (int i = move.startCol; i > move.targetCol; i--)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -409,9 +409,9 @@ namespace sm {
             //oben rechts
             else if (difX > 0 && difY < 0)
             {
-                for (int j = m.startRow; j > m.targetRow; j--)
+                for (int j = move.startRow; j > move.targetRow; j--)
                 {
-                    for (int i = m.startCol; i < m.targetCol; i++)
+                    for (int i = move.startCol; i < move.targetCol; i++)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -423,9 +423,9 @@ namespace sm {
             //unten links
             else if (difX < 0 && difY >0)
             {
-                for (int j = m.startRow; j < m.targetRow; j++)
+                for (int j = move.startRow; j < move.targetRow; j++)
                 {
-                    for (int i = m.startCol; i > m.targetCol; i--)
+                    for (int i = move.startCol; i > move.targetCol; i--)
                     {
                         //char c = getType(i, j);
                         char c = m_position[j][i];
@@ -463,47 +463,47 @@ namespace sm {
             {
                 //Rocharde
                 //pruefen ob Koenig und Turm sich noch nicht bewegt haben
-                if (m_moveCount[m.startRow][m.startCol] == 0)
+                if (m_moveCount[move.startRow][move.startCol] == 0)
                 {
-                    switch (m.targetCol)
+                    switch (move.targetCol)
                     {
                     case 1:
-                        if (m_moveCount[m.targetRow][m.startCol - 2] == 0)
+                        if (m_moveCount[move.targetRow][move.startCol - 2] == 0)
                             break;
                     case 6:
-                        if (m_moveCount[m.targetRow][m.startCol + 1] == 0)
+                        if (m_moveCount[move.targetRow][move.startCol + 1] == 0)
                             break;
                     default:
                         return false;
                     }
 
-                    if (m.startRow != m.targetRow)
+                    if (move.startRow != move.targetRow)
                         return false;
-                    if (m.startRow != 0 && m.startRow != 7)
+                    if (move.startRow != 0 && move.startRow != 7)
                         return false;
-                    if (m.startCol != 4)
+                    if (move.startCol != 4)
                         return false;
-                    if (m.targetCol != 2 && m.targetCol != 6)
+                    if (move.targetCol != 2 && move.targetCol != 6)
                         return false;
 
 
                     //pruefen ob der weg frei ist
                     if (difX > 0)
                     {
-                        for (int i = m.startCol; i < m.targetCol; i++)
+                        for (int i = move.startCol; i < move.targetCol; i++)
                         {
                             //char c = getType(i, m.startRow);
-                            char c = m_position[m.startRow][i];
+                            char c = m_position[move.startRow][i];
                             if (c != '\0')
                                 return false;
                         }
                     }
                     else if (difX < 0)
                     {
-                        for (int i = m.startCol; i > m.targetCol - 2; i--)
+                        for (int i = move.startCol; i > move.targetCol - 2; i--)
                         {
                             //char c = getType(i, m.startRow);
-                            char c = m_position[m.startRow][i];
+                            char c = m_position[move.startRow][i];
                             if (c != '\0')
                                 return false;
                         }
@@ -578,9 +578,9 @@ namespace sm {
                 //unten rechts
                 if (difX > 0 && difY > 0)
                 {
-                    for (int j = m.startRow; j < m.targetRow; j++)
+                    for (int j = move.startRow; j < move.targetRow; j++)
                     {
-                        for (int i = m.startCol; i < m.targetCol; i++)
+                        for (int i = move.startCol; i < move.targetCol; i++)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -592,9 +592,9 @@ namespace sm {
                 //oben links
                 else if (difX < 0 && difY < 0)
                 {
-                    for (int j = m.startRow; j > m.targetRow; j--)
+                    for (int j = move.startRow; j > move.targetRow; j--)
                     {
-                        for (int i = m.startCol; i > m.targetCol; i--)
+                        for (int i = move.startCol; i > move.targetCol; i--)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -606,9 +606,9 @@ namespace sm {
                 //oben rechts
                 else if (difX > 0 && difY < 0)
                 {
-                    for (int j = m.startRow; j > m.targetRow; j--)
+                    for (int j = move.startRow; j > move.targetRow; j--)
                     {
-                        for (int i = m.startCol; i < m.targetCol; i++)
+                        for (int i = move.startCol; i < move.targetCol; i++)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -620,9 +620,9 @@ namespace sm {
                 //unten links
                 else if (difX < 0 && difY >0)
                 {
-                    for (int j = m.startRow; j < m.targetRow; j++)
+                    for (int j = move.startRow; j < move.targetRow; j++)
                     {
-                        for (int i = m.startCol; i > m.targetCol; i--)
+                        for (int i = move.startCol; i > move.targetCol; i--)
                         {
                             //char c = getType(i, j);
                             char c = m_position[j][i];
@@ -658,40 +658,40 @@ namespace sm {
                 //pr�fen ob der weg frei ist gerade
                 if (difX > 0)
                 {
-                    for (int i = m.startCol; i < m.targetCol; i++)
+                    for (int i = move.startCol; i < move.targetCol; i++)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[m.startRow][i];
+                        char c = m_position[move.startRow][i];
                         if (c != '\0')
                             return false;
                     }
                 }
                 else if (difX < 0)
                 {
-                    for (int i = m.startCol; i > m.targetCol; i--)
+                    for (int i = move.startCol; i > move.targetCol; i--)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[m.startRow][i];
+                        char c = m_position[move.startRow][i];
                         if (c != '\0')
                             return false;
                     }
                 }
                 if (difY > 0)
                 {
-                    for (int i = m.startRow; i < m.targetRow; i++)
+                    for (int i = move.startRow; i < move.targetRow; i++)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[i][m.startCol];
+                        char c = m_position[i][move.startCol];
                         if (c != '\0')
                             return false;
                     }
                 }
                 else if (difY < 0)
                 {
-                    for (int i = m.startRow; i > m.targetRow; i--)
+                    for (int i = move.startRow; i > move.targetRow; i--)
                     {
                         //char c = getType(i, m.startRow);
-                        char c = m_position[i][m.startCol];
+                        char c = m_position[i][move.startCol];
                         if (c != '\0')
                             return false;
                     }
@@ -714,19 +714,49 @@ namespace sm {
             
         }
 
-        return checkIfKingIsAttacked(m);
+        return (!checkKingSafety || !isKingAttackableInNextMove(move));
     }
 
-    std::list<Move> Chessposition::getValidMovesForField(int row, int column, bool checkCaptureTarget) const
+    std::vector<Move> Chessposition::getValidMovesForField(int row, int column, bool checkCaptureTarget, bool checkKingSafety) const
     {
         // Comment
-        std::list<Move> moves;
+        std::vector<Move> moves;
+        std::vector<std::pair<const Move*, int>> moveLists;
 
-        auto addViableMoves = [&moves, &row, &column, this, checkCaptureTarget](const Move* pMoves, size_t count) -> void{
-            Move m;
-            for (size_t i = 0; i < count; i++)
+        switch(m_position[row][column]) {
+            case 'p':
+            case 'P':
+                moveLists.push_back({ChessHelper::PAWN_MOVES.data(), ChessHelper::PAWN_MOVES.size()});
+                break;
+            case 'q':
+            case 'Q':
+                moveLists.push_back({ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size()});
+                moveLists.push_back({ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size()});
+                break;
+            case 'r':
+            case 'R':
+                moveLists.push_back({ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size()});
+                break;
+            case 'n':
+            case 'N':
+                moveLists.push_back({ChessHelper::KNIGHT_MOVES.data(), ChessHelper::KNIGHT_MOVES.size()});
+                break;
+            case 'b':
+            case 'B':
+                moveLists.push_back({ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size()});
+                break;
+            case 'k':
+            case 'K':
+                moveLists.push_back({ChessHelper::KING_MOVES.data(), ChessHelper::KING_MOVES.size()});
+                break;
+            default:
+                break;
+        }
+
+        for(const std::pair<const Move*, int>& movePair : moveLists) {
+            for (size_t i = 0; i < movePair.second; i++)
             {
-                m = pMoves[i];
+                Move m = movePair.first[i];
                 m.startRow += row;
                 m.targetRow += row;
                 m.captureRow += row;
@@ -734,52 +764,25 @@ namespace sm {
                 m.targetCol += column;
                 m.captureCol += column;
 
-                if(this->isViableMove(m,checkCaptureTarget)) {
+                if(isViableMove(m,checkCaptureTarget,checkKingSafety)) {
                     moves.push_back(m);
                 }
             }
-        };
-
-        switch(m_position[row][column]) {
-            case 'p':
-            case 'P':
-                addViableMoves(ChessHelper::PAWN_MOVES.data(), ChessHelper::PAWN_MOVES.size());
-                break;
-            case 'q':
-            case 'Q':
-                addViableMoves(ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size());
-                addViableMoves(ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size());
-                break;
-            case 'r':
-            case 'R':
-                addViableMoves(ChessHelper::ROOK_MOVES.data(), ChessHelper::ROOK_MOVES.size());
-                break;
-            case 'n':
-            case 'N':
-                addViableMoves(ChessHelper::KNIGHT_MOVES.data(), ChessHelper::KNIGHT_MOVES.size());
-                break;
-            case 'b':
-            case 'B':
-                addViableMoves(ChessHelper::BISHOP_MOVES.data(), ChessHelper::BISHOP_MOVES.size());
-                break;
-            case 'k':
-            case 'K':
-                addViableMoves(ChessHelper::KING_MOVES.data(), ChessHelper::KING_MOVES.size());
-                break;
-            default:
-                break;
+            
         }
 
         return moves;
     }
 
-    std::list<Move> Chessposition::getValidMoves(bool checkCaptureTarget) const {
-        std::list<Move> moves;
+    std::vector<Move> Chessposition::getValidMoves(bool checkCaptureTarget, bool checkKingSafety) const {
+        std::vector<Move> moves;
         for (size_t i = 0; i < 8; i++)
         {
             for (size_t j = 0; j < 8; j++)
             {
-                moves.splice(moves.end(), getValidMovesForField(i, j, checkCaptureTarget));
+                std::vector<Move> movesForField = getValidMovesForField(i, j, checkCaptureTarget, checkKingSafety);
+                std::move(movesForField.begin(), movesForField.end(), std::back_inserter(moves));
+                //moves.splice(moves.end(), getValidMovesForField(i, j, checkCaptureTarget));
             }
         }
         return moves;   
@@ -841,9 +844,9 @@ namespace sm {
 
     }
 
-    bool Chessposition::checkIfKingIsAttacked(Move move) const
+    bool Chessposition::isKingAttackableInNextMove(Move move) const
     {
-        Chessposition simulated = *this;
+        Chessposition simulated;// = *this;
 
         simulated.applyMove(move, false);
 
@@ -877,15 +880,12 @@ namespace sm {
     std::array<std::array<bool, 8>, 8> Chessposition::generateThreatMap()
     {
         std::array<std::array<bool, 8>, 8> map;
-        for (auto& b : map)
+        for (std::array<bool, 8>& row : map)
         {
-            for (auto& c : b)
-            {
-                c = false;
-            }
+            row.fill(false);
         }
 
-        std::list<Move> viableMoves = getValidMoves(false);
+        std::vector<Move> viableMoves = getValidMoves(false, false);
 
         for (auto m : viableMoves)
         {
@@ -905,7 +905,7 @@ namespace sm {
     bool Chessposition::isPatt()
     {
 
-        std::list<Move> viableMoves = getValidMoves();
+        std::vector<Move> viableMoves = getValidMoves();
 
         if (viableMoves.size() == 0 )
             return true;
@@ -915,19 +915,26 @@ namespace sm {
     Chessposition::Chessposition()
         : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN))
     {
-
+        m_moveCount = std::array<std::array<int, 8>, 8>();
+        m_previousMove = Move();
     }
 
     Chessposition::Chessposition(const std::string& fen)
         : m_position(sm::ChessHelper::fenToArray(fen))
     {
-
+        m_moveCount = std::array<std::array<int, 8>, 8>();
+        m_previousMove = Move();
     }
 
     Chessposition::Chessposition(const std::array<std::array<char, 8>, 8>& pos)
         : m_position(pos)
     {
-
+        m_moveCount = std::array<std::array<int, 8>, 8>();
+        m_previousMove = Move();
     }
+
+    // Chessposition::Chessposition(const Chessposition& cp) {
+
+    // }
 
 }
