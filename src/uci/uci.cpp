@@ -2,6 +2,7 @@
 #include "uci_command_builder.hpp"
 #include <iostream>
 #include <mutex>
+#include <regex>
 #include "../chess_helper.hpp"
 
 namespace sm
@@ -78,7 +79,13 @@ namespace sm
             std::cout << "id name " << m_pEngine->getID() << std::endl;
             std::cout << "id author " << m_pEngine->getAuthor() << std::endl;
 
-            // TODO: send the settings which the engine supports via the options command
+            //send the settings which the engine supports via the options command
+            const auto& options = m_pEngine->getOptions().getEngineOptions();
+            for(const auto& it : options) {
+                if(!it.second.isSupported) continue;
+
+                std::cout << "option name " << it.first << " type " << it.second.type << " default " << it.second.default_value << std::endl;
+            }
 
             std::cout << "uciok" << std::endl;
         }
@@ -191,7 +198,7 @@ namespace sm
             GoSubcommandData subcommandData;
             const std::vector<std::string>&  args = cmd.getArgs();
             for(const std::string& arg : args) {
-
+                handleGoSubcommand(arg, subcommandData);
             }
 
             std::cout << "command not fully implemented yet" << std::endl;
@@ -202,9 +209,87 @@ namespace sm
          * 
          * @param subcommand 
          */
-        void UniversalChessInterface::handleGoSubcommand(const std::string& subcommand)
+        void UniversalChessInterface::handleGoSubcommand(const std::string& arg, GoSubcommandData& data)
         {
-            
+            //first the boolean flags
+            if(arg == "ponder") {
+                data.ponder = true;
+                return;
+            }
+
+            if(arg == "infinite") {
+                data.infinite = true;
+                return;
+            }
+
+            std::smatch match;
+
+            //check if it is the searchmoves command since it is the only command left that doesnt have an integer value
+            if(arg.find("searchmoves") != std::string::npos) {
+                if (std::regex_search(arg, match, std::regex("([a-hA-H0-8x\\+]{4,6})")))
+                {
+                    for(size_t i = 1; i < match.size(); i++) {
+                        if(match.str(i).empty()) continue;
+                        
+                        data.searchmoves.push_back(match.str(i));
+                    }
+                }
+                return;
+            }
+
+            //all subcommands that are left have an integer value
+            //get the value using regex
+            int value;
+            if (std::regex_search(arg, match, std::regex("-?\\d+"))) {
+                value = atoi(match.str(0).data());
+            } else {
+                return;
+            }
+
+            if(arg.find("wtime") != std::string::npos) {
+                data.wtime = value;
+                return;
+            }
+
+            if(arg.find("btime") != std::string::npos) {
+                data.btime = value;
+                return;
+            }
+
+            if(arg.find("winc") != std::string::npos) {
+                data.winc = value;
+                return;
+            }
+
+            if(arg.find("binc") != std::string::npos) {
+                data.binc = value;
+                return;
+            }
+
+            if(arg.find("movestogo") != std::string::npos) {
+                data.movestogo = value;
+                return;
+            }
+
+            if(arg.find("depth") != std::string::npos) {
+                data.depth = value;
+                return;
+            }
+
+            if(arg.find("nodes") != std::string::npos) {
+                data.nodes = value;
+                return;
+            }
+
+            if(arg.find("mate") != std::string::npos) {
+                data.mate = value;
+                return;
+            }
+
+            if(arg.find("movetime") != std::string::npos) {
+                data.movetime = value;
+                return;
+            }
         }
 
         /**

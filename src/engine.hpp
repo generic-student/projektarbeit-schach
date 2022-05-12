@@ -2,6 +2,7 @@
 #include <string>
 #include <array>
 #include "chessposition.hpp"
+#include "engine_options.hpp"
 namespace sm {
     /**
      * @brief The engine class contains all the functions and algorithms
@@ -19,6 +20,7 @@ namespace sm {
             void setDebugMode(bool debug);
             bool isReady() const;
             void setOption(const std::string& option, const std::string& value);
+            const EngineOptions& getOptions() const;
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 
@@ -38,5 +40,6 @@ namespace sm {
             bool m_ready = true;
 
             Chessposition m_position;
+            EngineOptions m_engineOptions;
     };
 }
