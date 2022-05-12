@@ -41,6 +41,11 @@ namespace sm
             std::vector<std::string> m_args;
         };
 
+        /**
+         * @brief All possible values that can be sent alongside the go command.
+         * If an integer value is set to 0 then it has not been set by the go command => it is undefined and should not be used.
+         * If the searchmoves are empty, they have not been set and should not be used.
+         */
         struct GoSubcommandData {
             std::vector<std::string> searchmoves;
             bool ponder = false;
