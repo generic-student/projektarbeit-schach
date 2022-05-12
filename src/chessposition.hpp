@@ -2,45 +2,53 @@
 #include <string>
 #include <array>
 #include "move.hpp"
-#include <list>
+#include <vector>
 
-class Chessposition
-{
-	//Variablen
-public :
-	static const std::string STARTPOS_FEN;
+namespace sm {
 
-	explicit Chessposition();
-	explicit Chessposition(const std::string& fen);
-	explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
+	class Chessposition
+	{
+		//Variablen
+	public :
+		enum Player { WHITE = 0, BLACK = 1 };
+		static const std::string STARTPOS_FEN;
 
-private:
-	unsigned int m_activePlayer = 0;
-	unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
-	std::array<std::array<char, 8>, 8> m_position;
-	std::array<std::array<int, 8>, 8> m_moveCount;
+		explicit Chessposition();
+		explicit Chessposition(const std::string& fen);
+		explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
+
+	private:
+		Chessposition::Player m_activePlayer = Player::WHITE;
+		unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
+		std::array<std::array<char, 8>, 8> m_position;
+		std::array<std::array<int, 8>, 8> m_moveCount;
+		Move m_previousMove;
 	
 
-	//Methoden
-public:
-	void setFEN(std::string p_FEN);
-	std::string getFEN() const;
+		//Methoden
+	public:
+		void setFEN(std::string p_FEN);
+		std::string getFEN() const;
 
-	void setActivePlayer(int p_id);
-	int getActivePlayer() const;
+		void setActivePlayer(Chessposition::Player p_id);
+		Chessposition::Player getActivePlayer() const;
 
-	const std::array<std::array<int, 8>, 8>& getMoveCount() const;
-	const std::array<std::array<char, 8>, 8>& getPosition() const;
-	char getType(int p_x, int p_y) const;
+		const std::array<std::array<int, 8>, 8>& getMoveCount() const;
+		const std::array<std::array<char, 8>, 8>& getPosition() const;
+		char getType(int row, int column) const;
 	
-	int getMoveCountPos(int p_x, int p_y) const;
-	int getMoveNumber() const;
-	bool isViableMove(const Move& move) const;		// move is in form "old Position"-"new Position"  (e3-e4)
-	std::list<Move> getValidMoves(int _startX, int _startY) const;
-	bool applyMove(const Move& move, bool validate);
+		int getMoveCountPos(int row, int column) const;
+		int getMoveNumber() const;
+		bool isViableMove(const Move& move, bool checkCaptureTarget = true, bool checkKingSafety = true) const;		// move is in form "old Position"-"new Position"  (e3-e4)
+		std::vector<Move> getValidMovesForField(int row, int column, bool checkCaptureTarget = true, bool checkKingSafety = true) const;
+		std::vector<Move> getValidMoves(bool checkCaptureTarget = true, bool checkKingSafety = true) const;
+		bool applyMove(const Move& move, bool validate);
 
-private:
-	Move parseMove(std::string p_Move);
+		bool isKingAttackableInNextMove(Move move) const;
+		std::array<std::array<bool, 8>, 8> generateThreatMap() const;
+		bool isPatt() const;
+		bool isMatt() const;
+		
+	};
 
-};
-
+}

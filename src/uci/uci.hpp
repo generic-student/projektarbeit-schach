@@ -21,7 +21,7 @@ namespace sm
                 void handlePositionCommand(Command& cmd);
                 void handleQuitCommand(Command& cmd);
                 void handleGoCommand(Command& cmd);
-                void handleGoSubcommand(const std::string& subcommand);
+                void handleGoSubcommand(const std::string& arg, GoSubcommandData& data);
                 void handleStopCommand(Command& cmd);
                 void handlePonderhitCommand(Command& cmd);
                 void handleRegisterCommand(Command& cmd);

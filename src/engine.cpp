@@ -68,7 +68,13 @@ namespace sm
      */
     void Engine::setOption(const std::string& option, const std::string& value)
     {
-        throw "Invalid Option";
+        if(m_engineOptions.isSupported(option)) {
+            m_engineOptions.setValue(option, value);
+        }
+    }
+
+    const EngineOptions& Engine::getOptions() const {
+        return m_engineOptions;
     }
 
     float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard)
