@@ -16,8 +16,6 @@ namespace sm {
 		explicit Chessposition();
 		explicit Chessposition(const std::string& fen);
 		explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
-		//copy constructor
-		//Chessposition(const Chessposition& cp);
 
 	private:
 		Chessposition::Player m_activePlayer = Player::WHITE;
@@ -47,9 +45,9 @@ namespace sm {
 		bool applyMove(const Move& move, bool validate);
 
 		bool isKingAttackableInNextMove(Move move) const;
-		std::array<std::array<bool, 8>, 8> generateThreatMap();
-		bool isPatt();
-		bool isMatt();
+		std::array<std::array<bool, 8>, 8> generateThreatMap() const;
+		bool isPatt() const;
+		bool isMatt() const;
 		
 	};
 

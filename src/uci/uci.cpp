@@ -78,7 +78,13 @@ namespace sm
             std::cout << "id name " << m_pEngine->getID() << std::endl;
             std::cout << "id author " << m_pEngine->getAuthor() << std::endl;
 
-            // TODO: send the settings which the engine supports via the options command
+            //send the settings which the engine supports via the options command
+            const auto& options = m_pEngine->getOptions().getEngineOptions();
+            for(const auto& it : options) {
+                if(!it.second.isSupported) continue;
+
+                std::cout << "option name " << it.first << " type " << it.second.type << " default " << it.second.default_value << std::endl;
+            }
 
             std::cout << "uciok" << std::endl;
         }

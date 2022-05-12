@@ -877,7 +877,7 @@ namespace sm {
         return false;
     }
 
-    std::array<std::array<bool, 8>, 8> Chessposition::generateThreatMap()
+    std::array<std::array<bool, 8>, 8> Chessposition::generateThreatMap() const
     {
         std::array<std::array<bool, 8>, 8> map;
         for (std::array<bool, 8>& row : map)
@@ -902,7 +902,7 @@ namespace sm {
         return map;
     }
 
-    bool Chessposition::isPatt()
+    bool Chessposition::isPatt() const
     {
 
         std::vector<Move> viableMoves = getValidMoves();
