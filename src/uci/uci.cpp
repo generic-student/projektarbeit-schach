@@ -201,6 +201,14 @@ namespace sm
                 handleGoSubcommand(arg, subcommandData);
             }
 
+            m_pEngine->getPosition().setActivePlayer(Chessposition::Player::BLACK);
+            auto bestMove = m_pEngine->findMove(m_pEngine->getPosition());
+            std::cout << "info score cp " << bestMove.evaluation << 
+            " depth " << bestMove.depth << 
+            " nodes _ time _ pv " << ChessHelper::moveToString(bestMove.move) << std::endl; 
+
+            std::cout << "bestmove " << ChessHelper::moveToString(bestMove.move) << std::endl;
+
             std::cout << "command not fully implemented yet" << std::endl;
         }
         
@@ -329,7 +337,7 @@ namespace sm
          */
         void UniversalChessInterface::handleUciNewGameCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            m_pEngine->getPosition() = Chessposition(Chessposition::STARTPOS_FEN);
         }
     }
 }

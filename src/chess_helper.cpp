@@ -380,7 +380,7 @@ namespace sm
             out += c;
             c = p_move.startRow + 49;
             out += c;
-            out += '-';
+            //out += '-';
             c = p_move.targetCol + 97;
             out += c;
             c = p_move.targetRow + 49;
