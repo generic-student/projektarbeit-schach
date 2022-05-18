@@ -1,5 +1,5 @@
 #include "chess_helper.hpp"
-
+#include <regex>
 namespace sm
 {
 
@@ -107,6 +107,20 @@ namespace sm
         {
             Move m;
 
+            //remove the hyphen if included
+            int hyphen_index = move_str.find("-");
+            if(hyphen_index != std::string::npos) {
+                move_str.replace(hyphen_index, 1, "");
+            }
+
+            int capture_index = move_str.find("x");
+            if(capture_index != std::string::npos) {
+                move_str.replace(capture_index, 1, "");
+                m.capture = true;
+            } else {
+                m.capture = false;
+            }
+
             // Capture abfangen
             if (move_str[2] == 'x')
             {
@@ -121,42 +135,10 @@ namespace sm
                 move_str = move_str.substr(0, 4);
             }
 
-            // Start und Ziel Position als integer coodieren
-            for (int i = 0; i < move_str.size(); i++)
-            {
-                char c = move_str[i];
-
-                // Ziffer zu int
-                if (c > 48 && c < 58)
-                {
-                    c = c - 49;
-                }
-
-                // Buchstaben zu int
-                if (c > 96 && c < 123)
-                {
-                    c = c - 97;
-                }
-
-                switch (i)
-                {
-                case 0:
-                    m.startCol = c;
-                    break;
-
-                case 1:
-                    m.startRow = c;
-                    break;
-
-                case 3:
-                    m.targetCol = c;
-                    break;
-
-                case 4:
-                    m.targetRow = c;
-                    break;
-                }
-            }
+            m.startCol = (char)move_str[0] - 'a';
+            m.startRow = (char)move_str[1] - '1';
+            m.targetCol = (char)move_str[2] - 'a';
+            m.targetRow = (char)move_str[3] - '1';
 
             return m;
         }

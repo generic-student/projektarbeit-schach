@@ -165,12 +165,19 @@ namespace sm
                 chessposition.setFEN(pos);
             }
 
-            ChessHelper::drawPositionInTerminal(chessposition.getPosition());
+            for(auto& move_str : moves) {
+                Move move = ChessHelper::parseMove(move_str);
+                if(!m_pEngine->getPosition().applyMove(move, false)) {
+                    break;
+                }
+            }
+
+            //ChessHelper::drawPositionInTerminal(chessposition.getPosition());
 
             //play the given moves
-            std::cout << "evalutated fenstring: " << m_pEngine->evaluateBoard(chessposition.getPosition()) << std::endl;
+            //std::cout << "evalutated fenstring: " << m_pEngine->evaluateBoard(chessposition.getPosition()) << std::endl;
 
-            std::cout << "command not fully implemented yet" << std::endl;
+            //std::cout << "command not fully implemented yet" << std::endl;
         }
 
         /**
