@@ -3,6 +3,7 @@
 #include <array>
 #include "chessposition.hpp"
 #include "engine_options.hpp"
+#include "minMaxResult.hpp"
 namespace sm {
     /**
      * @brief The engine class contains all the functions and algorithms
@@ -21,6 +22,8 @@ namespace sm {
             bool isReady() const;
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
+
+            minMaxResult findMove(Chessposition pos, int time = 5, int startDepth = 4, int depth = 0)const;
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 
@@ -28,7 +31,7 @@ namespace sm {
             * 
             * @return float: Returns the evaluation value as a float.
             */
-            float evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard);
+            float evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const;
             Chessposition& getPosition();
             const Chessposition& getPosition() const;
 

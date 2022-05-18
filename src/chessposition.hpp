@@ -19,7 +19,7 @@ namespace sm {
 
 	private:
 		Chessposition::Player m_activePlayer = Player::WHITE;
-		unsigned int m_moveNumber = 0;					//Based on White Player (negative Numbers are an advantage for Black, positive advantage for white)
+		unsigned int m_moveNumber = 0;				
 		std::array<std::array<char, 8>, 8> m_position;
 		std::array<std::array<int, 8>, 8> m_moveCount;
 		Move m_previousMove;
@@ -49,6 +49,8 @@ namespace sm {
 		std::array<std::array<bool, 8>, 8> generateThreatMap() const;
 		bool isPatt() const;
 		bool isMatt() const;
+
+		
 		
 	};
 

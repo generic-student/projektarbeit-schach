@@ -77,7 +77,37 @@ namespace sm
         return m_engineOptions;
     }
 
-    float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard)
+    minMaxResult Engine::findMove(Chessposition pos, int time, int startDepth, int depth) const
+    {
+        minMaxResult bestResult;
+        Move bestMove;
+        float bestEval = -9999.f;
+        std::vector<Move> moves;
+
+        moves = m_position.getValidMoves();
+        bestMove = moves[0];
+
+        for (auto m : moves)
+        {
+            Chessposition simulated = pos;
+
+            simulated.applyMove(m, false);
+
+            float eval = evaluateBoard(simulated.getPosition());
+
+            if (eval > bestEval)
+                bestEval = eval;
+
+        }
+
+        bestResult.move = bestMove;
+        bestResult.evaluation = bestEval;
+        bestResult.depth = depth;
+
+        return bestResult;
+    }
+
+    float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const
     {
         float score = 0.0f;
         // TODO: 
