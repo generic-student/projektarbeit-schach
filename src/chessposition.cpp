@@ -798,6 +798,11 @@ namespace sm {
     */
     bool Chessposition::applyMove(const Move& move, bool validate)
     {
+        m_MovesSinceCaptureOrPawn++;
+
+        if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
+            m_MovesSinceCaptureOrPawn = 0;
+
         if (validate && !isViableMove(move))
         {
             return false;
@@ -807,6 +812,8 @@ namespace sm {
         if (move.capture)
         {
             m_position[move.captureRow][move.captureCol] = 0;
+
+            m_MovesSinceCaptureOrPawn = 0;
         }
 
         // MOVE the chess piece
@@ -904,11 +911,47 @@ namespace sm {
 
     bool Chessposition::isPatt() const
     {
-
         std::vector<Move> viableMoves = getValidMoves();
+
+        if (m_MovesSinceCaptureOrPawn == 50)
+            return true;
 
         if (viableMoves.size() == 0 )
             return true;
+        return false;
+    }
+
+    bool Chessposition::isMatt() const
+    {
+        std::vector<Move> viableMoves = getValidMoves();
+
+        if (viableMoves.size() == 0)
+        {
+            std::array<std::array<bool, 8>, 8> threat = generateThreatMap();
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (threat[i][j])
+                    {
+                        switch (getActivePlayer())
+                        {
+                        case Player::WHITE:
+                            if (getType(i, j) == 'K')
+                                return true;
+                            break;
+                        case Player::BLACK:
+                            if (getType(i, j) == 'k')
+                                return true;
+                            break;
+                        }
+
+                    }
+                }
+            }
+        }
+            
         return false;
     }
 

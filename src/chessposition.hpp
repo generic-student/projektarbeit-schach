@@ -23,6 +23,7 @@ namespace sm {
 		std::array<std::array<char, 8>, 8> m_position;
 		std::array<std::array<int, 8>, 8> m_moveCount;
 		Move m_previousMove;
+		int m_MovesSinceCaptureOrPawn = 0;
 	
 
 		//Methoden
@@ -44,7 +45,7 @@ namespace sm {
 		std::vector<Move> getValidMoves(bool checkCaptureTarget = true, bool checkKingSafety = true) const;
 		bool applyMove(const Move& move, bool validate);
 
-		bool isKingAttackableInNextMove(Move move) const;
+		bool isKingAttackableInNextMove(Move move = Move()) const;
 		std::array<std::array<bool, 8>, 8> generateThreatMap() const;
 		bool isPatt() const;
 		bool isMatt() const;
