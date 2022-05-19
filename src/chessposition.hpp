@@ -49,6 +49,8 @@ namespace sm {
 		bool isPatt() const;
 		bool isMatt() const;
 
+	private:
+		void clearMoveCount();
 		
 		
 	};

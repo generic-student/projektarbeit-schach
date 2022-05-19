@@ -147,6 +147,8 @@ namespace sm
          */
         void UniversalChessInterface::handlePositionCommand(Command &cmd)
         {
+            spdlog::info("position from gui: " + cmd.getArgs()[0] + " moves " + cmd.getArgs()[1]);
+
             const std::string& pos = cmd.getArgs()[0];
             bool fromStart = (pos == "startpos");
 
@@ -170,7 +172,12 @@ namespace sm
 
             for(auto& move_str : moves) {
                 Move move = ChessHelper::parseMove(move_str);
+                if(chessposition.getActivePlayer() == Chessposition::Player::WHITE && move.promotion != '\0') {
+                    move.promotion -= 32;
+                }
+
                 if(move_str != "0000" && !m_pEngine->getPosition().applyMove(move, false)) {
+                    spdlog::warn("invalid move");
                     std::cout << "Invalid Move" << std::endl;
                     break;
                 }
@@ -216,8 +223,6 @@ namespace sm
             }
 
             auto bestMove = m_pEngine->findMove(m_pEngine->getPosition());
-            bool playerIsWhite = m_pEngine->getPosition().getActivePlayer() == Chessposition::Player::WHITE;
-            std::cout << (playerIsWhite ? "White is playing" : "Black is playing") << std::endl;
             std::cout << "info score cp " << bestMove.evaluation << 
             " depth " << bestMove.depth << 
             " nodes 0 time 0 pv " << ChessHelper::moveToString(bestMove.move) << std::endl; 

@@ -8,6 +8,7 @@ namespace sm {
 
     void Chessposition::setFEN(std::string p_FEN)
     {
+        clearMoveCount();
         char player;
         m_position = sm::ChessHelper::fenToArray(p_FEN, &player, nullptr, &m_MovesSinceCaptureOrPawn, &m_moveNumber);
         m_activePlayer = player == 'w' ? Chessposition::Player::WHITE : Chessposition::Player::BLACK;
@@ -63,6 +64,10 @@ namespace sm {
         int type = 0;
         char figureChr;
         char figureChrTrgt;
+
+        if(move.startRow == 1 && move.startCol == 2 && move.targetRow == 0 && move.targetCol == 3) {
+            int banan = 1;
+        }
 
         //Ausfiltern wenn Move au�erhalb des Feldes ist
         if ((move.targetCol > 7 || move.targetCol < 0) || (move.targetRow > 7 || move.targetRow < 0))
@@ -188,8 +193,6 @@ namespace sm {
                 switch (difY)
                 {
                 case -1:
-                    if (figureChrTrgt != '\0')
-                        return false;
                     break;
                 case -2:
                     if (move.startRow != 6)
@@ -207,9 +210,12 @@ namespace sm {
 
                 {
                 case 0:
+                    if(figureChrTrgt != '\0')
+                        return false;
                     break;
                 case 1:
                 case -1:
+
                     //mehr als 1 nach vorne
                     if (difY != -1)
                         return false;
@@ -238,8 +244,12 @@ namespace sm {
                     return false;
                 }
 
-                if (move.promotion != '\0' && move.targetRow != 7)
+                if (move.promotion != '\0' && move.targetRow != 0)
                     return false;
+
+                if(move.targetRow == 0 && move.promotion == '\0')
+                    return false;
+
                 break;
             case Player::BLACK:
 
@@ -247,8 +257,6 @@ namespace sm {
                 switch (difY)
                 {
                 case 1:
-                    if (figureChrTrgt != '\0')
-                        return false;
                     break;
                 case 2:
                     if (move.startRow != 1)
@@ -266,6 +274,8 @@ namespace sm {
 
                 {
                 case 0:
+                    if(figureChrTrgt != '\0')
+                        return false;
                     break;
                 case 1:
                 case -1:
@@ -296,8 +306,13 @@ namespace sm {
                 default:
                     return false;
                 }
-                if (move.promotion != '\0' && move.targetRow != 0)
+
+                if (move.promotion != '\0' && move.targetRow != 7)
                     return false;
+
+                if (move.targetRow == 7 && move.promotion == '\0') 
+                    return false;
+
                 break;
             }
             break;
@@ -472,54 +487,42 @@ namespace sm {
 
             if ((difX * difX) > 1 || (difY * difY) > 1)
             {
-                //Rocharde
-                //pruefen ob Koenig und Turm sich noch nicht bewegt haben
-                if (m_moveCount[move.startRow][move.startCol] == 0)
-                {
-                    switch (move.targetCol)
-                    {
-                    case 1:
-                        if (m_moveCount[move.targetRow][move.startCol - 2] == 0)
-                            break;
-                    case 6:
-                        if (m_moveCount[move.targetRow][move.startCol + 1] == 0)
-                            break;
-                    default:
-                        return false;
+                //Castling
+                if((move.startRow == 0 || move.startRow == 7) && move.startCol == 4) {
+                    unsigned short castling_row = move.startRow;
+                    //small
+                    if(move.targetRow == castling_row && move.targetCol == 6) {
+                        //check if there is nothing in the way
+                        if(m_position[castling_row][move.startCol + 1] != '\0' || 
+                        m_position[castling_row][move.startCol + 2] != '\0')
+                            return false;
                     }
 
-                    if (move.startRow != move.targetRow)
-                        return false;
-                    if (move.startRow != 0 && move.startRow != 7)
-                        return false;
-                    if (move.startCol != 4)
-                        return false;
-                    if (move.targetCol != 2 && move.targetCol != 6)
-                        return false;
-
-
-                    //pruefen ob der weg frei ist
-                    if (difX > 0)
-                    {
-                        for (int i = move.startCol; i < move.targetCol; i++)
-                        {
-                            //char c = getType(i, m.startRow);
-                            char c = m_position[move.startRow][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                    //large
+                    if(move.startRow == castling_row && move.targetCol == 2) {
+                        //check if there is nothing in the way
+                        if(m_position[castling_row][move.startCol - 1] != '\0' || 
+                        m_position[castling_row][move.startCol - 2] != '\0' || 
+                        m_position[castling_row][move.startCol - 3] != '\0')
+                            return false;
                     }
-                    else if (difX < 0)
-                    {
-                        for (int i = move.startCol; i > move.targetCol - 2; i--)
-                        {
-                            //char c = getType(i, m.startRow);
-                            char c = m_position[move.startRow][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                }
+
+                //white castling
+                if(move.startRow == 0 && move.startCol == 4) {
+                    //small
+                    if(move.targetRow == 0 && move.targetCol == 6) {
+                        //check if there is nothing in the way
+                        if(m_position[0][move.startCol + 1] != '\0' || m_position[0][move.startCol + 2] != '\0')
+                            return false;
                     }
 
+                    //large
+                    if(move.targetRow == 0 && move.targetCol == 2) {
+                        //check if there is nothing in the way
+                        if(m_position[0][move.startCol - 1] != '\0' || m_position[0][move.startCol - 2] != '\0' || m_position[0][move.startCol - 3] != '\0')
+                            return false;
+                    }
                 }
             }
 
@@ -725,7 +728,8 @@ namespace sm {
             
         }
 
-        return (!checkKingSafety || !isKingAttackableInNextMove(move));
+        if(checkKingSafety) return isKingAttackableInNextMove(move) == false;
+        return true;
     }
 
     std::vector<Move> Chessposition::getValidMovesForField(int row, int column, bool checkCaptureTarget, bool checkKingSafety) const
@@ -861,27 +865,16 @@ namespace sm {
 
         simulated.applyMove(move, false);
 
+        simulated.setActivePlayer(m_activePlayer);
         std::array<std::array<bool, 8>, 8> threat = simulated.generateThreatMap();
 
+        char king = m_activePlayer == Player::WHITE ? 'K' : 'k';
         for (int i = 0; i<8;i++)
         {
             for (int j = 0; j<8; j++)
             {
-                if (threat[i][j])
-                {
-                    switch (getActivePlayer())
-                    {
-                    case Player::WHITE:
-                        if (simulated.getType(i, j) == 'K')
-                            return true;
-                        break;
-                    case Player::BLACK:
-                        if (simulated.getType(i, j) == 'k')
-                            return true;
-                        break;
-                    }
-                    
-                }
+                if(threat[i][j] && simulated.getType(i, j) == king)
+                    return true;
             }
         }
         
@@ -959,9 +952,16 @@ namespace sm {
         return false;
     }
 
+    void Chessposition::clearMoveCount() {
+        for(auto& row : m_moveCount) {
+            row.fill(0);
+        }
+    }
+
     Chessposition::Chessposition()
         : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN, nullptr, nullptr, nullptr, nullptr))
     {
+        clearMoveCount();
         m_previousMove = Move();
     }
 

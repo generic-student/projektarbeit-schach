@@ -8,7 +8,7 @@
 
 int main(int argc, char const *argv[])
 {
-    auto logger = spdlog::basic_logger_mt("basic_logger", "logs/basic-log.txt");
+    auto logger = spdlog::basic_logger_mt("basic_logger", "logs/basic-log.log");
     logger->set_level(spdlog::level::info);
     logger->flush_on(spdlog::level::info);
     logger->info("Debug logger setup done. \n");

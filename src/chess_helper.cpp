@@ -389,15 +389,17 @@ namespace sm
 
             if (p_move.capture)
             {
-                out += 'x';
+               out += 'x';
             }
 
             c = p_move.targetCol + 'a';
             out += c;
             c = '8' - p_move.targetRow;
             out += c;
-            c = p_move.promotion;
-            out += c;
+            if(p_move.promotion != '\0') {
+                c = p_move.promotion;
+                out += c;
+            }       
 
             return out;
         }

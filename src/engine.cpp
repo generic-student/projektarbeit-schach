@@ -1,5 +1,6 @@
 #include "engine.hpp"
-
+#include <spdlog/spdlog.h>
+#include "chess_helper.hpp"
 namespace sm
 {
     Engine::Engine()
@@ -84,11 +85,17 @@ namespace sm
         float bestEval = pos.getActivePlayer() == Chessposition::Player::WHITE ? -9999.f : 9999.f;
         std::vector<Move> moves;
 
-        moves = m_position.getValidMoves();
+        moves = m_position.getValidMoves(true, true);
+        //spdlog::info("calculate best moves from " + std::to_string(moves.size()) + " moves.");
+        if(moves.empty()) {
+            spdlog::warn("no moves found!");
+            return bestResult;
+        }
         bestMove = moves[0];
 
         for (auto m : moves)
         {
+            spdlog::info(ChessHelper::moveToString(m));
             Chessposition simulated = pos;
 
             simulated.applyMove(m, false);

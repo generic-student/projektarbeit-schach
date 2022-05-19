@@ -12,3 +12,4 @@ Makefile
 .vs/**
 *.txt
 *.bat
+*.log
