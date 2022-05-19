@@ -14,7 +14,8 @@ project "SchwachMatt"
    }
 
    includedirs {
-      "external/boost_1_77_0"
+      "external/boost_1_77_0",
+      "external/spdlog",
    }
 
    filter "configurations:Debug"

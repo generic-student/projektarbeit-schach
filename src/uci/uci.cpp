@@ -5,6 +5,8 @@
 #include <regex>
 #include "../chess_helper.hpp"
 
+#include <spdlog/spdlog.h>
+
 namespace sm
 {
     namespace uci
@@ -16,7 +18,7 @@ namespace sm
         UniversalChessInterface::UniversalChessInterface()
             : IChessInterface()
         {
-        }
+                    }
 
         /**
          * @brief resolve a given command in string format
@@ -161,16 +163,21 @@ namespace sm
             Chessposition& chessposition = m_pEngine->getPosition();
             if(fromStart) {
                 chessposition.setFEN(Chessposition::STARTPOS_FEN);
+                chessposition.setActivePlayer(Chessposition::Player::WHITE);
             } else {
                 chessposition.setFEN(pos);
             }
 
             for(auto& move_str : moves) {
                 Move move = ChessHelper::parseMove(move_str);
-                if(!m_pEngine->getPosition().applyMove(move, false)) {
+                if(move_str != "0000" && !m_pEngine->getPosition().applyMove(move, false)) {
+                    std::cout << "Invalid Move" << std::endl;
                     break;
                 }
+                spdlog::info("played move: " + move_str);    
             }
+
+            spdlog::info("current board: " + m_pEngine->getPosition().getFEN());
 
             //ChessHelper::drawPositionInTerminal(chessposition.getPosition());
 
@@ -208,15 +215,17 @@ namespace sm
                 handleGoSubcommand(arg, subcommandData);
             }
 
-            m_pEngine->getPosition().setActivePlayer(Chessposition::Player::BLACK);
             auto bestMove = m_pEngine->findMove(m_pEngine->getPosition());
+            bool playerIsWhite = m_pEngine->getPosition().getActivePlayer() == Chessposition::Player::WHITE;
+            std::cout << (playerIsWhite ? "White is playing" : "Black is playing") << std::endl;
             std::cout << "info score cp " << bestMove.evaluation << 
             " depth " << bestMove.depth << 
-            " nodes _ time _ pv " << ChessHelper::moveToString(bestMove.move) << std::endl; 
+            " nodes 0 time 0 pv " << ChessHelper::moveToString(bestMove.move) << std::endl; 
 
             std::cout << "bestmove " << ChessHelper::moveToString(bestMove.move) << std::endl;
+            spdlog::info("bestmove " + ChessHelper::moveToString(bestMove.move));
 
-            std::cout << "command not fully implemented yet" << std::endl;
+            //std::cout << "command not fully implemented yet" << std::endl;
         }
         
         /**
