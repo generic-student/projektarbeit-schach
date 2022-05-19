@@ -15,7 +15,6 @@ namespace sm {
 
 		explicit Chessposition();
 		explicit Chessposition(const std::string& fen);
-		explicit Chessposition(const std::array<std::array<char, 8>, 8>& pos);
 
 	private:
 		Chessposition::Player m_activePlayer = Player::WHITE;
@@ -23,7 +22,7 @@ namespace sm {
 		std::array<std::array<char, 8>, 8> m_position;
 		std::array<std::array<int, 8>, 8> m_moveCount;
 		Move m_previousMove;
-		int m_MovesSinceCaptureOrPawn = 0;
+		unsigned int m_MovesSinceCaptureOrPawn = 0;
 	
 
 		//Methoden

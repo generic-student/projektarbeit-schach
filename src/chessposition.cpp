@@ -4,11 +4,13 @@
 
 namespace sm {
 
-    const std::string Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+    const std::string Chessposition::STARTPOS_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0";
 
     void Chessposition::setFEN(std::string p_FEN)
     {
-        m_position = sm::ChessHelper::fenToArray(p_FEN);
+        char player;
+        m_position = sm::ChessHelper::fenToArray(p_FEN, &player, nullptr, &m_MovesSinceCaptureOrPawn, &m_moveNumber);
+        m_activePlayer = player == 'w' ? Chessposition::Player::WHITE : Chessposition::Player::BLACK;
     }
 
     void Chessposition::setActivePlayer(Chessposition::Player p_id)
@@ -28,7 +30,12 @@ namespace sm {
 
     std::string Chessposition::getFEN() const
     {
-        return sm::ChessHelper::arrayToFen(m_position);
+        std::string fen = sm::ChessHelper::arrayToFen(m_position);
+        fen += m_activePlayer == Player::WHITE ? " w" : " b";
+        fen += " - - ";
+        fen += std::to_string(m_MovesSinceCaptureOrPawn) + " ";
+        fen += std::to_string(m_moveNumber);
+        return fen;
     }
 
     char Chessposition::getType(int row, int column) const
@@ -189,6 +196,8 @@ namespace sm {
                         return false;
                     if (figureChrTrgt != '\0')
                         return false;
+                    if (m_position[move.startRow - 1][move.startCol] != '\0')
+                        return false;
                     break;
                 default:
                     return false;
@@ -245,6 +254,8 @@ namespace sm {
                     if (move.startRow != 1)
                         return false;
                     if (figureChrTrgt != '\0')
+                        return false;
+                    if (m_position[move.startRow + 1][move.startCol] != '\0')
                         return false;
                     break;
                 default:
@@ -837,15 +848,7 @@ namespace sm {
         m_previousMove = move;
 
         //update active Player
-        switch (getActivePlayer())
-        {
-        case Player::WHITE:
-                setActivePlayer(Player::BLACK);
-                break;
-        case Player::BLACK: 
-                setActivePlayer(Player::WHITE);
-                break;
-        }
+        m_activePlayer = (m_activePlayer == Player::BLACK) ? Player::WHITE : Player::BLACK;
 
         return true;
 
@@ -957,28 +960,16 @@ namespace sm {
     }
 
     Chessposition::Chessposition()
-        : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN))
+        : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN, nullptr, nullptr, nullptr, nullptr))
     {
-        m_moveCount = std::array<std::array<int, 8>, 8>();
         m_previousMove = Move();
     }
 
     Chessposition::Chessposition(const std::string& fen)
-        : m_position(sm::ChessHelper::fenToArray(fen))
+        : m_position()
     {
-        m_moveCount = std::array<std::array<int, 8>, 8>();
+        setFEN(fen);
         m_previousMove = Move();
     }
-
-    Chessposition::Chessposition(const std::array<std::array<char, 8>, 8>& pos)
-        : m_position(pos)
-    {
-        m_moveCount = std::array<std::array<int, 8>, 8>();
-        m_previousMove = Move();
-    }
-
-    // Chessposition::Chessposition(const Chessposition& cp) {
-
-    // }
 
 }
