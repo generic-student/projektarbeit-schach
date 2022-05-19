@@ -81,7 +81,7 @@ namespace sm
     {
         minMaxResult bestResult;
         Move bestMove;
-        float bestEval = -9999.f;
+        float bestEval = pos.getActivePlayer() == Chessposition::Player::WHITE ? -9999.f : 9999.f;
         std::vector<Move> moves;
 
         moves = m_position.getValidMoves();
@@ -95,9 +95,14 @@ namespace sm
 
             float eval = evaluateBoard(simulated.getPosition());
 
-            if (eval > bestEval)
-                bestEval = eval;
-
+            switch(pos.getActivePlayer()) {
+                case Chessposition::Player::WHITE:
+                    bestEval = eval > bestEval ? eval : bestEval;
+                    break;
+                case Chessposition::Player::BLACK:
+                    bestEval = eval < bestEval ? eval : bestEval;
+                    break;
+            }
         }
 
         bestResult.move = bestMove;
