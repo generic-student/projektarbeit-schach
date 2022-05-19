@@ -37,12 +37,32 @@ namespace sm
          * @param fen string in Forsyth-Edwards Notation
          * @return std::array<std::array<char, 8>, 8>
          */
-        std::array<std::array<char, 8>, 8> fenToArray(const std::string &fen)
+        std::array<std::array<char, 8>, 8> fenToArray(const std::string &fen, char *out_player, std::string *out_castling, unsigned int *out_halfturns, unsigned int *out_turns)
         {
             std::array<std::array<char, 8>, 8> pos;
             size_t row = 0;
             size_t col = 0;
-            for (const char c : fen)
+
+            //set the output variables if defined
+            std::string params = fen.substr(fen.find_first_of(" ")+1);
+            char player = params[0];
+            params = params.substr(params.find_first_of(" ")+1);
+            std::string castling = params.substr(0, params.find_first_of(" "));
+            params = params.substr(params.find_first_of(" ")+1);
+            std::string en_passent = params.substr(0, params.find_first_of(" "));
+            params = params.substr(params.find_first_of(" ")+1);
+            unsigned int halfturns = atoi(params.substr(0, params.find_first_of(" ")).data());
+            params = params.substr(params.find_first_of(" ")+1);
+            unsigned int turns = atoi(params.data());
+
+            if(out_player) *out_player = player;
+            if(out_castling) *out_castling = castling;
+            if(out_halfturns) *out_halfturns = halfturns;
+            if(out_turns) *out_turns = turns;
+
+            std::string position_str = fen.substr(0, fen.find_first_of(" "));
+
+            for (const char c : position_str)
             {
                 if (c <= '8' && c >= '1')
                 {
@@ -107,17 +127,21 @@ namespace sm
         {
             Move m;
 
-            //remove the hyphen if included
+            // remove the hyphen if included
             int hyphen_index = move_str.find("-");
-            if(hyphen_index != std::string::npos) {
+            if (hyphen_index != std::string::npos)
+            {
                 move_str.replace(hyphen_index, 1, "");
             }
 
             int capture_index = move_str.find("x");
-            if(capture_index != std::string::npos) {
+            if (capture_index != std::string::npos)
+            {
                 move_str.replace(capture_index, 1, "");
                 m.capture = true;
-            } else {
+            }
+            else
+            {
                 m.capture = false;
             }
 
@@ -135,10 +159,10 @@ namespace sm
                 move_str = move_str.substr(0, 4);
             }
 
-            m.startCol = (char)move_str[0] - 'a';
-            m.startRow = (char)move_str[1] - '1';
-            m.targetCol = (char)move_str[2] - 'a';
-            m.targetRow = (char)move_str[3] - '1';
+            m.startCol = move_str[0] - 'a';
+            m.startRow = 7 - (move_str[1] - '1');
+            m.targetCol = move_str[2] - 'a';
+            m.targetRow = 7 - (move_str[3] - '1');
 
             return m;
         }
@@ -358,17 +382,22 @@ namespace sm
         std::string moveToString(sm::Move p_move)
         {
             std::string out = "";
-            char c = p_move.startCol + 97;
+            char c = p_move.startCol + 'a';
             out += c;
-            c = p_move.startRow + 49;
+            c = '8' - p_move.startRow;
             out += c;
-            //out += '-';
-            c = p_move.targetCol + 97;
+
+            if (p_move.capture)
+            {
+                out += 'x';
+            }
+
+            c = p_move.targetCol + 'a';
             out += c;
-            c = p_move.targetRow + 49;
+            c = '8' - p_move.targetRow;
             out += c;
             c = p_move.promotion;
-            out += ' ' + c;
+            out += c;
 
             return out;
         }

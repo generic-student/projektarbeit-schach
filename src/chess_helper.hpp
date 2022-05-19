@@ -9,7 +9,7 @@ namespace sm
     namespace ChessHelper
     {
         void drawPositionInTerminal(const std::array<std::array<char, 8U>, 8U> &position);
-        std::array<std::array<char, 8>, 8> fenToArray(const std::string& fen);
+        std::array<std::array<char, 8>, 8> fenToArray(const std::string& fen, char* out_player, std::string* out_castling, unsigned int* out_halfturns, unsigned int* out_turns);
         std::string arrayToFen(const std::array<std::array<char, 8>, 8>& position);
         Move parseMove(std::string move_str);
         std::string moveToString(sm::Move p_move);
