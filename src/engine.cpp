@@ -78,16 +78,65 @@ namespace sm
         return m_engineOptions;
     }
 
-    minMaxResult Engine::findMove(Chessposition pos, int time, int startDepth, int depth) const
+    minMaxResult Engine::findMove(Chessposition pos,  float alpha, float beta, int time, int searchDepth, int depth) const
     {
+       
+
         minMaxResult bestResult;
         Move bestMove;
-        float bestEval = pos.getActivePlayer() == Chessposition::Player::WHITE ? -9999.f : 9999.f;
+        //float bestEval = pos.getActivePlayer() == Chessposition::Player::WHITE ? -9999.f : 9999.f;
         std::vector<Move> moves;
 
+
+        if (depth == searchDepth)
+        {
+            bestResult.evaluation = evaluateBoard(pos.getPosition());
+            bestResult.depth = depth;
+            return bestResult;
+        }
+
         moves = m_position.getValidMoves(true, true);
+
+        if (moves.size() == 0)
+        {
+            if (pos.isMatt())
+            {
+                bestResult.evaluation = -9999999.f;
+                bestResult.depth = depth;
+                return bestResult;
+            }
+            bestResult.evaluation = 0.f;
+            bestResult.depth = depth;
+            return bestResult;
+        }
+
+        for (auto& m : moves)
+        {
+            Chessposition simulated = pos;
+            simulated.applyMove(m, false);
+            minMaxResult result = findMove(simulated, -beta, -alpha, time, searchDepth, depth + 1);
+            result.evaluation = -result.evaluation;
+            if (result.evaluation >= beta)
+            {
+                bestResult.evaluation = beta;
+                bestResult.move = m;
+                bestResult.depth = depth;
+                return bestResult;
+            }
+            if (alpha < bestResult.evaluation)
+            {
+                alpha = bestResult.evaluation;
+                bestResult.move = m;
+            }
+        }
+
+        bestResult.depth = depth;
+        bestResult.evaluation = alpha;
+
+        return bestResult;
+        
         //spdlog::info("calculate best moves from " + std::to_string(moves.size()) + " moves.");
-        if(moves.empty()) {
+        /*if(moves.empty()) {
             spdlog::warn("no moves found!");
             return bestResult;
         }
@@ -116,7 +165,7 @@ namespace sm
         bestResult.evaluation = bestEval;
         bestResult.depth = depth;
 
-        return bestResult;
+        return bestResult;*/
     }
 
     float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const

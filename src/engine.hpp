@@ -23,7 +23,7 @@ namespace sm {
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
 
-            minMaxResult findMove(Chessposition pos, int time = 5, int startDepth = 4, int depth = 0)const;
+            minMaxResult findMove(Chessposition pos, float alpha, float beta, int time = 5, int searchDepth = 4, int depth = 0)const;
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 

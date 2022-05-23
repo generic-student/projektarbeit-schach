@@ -222,7 +222,7 @@ namespace sm
                 handleGoSubcommand(arg, subcommandData);
             }
 
-            auto bestMove = m_pEngine->findMove(m_pEngine->getPosition());
+            auto bestMove = m_pEngine->findMove(m_pEngine->getPosition(),-999999.f,999999.f);
             std::cout << "info score cp " << bestMove.evaluation << 
             " depth " << bestMove.depth << 
             " nodes 0 time 0 pv " << ChessHelper::moveToString(bestMove.move) << std::endl; 
