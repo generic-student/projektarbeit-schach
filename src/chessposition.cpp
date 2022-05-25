@@ -333,7 +333,7 @@ namespace sm {
             //pr�fen ob der weg frei ist gerade
             if (difX > 0)
             {
-                for (int i = move.startCol; i < move.targetCol; i++)
+                for (int i = move.startCol+1; i < move.targetCol; i++)
                 {
                     //char c = getType(i, m.startRow);
                     char c = m_position[move.startRow][i];
@@ -343,7 +343,7 @@ namespace sm {
             }
             else if (difX < 0)
             {
-                for (int i = move.startCol; i > move.targetCol; i--)
+                for (int i = move.startCol-1; i > move.targetCol; i--)
                 {
                     //char c = getType(i, m.startRow);
                     char c = m_position[move.startRow][i];
@@ -353,7 +353,7 @@ namespace sm {
             }
             if (difY > 0)
             {
-                for (int i = move.startRow; i < move.targetRow; i++)
+                for (int i = move.startRow+1; i < move.targetRow; i++)
                 {
                     //char c = getType(i, m.startRow);
                     char c = m_position[i][move.targetCol];
@@ -363,7 +363,7 @@ namespace sm {
             }
             else if (difY < 0)
             {
-                for (int i = move.startRow; i > move.targetRow; i--)
+                for (int i = move.startRow-1; i > move.targetRow; i--)
                 {
                     //char c = getType(i, m.startRow);
                     char c = m_position[i][move.startCol];
@@ -407,57 +407,41 @@ namespace sm {
             //unten rechts
             if (difX > 0 && difY > 0)
             {
-                for (int j = move.startRow; j < move.targetRow; j++)
+                for (int i = 1; i < difY; i++)
                 {
-                    for (int i = move.startCol; i < move.targetCol; i++)
-                    {
-                        //char c = getType(i, j);
-                        char c = m_position[j][i];
-                        if (c != '\0')
-                            return false;
-                    }
+                    char c = m_position[move.startRow + i][move.startCol + i];
+                    if (c != '\0')
+                        return false;
                 }
             }
             //oben links
-            if (difX < 0 && difY < 0)
+            else if (difX < 0 && difY < 0)
             {
-                for (int j = move.startRow; j > move.targetRow; j--)
+                for (int i = 1; i < -difY; i++)
                 {
-                    for (int i = move.startCol; i > move.targetCol; i--)
-                    {
-                        //char c = getType(i, j);
-                        char c = m_position[j][i];
-                        if (c != '\0')
-                            return false;
-                    }
+                    char c = m_position[move.startRow - i][move.startCol - i];
+                    if (c != '\0')
+                        return false;
                 }
             }
             //oben rechts
             else if (difX > 0 && difY < 0)
             {
-                for (int j = move.startRow; j > move.targetRow; j--)
+                for (int i = 1; i < -difY; i++)
                 {
-                    for (int i = move.startCol; i < move.targetCol; i++)
-                    {
-                        //char c = getType(i, j);
-                        char c = m_position[j][i];
-                        if (c != '\0')
-                            return false;
-                    }
+                    char c = m_position[move.startRow - i][move.startCol + i];
+                    if (c != '\0')
+                        return false;
                 }
             }
             //unten links
             else if (difX < 0 && difY >0)
             {
-                for (int j = move.startRow; j < move.targetRow; j++)
+                for (int i = 1; i < difY; i++)
                 {
-                    for (int i = move.startCol; i > move.targetCol; i--)
-                    {
-                        //char c = getType(i, j);
-                        char c = m_position[j][i];
-                        if (c != '\0')
-                            return false;
-                    }
+                    char c = m_position[move.startRow + i][move.startCol - i];
+                    if (c != '\0')
+                        return false;
                 }
             }
 
@@ -592,57 +576,41 @@ namespace sm {
                 //unten rechts
                 if (difX > 0 && difY > 0)
                 {
-                    for (int j = move.startRow; j < move.targetRow; j++)
+                    for (int i = 1; i < difY; i++)
                     {
-                        for (int i = move.startCol; i < move.targetCol; i++)
-                        {
-                            //char c = getType(i, j);
-                            char c = m_position[j][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                        char c = m_position[move.startRow + i][move.startCol + i];
+                        if (c != '\0')
+                            return false;
                     }
                 }
                 //oben links
                 else if (difX < 0 && difY < 0)
                 {
-                    for (int j = move.startRow; j > move.targetRow; j--)
+                    for (int i = 1; i < -difY; i++)
                     {
-                        for (int i = move.startCol; i > move.targetCol; i--)
-                        {
-                            //char c = getType(i, j);
-                            char c = m_position[j][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                        char c = m_position[move.startRow - i][move.startCol - i];
+                        if (c != '\0')
+                            return false;
                     }
                 }
                 //oben rechts
                 else if (difX > 0 && difY < 0)
                 {
-                    for (int j = move.startRow; j > move.targetRow; j--)
+                    for (int i = 1; i < -difY; i++)
                     {
-                        for (int i = move.startCol; i < move.targetCol; i++)
-                        {
-                            //char c = getType(i, j);
-                            char c = m_position[j][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                        char c = m_position[move.startRow - i][move.startCol + i];
+                        if (c != '\0')
+                            return false;
                     }
                 }
                 //unten links
                 else if (difX < 0 && difY >0)
                 {
-                    for (int j = move.startRow; j < move.targetRow; j++)
+                    for (int i = 1; i < difY; i++)
                     {
-                        for (int i = move.startCol; i > move.targetCol; i--)
-                        {
-                            //char c = getType(i, j);
-                            char c = m_position[j][i];
-                            if (c != '\0')
-                                return false;
-                        }
+                        char c = m_position[move.startRow + i][move.startCol - i];
+                        if (c != '\0')
+                            return false;
                     }
                 }
 
@@ -672,7 +640,7 @@ namespace sm {
                 //pr�fen ob der weg frei ist gerade
                 if (difX > 0)
                 {
-                    for (int i = move.startCol; i < move.targetCol; i++)
+                    for (int i = move.startCol+1; i < move.targetCol; i++)
                     {
                         //char c = getType(i, m.startRow);
                         char c = m_position[move.startRow][i];
@@ -682,7 +650,7 @@ namespace sm {
                 }
                 else if (difX < 0)
                 {
-                    for (int i = move.startCol; i > move.targetCol; i--)
+                    for (int i = move.startCol-1; i > move.targetCol; i--)
                     {
                         //char c = getType(i, m.startRow);
                         char c = m_position[move.startRow][i];
@@ -692,7 +660,7 @@ namespace sm {
                 }
                 if (difY > 0)
                 {
-                    for (int i = move.startRow; i < move.targetRow; i++)
+                    for (int i = move.startRow+1; i < move.targetRow; i++)
                     {
                         //char c = getType(i, m.startRow);
                         char c = m_position[i][move.startCol];
@@ -702,7 +670,7 @@ namespace sm {
                 }
                 else if (difY < 0)
                 {
-                    for (int i = move.startRow; i > move.targetRow; i--)
+                    for (int i = move.startRow-1; i > move.targetRow; i--)
                     {
                         //char c = getType(i, m.startRow);
                         char c = m_position[i][move.startCol];
@@ -865,7 +833,7 @@ namespace sm {
 
         simulated.applyMove(move, false);
 
-        simulated.setActivePlayer(m_activePlayer);
+        //simulated.setActivePlayer(m_activePlayer);
         std::array<std::array<bool, 8>, 8> threat = simulated.generateThreatMap();
 
         char king = m_activePlayer == Player::WHITE ? 'K' : 'k';
@@ -889,7 +857,7 @@ namespace sm {
             row.fill(false);
         }
 
-        std::vector<Move> viableMoves = getValidMoves(false, false);
+        std::vector<Move> viableMoves = getValidMoves(true, false);
 
         for (auto m : viableMoves)
         {
