@@ -103,6 +103,7 @@ namespace sm
             {
                 bestResult.evaluation = -9999999.f;
                 bestResult.depth = depth;
+                std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
                 return bestResult;
             }
             bestResult.evaluation = 0.f;
@@ -121,17 +122,20 @@ namespace sm
                 bestResult.evaluation = beta;
                 bestResult.move = m;
                 bestResult.depth = depth;
+                std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
                 return bestResult;
             }
-            if (alpha < bestResult.evaluation)
+            if (alpha < result.evaluation)
             {
-                alpha = bestResult.evaluation;
+                alpha = result.evaluation;
                 bestResult.move = m;
             }
         }
 
         bestResult.depth = depth;
         bestResult.evaluation = alpha;
+
+        std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
 
         return bestResult;
         
