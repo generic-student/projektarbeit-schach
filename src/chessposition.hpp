@@ -52,7 +52,13 @@ namespace sm {
 	private:
 		void clearMoveCount();
 		
-		
+		//split the isViableMove function into smaller subfunctions
+		bool isViableMoveForPawn(const Move& move, bool checkCaptureTarget) const;
+		bool isViableMoveForQueen(const Move& move, bool checkCaptureTarget) const;
+		bool isViableMoveForRook(const Move& move, bool checkCaptureTarget) const;
+		bool isViableMoveForKnight(const Move& move, bool checkCaptureTarget) const;
+		bool isViableMoveForKing(const Move& move, bool checkCaptureTarget) const;
+		bool isViableMoveForBishop(const Move& move, bool checkCaptureTarget) const;	
 	};
 
 }
