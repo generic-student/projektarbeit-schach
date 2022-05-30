@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <array>
+#include <mutex>
 #include "chessposition.hpp"
 #include "engine_options.hpp"
 #include "minMaxResult.hpp"
@@ -19,6 +20,7 @@ namespace sm {
             const std::string getAuthor() const;
             bool inDebugMode() const;
             void setDebugMode(bool debug);
+            void stop();
             bool isReady() const;
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
@@ -26,7 +28,7 @@ namespace sm {
             float max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
             float min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
 
-            void findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth) const;
+            MinMaxResult findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth);
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 
@@ -44,8 +46,11 @@ namespace sm {
 
             bool m_debugMode = false;
             bool m_ready = true;
+            bool m_stop = false;
 
             Chessposition m_position;
             EngineOptions m_engineOptions;
+
+            std::mutex m_mutex;
     };
 }

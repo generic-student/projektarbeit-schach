@@ -4,12 +4,13 @@
 namespace sm
 {
 
-	struct minMaxResult
+	struct MinMaxResult
 	{
 
 		Move move;
 		float evaluation;
 		int depth;
+		int nodes;
 
 	};
 

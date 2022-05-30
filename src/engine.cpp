@@ -48,6 +48,12 @@ namespace sm
     {
         m_debugMode = debug;
     }
+
+    void Engine::stop() {
+        m_mutex.lock();
+        m_stop = true;
+        m_mutex.unlock();
+    }
     
     /**
      * @brief Status if the engine is ready or not
@@ -79,6 +85,8 @@ namespace sm
     }
 
     float Engine::max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const {
+        if(m_stop) return -9999.f;
+
         nodes++;
 
         if(depth == 0) {
@@ -109,6 +117,8 @@ namespace sm
     }
 
     float Engine::min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const {
+        if(m_stop) return -9999.f;
+        
         nodes++;
         
         if(depth == 0) {
@@ -135,16 +145,24 @@ namespace sm
         return min;
     }
 
-    void Engine::findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth) const
+    MinMaxResult Engine::findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth)
     {
-        sm::Move move;
-        int nodes = 0;
+        //set the status of the engine
+        m_mutex.lock();
+        this->m_ready = false;
+        this->m_stop = false;
+        m_mutex.unlock();
         
         int p = (player == Chessposition::Player::WHITE) ? 1 : -1;
-        float score = max(m_position, p, desiredDepth, desiredDepth, -99999.f, 99999.f, nodes, &move);
+        MinMaxResult result = {Move::null(), 99999.f * -p, 0, 0};
+        float score = max(m_position, p, desiredDepth, desiredDepth, -99999.f, 99999.f, result.nodes, &result.move);
 
-        std::cout << "bestmove " << ChessHelper::moveToString(move) << std::endl;
-        spdlog::info("bestmove " + ChessHelper::moveToString(move));
+        m_mutex.lock();
+        this->m_ready = true;
+        this->m_stop = false;
+        m_mutex.unlock();
+
+        return result;
     }
 
     float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const

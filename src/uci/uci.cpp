@@ -127,6 +127,10 @@ namespace sm
             if (m_pEngine->isReady())
             {
                 std::cout << "readyok" << std::endl;
+            } else {
+                m_mutex.lock();
+                m_readyCheckQueued = true;
+                m_mutex.unlock();
             }
         }
 
@@ -209,8 +213,9 @@ namespace sm
         {
             m_mutex.lock();
             m_isRunning = false;
-            // cancle all running calculations
             m_mutex.unlock();
+
+            this->handleStopCommand(cmd);
 
             std::cout << "quit ok" << std::endl;
         }
@@ -222,19 +227,20 @@ namespace sm
          */
         void UniversalChessInterface::handleGoCommand(Command &cmd)
         {
-            GoSubcommandData subcommandData;
+            std::shared_ptr<GoSubcommandData> subcommandData = std::make_shared<GoSubcommandData>();
             const std::vector<std::string> &args = cmd.getArgs();
             for (const std::string &arg : args)
             {
-                handleGoSubcommand(arg, subcommandData);
+                handleGoSubcommand(arg, *subcommandData);
             }
 
-            this->m_minmaxThread = std::thread(
-                &Engine::findMove,
-                *m_pEngine,
-                m_pEngine->getPosition(),
-                m_pEngine->getPosition().getActivePlayer(),
-                5);
+            if(m_pEngine->isReady()) {
+                if(m_minmaxThread.joinable()) {
+                    m_minmaxThread.join();
+                }
+            }
+
+            this->m_minmaxThread = std::thread(&UniversalChessInterface::go, this, subcommandData);
         }
 
         /**
@@ -349,7 +355,13 @@ namespace sm
          */
         void UniversalChessInterface::handleStopCommand(Command &cmd)
         {
-            std::cout << "command not implemented yet" << std::endl;
+            m_pEngine->stop();
+
+            if(m_minmaxThread.joinable()) {
+                m_minmaxThread.join();
+            }
+
+            //std::cout << "command not implemented yet" << std::endl;
         }
 
         /**
@@ -380,6 +392,26 @@ namespace sm
         void UniversalChessInterface::handleUciNewGameCommand(Command &cmd)
         {
             m_pEngine->getPosition() = Chessposition(Chessposition::STARTPOS_FEN);
+        }
+        
+        void UniversalChessInterface::go(std::shared_ptr<GoSubcommandData> p_data)
+        {
+            const Chessposition& pos = m_pEngine->getPosition();
+            const Chessposition::Player player = pos.getActivePlayer();
+
+            int depth = p_data->depth == 0 ? 5 : p_data->depth;
+
+            MinMaxResult result = m_pEngine->findMove(pos, player, depth);
+
+            std::cout << "bestmove " << ChessHelper::moveToString(result.move) << std::endl;
+            //spdlog::info("bestmove " + ChessHelper::moveToString(result.move));
+
+            if(m_readyCheckQueued) {
+                std::cout << "readyok" << std::endl;
+                m_mutex.lock();
+                m_readyCheckQueued = false;
+                m_mutex.unlock();
+            }
         }
     }
 }

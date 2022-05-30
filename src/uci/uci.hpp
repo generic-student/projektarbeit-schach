@@ -29,10 +29,13 @@ namespace sm
                 void handleRegisterCommand(Command& cmd);
                 void handleUciNewGameCommand(Command& cmd);
 
+                void go(std::shared_ptr<GoSubcommandData> p_data);
+
             private:
                 bool m_isReady = false;
                 bool m_isInitialized = false;
                 bool m_debugMode = false;
+                bool m_readyCheckQueued = false;
 
                 std::thread m_minmaxThread;
         };
