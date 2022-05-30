@@ -88,7 +88,7 @@ namespace sm
         }
 
         //überprüfen, dass es sich um einen Bauern handelt wenn es eine Promotion gibt
-        if (move.promotion != '\0' && (figureChr != 'P' || figureChr != 'p'))
+        if (move.promotion != '\0' && figureChr != 'P' && figureChr != 'p')
         {
             return false;
         }
@@ -900,7 +900,6 @@ namespace sm
                pr�fen ob ob der K�nig maximal ein feld geht (pr�fen ob x und y Ver�nderung <=1 )
 
                 */
-
         if ((difX * difX) > 1 || (difY * difY) > 1)
         {
             // Castling
@@ -927,25 +926,7 @@ namespace sm
                 }
             }
 
-            // white castling
-            if (move.startRow == 0 && move.startCol == 4)
-            {
-                // small
-                if (move.targetRow == 0 && move.targetCol == 6)
-                {
-                    // check if there is nothing in the way
-                    if (m_position[0][move.startCol + 1] != '\0' || m_position[0][move.startCol + 2] != '\0')
-                        return false;
-                }
-
-                // large
-                if (move.targetRow == 0 && move.targetCol == 2)
-                {
-                    // check if there is nothing in the way
-                    if (m_position[0][move.startCol - 1] != '\0' || m_position[0][move.startCol - 2] != '\0' || m_position[0][move.startCol - 3] != '\0')
-                        return false;
-                }
-            }
+            return false;
         }
 
         // pr�fen, dass auf dem Zielfeld keine eigene figur steht
