@@ -229,17 +229,12 @@ namespace sm
                 handleGoSubcommand(arg, subcommandData);
             }
 
-            sm::Move move;
-            float score;
-            int desiredDepth = 5;
-            int player = m_pEngine->getPosition().getActivePlayer() == Chessposition::Player::WHITE ? 1 : -1;
-            int nodes = 0;
-            score = m_pEngine->max(m_pEngine->getPosition(), player, desiredDepth, desiredDepth, -99999.f, 99999.f, nodes, &move);
-
-            std::cout << "bestmove " << ChessHelper::moveToString(move) << std::endl;
-            spdlog::info("bestmove " + ChessHelper::moveToString(move));
-
-            // std::cout << "command not fully implemented yet" << std::endl;
+            this->m_minmaxThread = std::thread(
+                &Engine::findMove,
+                *m_pEngine,
+                m_pEngine->getPosition(),
+                m_pEngine->getPosition().getActivePlayer(),
+                5);
         }
 
         /**

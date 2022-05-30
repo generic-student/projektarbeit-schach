@@ -26,7 +26,7 @@ namespace sm {
             float max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
             float min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
 
-            minMaxResult findMove(Chessposition pos, float alpha, float beta, int time = 5, int searchDepth = 4, int depth = 0)const;
+            void findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth) const;
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 

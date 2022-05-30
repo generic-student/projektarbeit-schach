@@ -135,98 +135,16 @@ namespace sm
         return min;
     }
 
-    minMaxResult Engine::findMove(Chessposition pos,  float alpha, float beta, int time, int searchDepth, int depth) const
+    void Engine::findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth) const
     {
-       
-
-        minMaxResult bestResult;
-        Move bestMove;
-        //float bestEval = pos.getActivePlayer() == Chessposition::Player::WHITE ? -9999.f : 9999.f;
-        std::vector<Move> moves;
-
-
-        if (depth == searchDepth)
-        {
-            bestResult.evaluation = evaluateBoard(pos.getPosition());
-            bestResult.depth = depth;
-            return bestResult;
-        }
-
-        moves = m_position.getValidMoves(true, true);
-
-        if (moves.size() == 0)
-        {
-            if (pos.isMatt())
-            {
-                bestResult.evaluation = -9999999.f;
-                bestResult.depth = depth;
-                std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
-                return bestResult;
-            }
-            bestResult.evaluation = 0.f;
-            bestResult.depth = depth;
-            return bestResult;
-        }
-
-        for (auto& m : moves)
-        {
-            Chessposition simulated = pos;
-            simulated.applyMove(m, false);
-            minMaxResult result = findMove(simulated, -beta, -alpha, time, searchDepth, depth + 1);
-            result.evaluation = -result.evaluation;
-            if (result.evaluation >= beta)
-            {
-                bestResult.evaluation = beta;
-                bestResult.move = m;
-                bestResult.depth = depth;
-                std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
-                return bestResult;
-            }
-            if (alpha < result.evaluation)
-            {
-                alpha = result.evaluation;
-                bestResult.move = m;
-            }
-        }
-
-        bestResult.depth = depth;
-        bestResult.evaluation = alpha;
-
-        std::cout << "info score cp " << bestResult.evaluation << " depth " << bestResult.depth << " nodes 0 time 0 pv " << ChessHelper::moveToString(bestResult.move) << std::endl;
-
-        return bestResult;
+        sm::Move move;
+        int nodes = 0;
         
-        //spdlog::info("calculate best moves from " + std::to_string(moves.size()) + " moves.");
-        /*if(moves.empty()) {
-            spdlog::warn("no moves found!");
-            return bestResult;
-        }
-        bestMove = moves[0];
+        int p = (player == Chessposition::Player::WHITE) ? 1 : -1;
+        float score = max(m_position, p, desiredDepth, desiredDepth, -99999.f, 99999.f, nodes, &move);
 
-        for (auto m : moves)
-        {
-            spdlog::info(ChessHelper::moveToString(m));
-            Chessposition simulated = pos;
-
-            simulated.applyMove(m, false);
-
-            float eval = evaluateBoard(simulated.getPosition());
-
-            switch(pos.getActivePlayer()) {
-                case Chessposition::Player::WHITE:
-                    bestEval = eval > bestEval ? eval : bestEval;
-                    break;
-                case Chessposition::Player::BLACK:
-                    bestEval = eval < bestEval ? eval : bestEval;
-                    break;
-            }
-        }
-
-        bestResult.move = bestMove;
-        bestResult.evaluation = bestEval;
-        bestResult.depth = depth;
-
-        return bestResult;*/
+        std::cout << "bestmove " << ChessHelper::moveToString(move) << std::endl;
+        spdlog::info("bestmove " + ChessHelper::moveToString(move));
     }
 
     float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const
