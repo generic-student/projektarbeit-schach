@@ -5,6 +5,18 @@
 #include "chessposition.hpp"
 #include "engine_options.hpp"
 #include "minMaxResult.hpp"
+
+#define AVG_KING 4
+#define AVG_QUEEN 13
+#define AVG_PAWN 1
+#define AVG_BISHOP 6
+#define AVG_KNIGHT 4
+#define AVG_ROOK 7
+#define PA_IMPACT 2
+#define CONNECTED_PAWNS 1.0f
+#define DOUBLE_PAWNS -0.3f
+#define ISOLATED_PAWNS -0.2f
+
 namespace sm {
     /**
      * @brief The engine class contains all the functions and algorithms
@@ -36,13 +48,18 @@ namespace sm {
             * 
             * @return float: Returns the evaluation value as a float.
             */
-            float evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard) const;
+            float evaluateBoard(const Chessposition& currentBoard) const;
             Chessposition& getPosition();
             const Chessposition& getPosition() const;
 
         private:
             const std::string m_id = "SchwachMatt 0.1";
             const std::string m_author = "No U";
+
+            bool hasConnectedPawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentboard) const;
+            bool hasDoublePawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentboard) const;
+            bool hasIsolatedPawns(const char color, const unsigned short int p_col, const Chessposition& currentboard) const;
+
 
             bool m_debugMode = false;
             bool m_ready = true;

@@ -893,6 +893,7 @@ namespace sm
         int difY = move.targetRow - move.startRow;
         char figureChr = m_position[move.startRow][move.startCol];
         char figureChrTrgt = m_position[move.targetRow][move.targetCol];
+        Chessposition simulated;// = *this;
 
         /*
                K�nig Logik
