@@ -79,18 +79,37 @@ namespace sm
 
     float Engine::evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard)
     {
-        float score = 0.0f;
+
         // TODO: 
         // King Safety
         // Piece Activity
         // Pawn Structure
 
+        // Create simulated Chessposition with SWAPPED active player
+        Chessposition simulated = Chessposition(currentBoard);
+        Chessposition::Player currentPlayer = simulated.getActivePlayer();
+        Chessposition::Player otherPlayer;
+        if (currentPlayer == Chessposition::Player::WHITE)
+        {
+            otherPlayer = Chessposition::Player::BLACK;
+        }
+        else
+        {
+            otherPlayer = Chessposition::Player::WHITE;
+        }
+        simulated.setActivePlayer(otherPlayer);
 
+
+        float score = 0.0f;        
 
         // Variables for Bishop Pair Check
         unsigned short int whiteBishops = 0;
         unsigned short int blackBishops = 0;
 
+        // King Safety
+
+
+        // Material
         for (int i = 0; i < currentBoard.size(); i++)
         {
             for (int j = 0; j < currentBoard[i].size(); j++)
@@ -140,6 +159,7 @@ namespace sm
             }
         }
 
+        // Bishop Pair
         if (blackBishops >= 2)
         {
             score += -((int)(blackBishops / 2)) * 0.25f;

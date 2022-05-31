@@ -853,7 +853,7 @@ namespace sm {
 
     bool Chessposition::isKingAttackableInNextMove(Move move) const
     {
-        Chessposition simulated;// = *this;
+        Chessposition simulated = *this;
 
         simulated.applyMove(move, false);
 
