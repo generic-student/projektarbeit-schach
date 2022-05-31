@@ -6,12 +6,12 @@
 #include "engine_options.hpp"
 #include "minMaxResult.hpp"
 
-#define AVG_KING 4
-#define AVG_QUEEN 13
-#define AVG_PAWN 1
-#define AVG_BISHOP 6
-#define AVG_KNIGHT 4
-#define AVG_ROOK 7
+#define AVG_KING 8
+#define AVG_QUEEN 27
+#define AVG_PAWN 4
+#define AVG_BISHOP 13
+#define AVG_KNIGHT 8
+#define AVG_ROOK 14
 #define PA_IMPACT 2
 #define CONNECTED_PAWNS 1.0f
 #define DOUBLE_PAWNS -0.3f

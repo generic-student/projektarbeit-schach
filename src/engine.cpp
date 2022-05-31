@@ -174,7 +174,21 @@ namespace sm
             return false;
         }
 
-        if (currentBoard.getPosition()[p_row][p_col - 1] == color || currentBoard.getPosition()[p_row][p_col + 1] == color)
+        if (p_col == 0)
+        {
+            if (currentBoard.getPosition()[p_row][p_col + 1] == color)
+            {
+                return true;
+            }
+        }
+        else if (p_col == 7)
+        {
+            if (currentBoard.getPosition()[p_row][p_col - 1] == color)
+            {
+                return true;
+            }
+        }
+        else if (currentBoard.getPosition()[p_row][p_col - 1] == color || currentBoard.getPosition()[p_row][p_col + 1] == color)
         {
             return true;
         }
@@ -217,7 +231,21 @@ namespace sm
 
         for (unsigned int i = 0; i < 8; i++)
         {
-            if (currentBoard.getPosition()[i][p_col - 1] == color || currentBoard.getPosition()[i][p_col + 1] == color)
+            if (p_col == 0)
+            {
+                if (currentBoard.getPosition()[i][p_col + 1] == color)
+                {
+                    return false;
+                }
+            }
+            else if (p_col == 7)
+            {
+                if (currentBoard.getPosition()[i][p_col - 1] == color)
+                {
+                    return false;
+                }
+            }
+            else if (currentBoard.getPosition()[i][p_col - 1] == color || currentBoard.getPosition()[i][p_col + 1] == color)
             {
                 return false;
             }
@@ -266,8 +294,8 @@ namespace sm
                 case 'p':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_p += mod;
-                    score += -1.0f * mod;
-                    if (hasConnectedPawns('p', i, j, currentBoard))
+                    score += -1.0f *mod;
+                    /*if (hasConnectedPawns('p', i, j, currentBoard))
                     {
                         score -= CONNECTED_PAWNS;
                     }
@@ -278,13 +306,13 @@ namespace sm
                     if (hasIsolatedPawns('p', j, currentBoard))
                     {
                         score -= ISOLATED_PAWNS;
-                    }
+                    }*/
                     break;
                 case 'P':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_P += mod;
                     score += 1.0f * mod;
-                    if (hasConnectedPawns('P', i, j, currentBoard))
+                    /*if (hasConnectedPawns('P', i, j, currentBoard))
                     {
                         score += CONNECTED_PAWNS;
                     }
@@ -295,7 +323,7 @@ namespace sm
                     if (hasIsolatedPawns('P', j, currentBoard))
                     {
                         score += ISOLATED_PAWNS;
-                    }
+                    }*/
                     break;
 
                 case 'r':
