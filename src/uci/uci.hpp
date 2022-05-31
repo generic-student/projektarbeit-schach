@@ -2,6 +2,8 @@
 #include <string>
 #include "../chess_interface.hpp"
 #include "uci_command.hpp"
+#include <memory>
+#include <thread>
 
 namespace sm
 {
@@ -31,6 +33,8 @@ namespace sm
                 bool m_isReady = false;
                 bool m_isInitialized = false;
                 bool m_debugMode = false;
+
+                std::thread m_minmaxThread;
         };
     }
 };

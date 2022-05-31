@@ -3,7 +3,7 @@
 #include <array>
 #include "chessposition.hpp"
 #include "engine_options.hpp"
-
+#include "minMaxResult.hpp"
 
 #define AVG_KING 4
 #define AVG_QUEEN 13
@@ -15,7 +15,6 @@
 #define CONNECTED_PAWNS 1.0f
 #define DOUBLE_PAWNS -0.3f
 #define ISOLATED_PAWNS -0.2f
-
 
 namespace sm {
     /**
@@ -35,6 +34,11 @@ namespace sm {
             bool isReady() const;
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
+
+            float max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
+            float min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
+
+            void findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth) const;
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 
