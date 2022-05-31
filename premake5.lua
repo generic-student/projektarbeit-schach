@@ -8,6 +8,10 @@ project "SchwachMatt"
    cppdialect "C++17"
    targetdir "build/server/%{cfg.buildcfg}"
 
+   buildoptions {
+      "-gdwarf-3"
+   }
+
    files { 
       "src/**.hpp",
       "src/**.cpp",

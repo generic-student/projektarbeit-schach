@@ -49,6 +49,7 @@ namespace sm {
             * @return float: Returns the evaluation value as a float.
             */
             float evaluateBoard(const Chessposition& currentBoard) const;
+            float evaluateBoardSimple(const Chessposition& currentBoard) const;
             Chessposition& getPosition();
             const Chessposition& getPosition() const;
 

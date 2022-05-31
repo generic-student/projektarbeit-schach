@@ -1,10 +1,11 @@
 #include "uci/uci.hpp"
-#include <chrono>
 #include <iostream>
 #include "chess_helper.hpp"
 
 #include <spdlog/spdlog.h>
 #include "spdlog/sinks/basic_file_sink.h"
+
+#include "benchmark.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -20,29 +21,28 @@ int main(int argc, char const *argv[])
     //start handling messages
     interface.start();
 
+    // Benchmark benchmark("logs/benchmarks/getvalidmoves.log", "Get Valid Moves Parallel", "benchmark");
     // sm::Chessposition cp;
+    // sm::Engine engine;
 
-    // std::vector<sm::Move> allMoves;
-
-    // auto start = std::chrono::high_resolution_clock::now();
-
-    // allMoves = cp.getValidMoves();
-    
-    // auto stop = std::chrono::high_resolution_clock::now();
-
-    // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-    // // To get the value of duration use the count()
-    // // member function on the duration object
-    // std::cout << duration.count() << std::endl;
-    // std::cout << allMoves.size() << std::endl;
-
-    // for (auto a : allMoves)
-    // {
-    //     std::cout << sm::ChessHelper::moveToString(a) << std::endl;
+    // benchmark.start_test();
+    // for(int j = 1; j <= 10000; j*=10) {
+    //     benchmark.begin();
+    //     for(int i = 0; i < j; i++) {
+    //         cp.getValidMoves(true, true);
+    //     }
+    //     benchmark.end("Spieler {1:+d}    Elapsed: {0:08.3f} s    Iterations: {2:05d}", 1, j);
     // }
 
-    //cp.generateThreatMap();
+    // cp.applyMove(sm::ChessHelper::parseMove("b2b3"), false);
+    // for(int j = 1; j <= 10000; j*=10) {
+    //     benchmark.begin();
+    //     for(int i = 0; i < j; i++) {
+    //         cp.getValidMoves(true, true);
+    //     }
+    //     benchmark.end("Spieler {1:+d}    Elapsed: {0:08.3f} s    Iterations: {2:05d}", -1, j);
+    // }
+    // benchmark.end_test();
 
     return 0;
 }

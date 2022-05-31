@@ -90,12 +90,12 @@ namespace sm
         nodes++;
 
         if (depth == 0) {
-            return evaluateBoard(pos) * player;
+            return evaluateBoardSimple(pos) * player;
         }
 
         auto moves = pos.getValidMoves(true, true);
         if (moves.size() == 0) {
-            return evaluateBoard(pos) * player;
+            return evaluateBoardSimple(pos) * player;
         }
 
         float max = alpha;
@@ -122,12 +122,12 @@ namespace sm
         nodes++;
 
         if (depth == 0) {
-            return evaluateBoard(pos) * player;
+            return evaluateBoardSimple(pos) * player;
         }
 
         auto moves = pos.getValidMoves(true, true);
         if (moves.size() == 0) {
-            return evaluateBoard(pos) * player;
+            return evaluateBoardSimple(pos) * player;
         }
 
         float min = beta;
@@ -193,9 +193,9 @@ namespace sm
             return true;
         }
         else
-        {
-            return false;
-        }
+        
+        return false;
+        
     }
 
     bool Engine::hasDoublePawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
@@ -253,6 +253,69 @@ namespace sm
 
         return true;
 
+    }
+
+    float Engine::evaluateBoardSimple(const Chessposition& currentBoard) const {
+        float score = 0.0f;
+        // TODO: 
+        // King Safety
+        // Piece Activity
+        // Pawn Structure
+        // Variables for Bishop Pair Check
+        unsigned short int whiteBishops = 0;
+        unsigned short int blackBishops = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                switch (currentBoard.getType(i, j))
+                {
+                case 'p':
+                    score += -1.0f;
+                    break;
+                case 'P':
+                    score += 1.0f;
+                    break;
+                case 'r':
+                    score += -5.0f;
+                    break;
+                case 'R':
+                    score += 5.0f;
+                    break;
+                case 'n':
+                    score += -3.25f;
+                    break;
+                case 'N':
+                    score += 3.25f;
+                    break;
+                case 'q':
+                    score += -9.75;
+                    break;
+                case 'Q':
+                    score += 9.75f;
+                    break;
+                case 'b':
+                    score += -3.25f;
+                    blackBishops += 1;
+                    break;
+                case 'B':
+                    score += 3.25f;
+                    whiteBishops += 1;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        if (blackBishops >= 2)
+        {
+            score += -((int)(blackBishops / 2)) * 0.25f;
+        }
+        if (whiteBishops >= 2)
+        {
+            score += ((int)(whiteBishops / 2)) * 0.25f;
+        }
+        return score;
     }
 
     float Engine::evaluateBoard(const Chessposition& currentBoard) const

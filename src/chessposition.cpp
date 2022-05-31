@@ -283,16 +283,174 @@ namespace sm
         simulated.applyMove(move, false);
 
         // simulated.setActivePlayer(m_activePlayer);
-        std::array<std::array<bool, 8>, 8> threat = simulated.generateThreatMap();
+        // std::array<std::array<bool, 8>, 8> threat = simulated.generateThreatMap();
 
+        // char king = m_activePlayer == Player::WHITE ? 'K' : 'k';
+        // for (int i = 0; i < 8; i++)
+        // {
+        //     for (int j = 0; j < 8; j++)
+        //     {
+        //         if (threat[i][j] && simulated.getType(i, j) == king)
+        //             return true;
+        //     }
+        // }
+
+        //big function
         char king = m_activePlayer == Player::WHITE ? 'K' : 'k';
+        int king_row, king_col;
+        bool king_found = false;
+        //get the king
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (threat[i][j] && simulated.getType(i, j) == king)
-                    return true;
+                if(simulated.getType(i, j) == king) {
+                    king_row = i;
+                    king_col = j;
+                    king_found = true;
+                    i = 8;
+                    j = 8;
+                    break;
+                }
             }
+        }
+
+        if(!king_found) {
+            return true;
+        }
+
+        char ENEMY_QUEEN = m_activePlayer == Player::WHITE ? 'q' : 'Q';
+        char ENEMY_KNIGHT = m_activePlayer == Player::WHITE ? 'n' : 'N';
+        char ENEMY_BISHOP = m_activePlayer == Player::WHITE ? 'b' : 'B';
+        char ENEMY_ROOK = m_activePlayer == Player::WHITE ? 'r' : 'R';
+        char ENEMY_KING = m_activePlayer == Player::WHITE ? 'k' : 'K';
+
+        //left top
+        for(int i = 1; i <= std::min(king_row, king_col); i++) {
+            char piece = simulated.getType(king_row - i, king_col - i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_BISHOP) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //left bot
+        for(int i = 1; i <= std::min(7 - king_row, king_col); i++) {
+            char piece = simulated.getType(king_row + i, king_col - i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_BISHOP) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //right top
+        for(int i = 1; i <= std::min(king_row, 7 - king_col); i++) {
+            char piece = simulated.getType(king_row - i, king_col + i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_BISHOP) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //right bot
+        for(int i = 1; i <= std::min(7 - king_row, 7 - king_col); i++) {
+            char piece = simulated.getType(king_row + i, king_col + i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_BISHOP) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //top
+        for(int i = 1; i <= king_row; i++) {
+            char piece = simulated.getType(king_row - i, king_col);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_ROOK) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //bot
+        for(int i = 1; i <= 7 - king_row; i++) {
+            char piece = simulated.getType(king_row + i, king_col);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_ROOK) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //left
+        for(int i = 1; i <= king_col; i++) {
+            char piece = simulated.getType(king_row, king_col - i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_ROOK) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        //right
+        for(int i = 1; i <= 7 - king_col; i++) {
+            char piece = simulated.getType(king_row, king_col + i);
+            if(piece == ENEMY_QUEEN || piece == ENEMY_ROOK) {
+                return true;
+            }
+            else if(piece != '\0') {
+                break;
+            }
+        }
+
+        // enemy knights
+        if(king_col > 0 && king_row > 1 && simulated.getType(king_row - 2, king_col - 1) == ENEMY_KNIGHT || 
+        king_col < 7 && king_row > 1 && simulated.getType(king_row - 2, 7 - king_col) == ENEMY_KNIGHT ||
+        king_col < 6 && king_row > 0 && simulated.getType(king_row - 1, 6 - king_col) == ENEMY_KNIGHT ||
+        king_col < 6 && king_row < 7 && simulated.getType(7 - king_row, 6 - king_col) == ENEMY_KNIGHT ||
+        king_col < 7 && king_row < 6 && simulated.getType(6 - king_row, 7 - king_col) == ENEMY_KNIGHT ||
+        king_col > 0 && king_row < 6 && simulated.getType(6 - king_row, king_col - 1) == ENEMY_KNIGHT ||
+        king_col > 1 && king_row < 7 && simulated.getType(7 - king_row, king_col - 2) == ENEMY_KNIGHT ||
+        king_col > 1 && king_row > 0 && simulated.getType(king_row - 1, king_col - 2) == ENEMY_KNIGHT) {
+              return true;
+          }
+                
+        //enemy king
+        if(king_col > 0 && king_row > 0 && simulated.getType(king_row - 1, king_col - 1) == ENEMY_KING ||
+        king_col < 7 && king_row > 0 && simulated.getType(king_row - 1, king_col + 1) == ENEMY_KING ||
+        king_col < 7 && king_row < 7 && simulated.getType(king_row + 1, king_col + 1) == ENEMY_KING ||
+        king_col > 0 && king_row < 7 && simulated.getType(king_row + 1, king_col - 1) == ENEMY_KING ||
+        king_col > 0 && simulated.getType(king_row, king_col - 1) == ENEMY_KING ||
+        king_col < 7 && simulated.getType(king_row, king_col + 1) == ENEMY_KING ||
+        king_row > 0 && simulated.getType(king_row - 1, king_col) == ENEMY_KING ||
+        king_row < 7 && simulated.getType(king_row + 1, king_col) == ENEMY_KING) {
+            return true;
+        }
+
+        //enemy pawns
+        switch(m_activePlayer) {
+            case Player::WHITE:
+                if(king_row > 0 && king_col > 0 && simulated.getType(king_row - 1, king_col - 1) == 'p' || 
+                king_row > 0 && king_col < 7 && simulated.getType(king_row - 1, king_col + 1) == 'p') {
+                    return true;
+                }
+                break;
+            case Player::BLACK:
+                if(king_row < 7 && king_col > 0 && simulated.getType(king_row + 1, king_col - 1) == 'P' || 
+                king_row < 7 && king_col < 7 && simulated.getType(king_row + 1, king_col + 1) == 'P') {
+                    return true;
+                }
+                break;
         }
 
         return false;
@@ -376,8 +534,18 @@ namespace sm
     }
 
     Chessposition::Chessposition()
-        : m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN, nullptr, nullptr, nullptr, nullptr))
+        //: m_position(sm::ChessHelper::fenToArray(Chessposition::STARTPOS_FEN, nullptr, nullptr, nullptr, nullptr))
     {
+        m_position = std::array<std::array<char, 8>, 8>{
+            std::array<char, 8>{'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
+            std::array<char, 8>{'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+            std::array<char, 8>{'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+            std::array<char, 8>{'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+            std::array<char, 8>{'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+            std::array<char, 8>{'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+            std::array<char, 8>{'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+            std::array<char, 8>{'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
+
         clearMoveCount();
         m_previousMove = Move();
     }
