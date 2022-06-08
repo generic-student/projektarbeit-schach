@@ -192,7 +192,6 @@ namespace sm
         {
             return true;
         }
-        else
         
         return false;
         
@@ -320,6 +319,7 @@ namespace sm
             }
         }
         
+        return false;
     }
 
     bool Engine::isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const

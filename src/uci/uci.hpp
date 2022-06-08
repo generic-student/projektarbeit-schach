@@ -28,6 +28,8 @@ namespace sm
                 void handlePonderhitCommand(Command& cmd);
                 void handleRegisterCommand(Command& cmd);
                 void handleUciNewGameCommand(Command& cmd);
+                void handleEvaluateCommand(Command& cmd);
+                void handleGetValidMovesCommand(Command& cmd);
 
                 void go(std::shared_ptr<GoSubcommandData> p_data);
 
