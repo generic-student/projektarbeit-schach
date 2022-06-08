@@ -562,9 +562,132 @@ namespace sm
         return m_position;
     }
 
+
+    /**
+     * @brief orders the given List of moves by an vague Evaluation 
+     *
+     * @return std::vector<Move>
+     */
     std::vector<Move> Engine::orderMoves(std::vector<Move> moves)
     {
-        return std::vector<Move>();
+        float moveEval[218];
+        float captureMultiplier = 3;
+
+        moveEval[0] = 0;
+
+        for (int i = 0; i< moves.size(); i++)
+        {
+            Move m = moves[i];
+
+            float score = 0;
+            char movedPiece = m_position.getType(m.startRow, m.startCol);
+            char capturePiece = m_position.getType(m.captureRow, m.captureCol);
+            float capturePieceValue = 0;
+            float pieceValue = 0;
+
+            switch (capturePiece)
+            {
+            case 'p':
+            case 'P':
+                capturePieceValue = PAWN;
+                break;
+            case 'r':
+            case 'R':
+                capturePieceValue = ROOK;
+                break;
+            case 'n':
+            case 'N':
+                capturePieceValue = KNIGHT;
+                break;
+            case 'q':
+            case 'Q':
+                capturePieceValue = QUEEN;
+                break;
+            case 'b':
+            case 'B':
+                capturePieceValue = BISHOP;
+                break;
+            }
+            switch (movedPiece)
+            {
+            case 'p':
+            case 'P':
+                pieceValue = PAWN;
+                break;
+            case 'r':
+            case 'R':
+                pieceValue = ROOK;
+                break;
+            case 'n':
+            case 'N':
+                pieceValue = KNIGHT;
+                break;
+            case 'q':
+            case 'Q':
+                pieceValue = QUEEN;
+                break;
+            case 'b':
+            case 'B':
+                pieceValue = BISHOP;
+                break;
+            }
+
+            //Wenn eine gegnerische Figur geschlagen wird, soll die möglichst beste Figur des Gegners,
+            //mit der möglichst schlechtesten eigenen Figur zuerst überprüft werden
+            if (m.capture)
+            {
+                score += capturePieceValue * captureMultiplier - pieceValue;
+            }
+
+            //Wenn ein Bauer promoted wird soll zuerst die Königin und dann die andern Figuren bewertet werden
+            //(wird vermutlich immer die Königin werden, da die Evaluation die Position der einzelnen
+            // Figuren nicht bewertet und somit die Königin immer am besten ist)
+            if (m.promotion != '\0')
+            {
+                switch (m.promotion)
+                {
+                case 'r':
+                case 'R':
+                    score += ROOK;
+                    break;
+                case 'n':
+                case 'N':
+                    score += KNIGHT;
+                    break;
+                case 'q':
+                case 'Q':
+                    score += QUEEN;
+                    break;
+                case 'b':
+                case 'B':
+                    score += BISHOP;
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            moveEval[i] = score;
+        }
+
+        //Züge anhand der groben Evaluierung sortieren
+        for (int i = 0; i < moves.size() - 1; i++) {
+            for (int j = i + 1; j > 0; j--) {
+                int swap = j - 1;
+                if (moveEval[swap] < moveEval[j]) {
+                    Move tempMove = moves[j];
+                    float tempEval = moveEval[j];
+
+                    moves[j] = moves[swap];
+                    moves[swap] = tempMove;
+
+                    moveEval[j] = moveEval[swap];
+                    moveEval[swap] = tempEval;
+                }
+            }
+        }
+
+        return moves;
     }
 
 
