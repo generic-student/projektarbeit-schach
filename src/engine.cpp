@@ -1,6 +1,7 @@
 #include "engine.hpp"
 #include <spdlog/spdlog.h>
 #include "chess_helper.hpp"
+
 namespace sm
 {
     Engine::Engine()
@@ -276,21 +277,21 @@ namespace sm
             }
             if (p_col == 0)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row + 2][p_col + 1] == 'P')
                 {
                     return true;
                 }
             }
             else if (p_col == 7)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row + 2][p_col - 1] == 'P')
                 {
                     return true;
                 }
             }
             else
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P'))
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition()[p_row + 2][p_col - 1] == 'P' || currentBoard.getPosition()[p_row + 2][p_col + 1] == 'P'))
                 {
                     return true;
                 }
@@ -304,33 +305,148 @@ namespace sm
             }
             if (p_col == 0)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row - 2][p_col + 1] == 'P')
                 {
                     return true;
                 }
             }
             else if (p_col == 7)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row - 2][p_col - 1] == 'P')
                 {
                     return true;
                 }
             }
             else
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P'))
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition()[p_row - 2][p_col - 1] == 'P' || currentBoard.getPosition()[p_row - 2][p_col + 1] == 'P'))
                 {
                     return true;
                 }
             }
         }
+        return false;
+    }
         
+    
+    bool Engine::isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    {
+        if (color != 'p' && color != 'P')
+        {
+            // invalid Input
+            return false;
+        }
+        if (p_row == 0 || p_row == 7)
+        {
+            // ist sicher keine Pawn Chain
+            return false;
+        }
+
+        if (p_col == 0)
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col + 1] == color || currentBoard.getPosition()[p_row + 1][p_col + 1] == color)
+            {
+                return true;
+            }
+        }
+        else if (p_col == 7)
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col - 1] == color || currentBoard.getPosition()[p_row + 1][p_col - 1] == color)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col - 1] == color || currentBoard.getPosition()[p_row + 1][p_col - 1] == color || currentBoard.getPosition()[p_row - 1][p_col + 1] == color || currentBoard.getPosition()[p_row + 1][p_col + 1] == color)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
-    bool Engine::isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    bool Engine::isPassedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
     {
+        if (color != 'p' && color != 'P')
+        {
+            // invalid Input
+            return false;
+        }
 
+        if (color == 'p')
+        {
+            if (p_col == 0)
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col] == 'P' || currentBoard.getPosition()[i][p_col + 1] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (p_col == 7)
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'P' || currentBoard.getPosition()[i][p_col] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'P' || currentBoard.getPosition()[i][p_col] == 'P' || currentBoard.getPosition()[i][p_col + 1] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+        }
+        else if (color == 'P')
+        {
+            if (p_col == 0)
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col] == 'p' || currentBoard.getPosition()[i][p_col + 1] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (p_col == 7)
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'p' || currentBoard.getPosition()[i][p_col] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'p' || currentBoard.getPosition()[i][p_col] == 'p' || currentBoard.getPosition()[i][p_col + 1] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
     }
 
     
@@ -641,16 +757,16 @@ namespace sm
                 break;
             }
 
-            //Wenn eine gegnerische Figur geschlagen wird, soll die möglichst beste Figur des Gegners,
-            //mit der möglichst schlechtesten eigenen Figur zuerst überprüft werden
+            //Wenn eine gegnerische Figur geschlagen wird, soll die mï¿½glichst beste Figur des Gegners,
+            //mit der mï¿½glichst schlechtesten eigenen Figur zuerst ï¿½berprï¿½ft werden
             if (m.capture)
             {
                 score += capturePieceValue * captureMultiplier - pieceValue;
             }
 
-            //Wenn ein Bauer promoted wird soll zuerst die Königin und dann die andern Figuren bewertet werden
-            //(wird vermutlich immer die Königin werden, da die Evaluation die Position der einzelnen
-            // Figuren nicht bewertet und somit die Königin immer am besten ist)
+            //Wenn ein Bauer promoted wird soll zuerst die Kï¿½nigin und dann die andern Figuren bewertet werden
+            //(wird vermutlich immer die Kï¿½nigin werden, da die Evaluation die Position der einzelnen
+            // Figuren nicht bewertet und somit die Kï¿½nigin immer am besten ist)
             if (m.promotion != '\0')
             {
                 switch (m.promotion)
@@ -676,8 +792,8 @@ namespace sm
                 }
             }
 
-            //Wenn kein Bauer bewegt wird und dies höherwertige Figur von einem gegnerischen Bauer geschlagen werden kann,
-            //ist dies eher schlecht und der move sollte erst später bewertet werden
+            //Wenn kein Bauer bewegt wird und dies hÃ¶herwertige Figur von einem gegnerischen Bauer geschlagen werden kann,
+            //ist dies eher schlecht und der move sollte erst spÃ¤ter bewertet werden
             if (movedPiece != 'p' && movedPiece != 'P')
             {
                 if (isAttackableByPawn(m.targetRow,m.targetCol))
@@ -689,11 +805,12 @@ namespace sm
             moveEval[i] = score;
         }
 
-        //Züge anhand der groben Evaluierung sortieren
-        for (int i = 0; i < moves.size() - 1; i++) {
+        //Zï¿½ge anhand der groben Evaluierung sortieren
+        for (int i = 0; i < (int)moves.size() - 1; i++) {
             for (int j = i + 1; j > 0; j--) {
                 int swap = j - 1;
                 if (moveEval[swap] < moveEval[j]) {
+                    
                     Move tempMove = moves[j];
                     float tempEval = moveEval[j];
 
