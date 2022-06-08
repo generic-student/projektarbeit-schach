@@ -53,6 +53,7 @@ namespace sm {
             float evaluateBoardSimple(const Chessposition& currentBoard) const;
             Chessposition& getPosition();
             const Chessposition& getPosition() const;
+            std::vector<Move> orderMoves(std::vector<Move> moves);
 
         private:
             const std::string m_id = "SchwachMatt 0.1";
