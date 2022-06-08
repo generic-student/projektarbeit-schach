@@ -429,7 +429,7 @@ namespace sm
                 case 'p':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_p += mod;
-                    score += -1.0f *mod;
+                    score += -PAWN *mod;
                     if (isConnectedPawn('p', i, j, currentBoard))
                     {
                         score -= CONNECTED_PAWNS;
@@ -446,7 +446,7 @@ namespace sm
                 case 'P':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_P += mod;
-                    score += 1.0f * mod;
+                    score += PAWN * mod;
                     if (isConnectedPawn('P', i, j, currentBoard))
                     {
                         score += CONNECTED_PAWNS;
@@ -464,46 +464,46 @@ namespace sm
                 case 'r':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_ROOK);
                     mod_r += mod;
-                    score += -5.0f * mod;
+                    score += -ROOK * mod;
                     break;
                 case 'R':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_ROOK);
                     mod_R += mod;
-                    score += 5.0f * mod;
+                    score += ROOK * mod;
                     break;
 
                 case 'n':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_KNIGHT);
                     mod_n += mod;
-                    score += -3.25f * mod;
+                    score += -KNIGHT * mod;
                     break;
                 case 'N':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_KNIGHT);
                     mod_N += mod;
-                    score += 3.25f * mod;
+                    score += KNIGHT * mod;
                     break;
 
                 case 'q':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_QUEEN);
                     mod_q += mod;
-                    score += -9.75 * mod;
+                    score += -QUEEN * mod;
                     break;
                 case 'Q':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_QUEEN);
                     mod_Q += mod;
-                    score += 9.75f * mod;
+                    score += QUEEN * mod;
                     break;
 
                 case 'b':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_BISHOP);
                     mod_b += mod;
-                    score += -3.25f * mod;
+                    score += -BISHOP * mod;
                     blackBishops += 1;
                     break;
                 case 'B':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_BISHOP);
                     mod_B += mod;
-                    score += 3.25f * mod;
+                    score += BISHOP * mod;
                     whiteBishops += 1;
                     break;
 
@@ -516,11 +516,11 @@ namespace sm
         // Bishop Pair
         if (blackBishops >= 2)
         {
-            score += -((int)(blackBishops / 2)) * 0.25f;
+            score += -((int)(blackBishops / 2)) * BISHOP_PAIR_MOD;
         }
         if (whiteBishops >= 2)
         {
-            score += ((int)(whiteBishops / 2)) * 0.25f;
+            score += ((int)(whiteBishops / 2)) * BISHOP_PAIR_MOD;
         }
 
         // Piece-Activity Comparison

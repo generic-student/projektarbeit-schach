@@ -6,6 +6,12 @@
 #include "engine_options.hpp"
 #include "minMaxResult.hpp"
 
+#define PAWN 1.0f
+#define ROOK 5.0f
+#define KNIGHT 3.25f
+#define QUEEN 9.75f
+#define BISHOP 3.25f
+#define BISHOP_PAIR_MOD 0.25f
 #define AVG_KING 8
 #define AVG_QUEEN 27
 #define AVG_PAWN 4
