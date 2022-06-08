@@ -1,6 +1,7 @@
 #include "engine.hpp"
 #include <spdlog/spdlog.h>
 #include "chess_helper.hpp"
+
 namespace sm
 {
     Engine::Engine()
@@ -638,16 +639,16 @@ namespace sm
                 break;
             }
 
-            //Wenn eine gegnerische Figur geschlagen wird, soll die möglichst beste Figur des Gegners,
-            //mit der möglichst schlechtesten eigenen Figur zuerst überprüft werden
+            //Wenn eine gegnerische Figur geschlagen wird, soll die mï¿½glichst beste Figur des Gegners,
+            //mit der mï¿½glichst schlechtesten eigenen Figur zuerst ï¿½berprï¿½ft werden
             if (m.capture)
             {
                 score += capturePieceValue * captureMultiplier - pieceValue;
             }
 
-            //Wenn ein Bauer promoted wird soll zuerst die Königin und dann die andern Figuren bewertet werden
-            //(wird vermutlich immer die Königin werden, da die Evaluation die Position der einzelnen
-            // Figuren nicht bewertet und somit die Königin immer am besten ist)
+            //Wenn ein Bauer promoted wird soll zuerst die Kï¿½nigin und dann die andern Figuren bewertet werden
+            //(wird vermutlich immer die Kï¿½nigin werden, da die Evaluation die Position der einzelnen
+            // Figuren nicht bewertet und somit die Kï¿½nigin immer am besten ist)
             if (m.promotion != '\0')
             {
                 switch (m.promotion)
@@ -676,11 +677,12 @@ namespace sm
             moveEval[i] = score;
         }
 
-        //Züge anhand der groben Evaluierung sortieren
-        for (int i = 0; i < moves.size() - 1; i++) {
+        //Zï¿½ge anhand der groben Evaluierung sortieren
+        for (int i = 0; i < (int)moves.size() - 1; i++) {
             for (int j = i + 1; j > 0; j--) {
                 int swap = j - 1;
                 if (moveEval[swap] < moveEval[j]) {
+                    
                     Move tempMove = moves[j];
                     float tempEval = moveEval[j];
 
