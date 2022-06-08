@@ -16,6 +16,7 @@
 #define CONNECTED_PAWNS 1.0f
 #define DOUBLE_PAWNS -0.3f
 #define ISOLATED_PAWNS -0.2f
+#define BACKWARDS_PAWNS -0.125f
 
 namespace sm {
     /**
@@ -57,9 +58,11 @@ namespace sm {
             const std::string m_id = "SchwachMatt 0.1";
             const std::string m_author = "No U";
 
-            bool hasConnectedPawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentboard) const;
-            bool hasDoublePawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentboard) const;
-            bool hasIsolatedPawns(const char color, const unsigned short int p_col, const Chessposition& currentboard) const;
+            bool isConnectedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isDoublePawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isIsolatedPawn(const char color, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isBackwardsPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
 
 
             bool m_debugMode = false;

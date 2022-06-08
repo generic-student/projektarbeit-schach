@@ -166,7 +166,7 @@ namespace sm
     }
     
     
-    bool Engine::hasConnectedPawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    bool Engine::isConnectedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
     {
         if (color != 'p' && color != 'P')
         {
@@ -198,7 +198,7 @@ namespace sm
         
     }
 
-    bool Engine::hasDoublePawns(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    bool Engine::isDoublePawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
     {
         if (color != 'p' && color != 'P')
         {
@@ -221,7 +221,7 @@ namespace sm
         return false;
     }
 
-    bool Engine::hasIsolatedPawns(const char color, const unsigned short int p_col, const Chessposition& currentBoard) const
+    bool Engine::isIsolatedPawn(const char color, const unsigned short int p_col, const Chessposition& currentBoard) const
     {
         if (color != 'p' && color != 'P')
         {
@@ -252,6 +252,78 @@ namespace sm
         }
 
         return true;
+
+    }
+
+    bool Engine::isBackwardsPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    {
+        if (color != 'p' && color != 'P')
+        {
+            // invalid Input
+            return false;
+        }
+
+        if (color == 'p')
+        {
+            if (p_row > 5)
+            {
+                return false;
+            }
+            if (p_col == 0)
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P')
+                {
+                    return true;
+                }
+            }
+            else if (p_col == 7)
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P')
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P'))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (color == 'p')
+        {
+            if (p_row < 2)
+            {
+                return false;
+            }
+            if (p_col == 0)
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P')
+                {
+                    return true;
+                }
+            }
+            else if (p_col == 7)
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P')
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P'))
+                {
+                    return true;
+                }
+            }
+        }
+        
+    }
+
+    bool Engine::isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    {
 
     }
 
@@ -358,35 +430,35 @@ namespace sm
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_p += mod;
                     score += -1.0f *mod;
-                    /*if (hasConnectedPawns('p', i, j, currentBoard))
+                    if (isConnectedPawn('p', i, j, currentBoard))
                     {
                         score -= CONNECTED_PAWNS;
                     }
-                    if (hasDoublePawns('p', i, j, currentBoard))
+                    if (isDoublePawn('p', i, j, currentBoard))
                     {
                         score -= DOUBLE_PAWNS;
                     }
-                    if (hasIsolatedPawns('p', j, currentBoard))
+                    if (isIsolatedPawn('p', j, currentBoard))
                     {
                         score -= ISOLATED_PAWNS;
-                    }*/
+                    }
                     break;
                 case 'P':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_P += mod;
                     score += 1.0f * mod;
-                    /*if (hasConnectedPawns('P', i, j, currentBoard))
+                    if (isConnectedPawn('P', i, j, currentBoard))
                     {
                         score += CONNECTED_PAWNS;
                     }
-                    if (hasDoublePawns('P', i, j, currentBoard))
+                    if (isDoublePawn('P', i, j, currentBoard))
                     {
                         score += DOUBLE_PAWNS;
                     }
-                    if (hasIsolatedPawns('P', j, currentBoard))
+                    if (isIsolatedPawn('P', j, currentBoard))
                     {
                         score += ISOLATED_PAWNS;
-                    }*/
+                    }
                     break;
 
                 case 'r':
