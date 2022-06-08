@@ -192,7 +192,6 @@ namespace sm
         {
             return true;
         }
-        else
         
         return false;
         
@@ -271,21 +270,21 @@ namespace sm
             }
             if (p_col == 0)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row + 2][p_col + 1] == 'P')
                 {
                     return true;
                 }
             }
             else if (p_col == 7)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row + 2][p_col - 1] == 'P')
                 {
                     return true;
                 }
             }
             else
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row + 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row + 2).at(p_col + 1) == 'P'))
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition()[p_row + 2][p_col - 1] == 'P' || currentBoard.getPosition()[p_row + 2][p_col + 1] == 'P'))
                 {
                     return true;
                 }
@@ -299,33 +298,150 @@ namespace sm
             }
             if (p_col == 0)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row - 2][p_col + 1] == 'P')
                 {
                     return true;
                 }
             }
             else if (p_col == 7)
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P')
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && currentBoard.getPosition()[p_row - 2][p_col - 1] == 'P')
                 {
                     return true;
                 }
             }
             else
             {
-                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition().at(p_row - 2).at(p_col - 1) == 'P' || currentBoard.getPosition().at(p_row - 2).at(p_col + 1) == 'P'))
+                if (!isConnectedPawn(color, p_row, p_col, currentBoard) && (currentBoard.getPosition()[p_row - 2][p_col - 1] == 'P' || currentBoard.getPosition()[p_row - 2][p_col + 1] == 'P'))
                 {
                     return true;
                 }
             }
         }
-        
+        return false;        
     }
 
     bool Engine::isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
     {
+        if (color != 'p' && color != 'P')
+        {
+            // invalid Input
+            return false;
+        }
 
+        if (p_row == 0 || p_row == 7)
+        {
+            // ist sicher keine Pawn Chain
+            return false;
+        }
+
+        if (p_col == 0)
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col + 1] == color || currentBoard.getPosition()[p_row + 1][p_col + 1] == color)
+            {
+                return true;
+            }
+        }
+        else if (p_col == 7)
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col - 1] == color || currentBoard.getPosition()[p_row + 1][p_col - 1] == color)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (currentBoard.getPosition()[p_row - 1][p_col - 1] == color || currentBoard.getPosition()[p_row + 1][p_col - 1] == color || currentBoard.getPosition()[p_row - 1][p_col + 1] == color || currentBoard.getPosition()[p_row + 1][p_col + 1] == color)
+            {
+                return true;
+            }
+        }
+        return false;
     }
+
+    bool Engine::isPassedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const
+    {
+        if (color != 'p' && color != 'P')
+        {
+            // invalid Input
+            return false;
+        }
+
+        if (color == 'p')
+        {
+            if (p_col == 0)
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col] == 'P' || currentBoard.getPosition()[i][p_col + 1] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (p_col == 7)
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'P' || currentBoard.getPosition()[i][p_col] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                for (unsigned short int i = p_row; i < 8; i++)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'P' || currentBoard.getPosition()[i][p_col] == 'P' || currentBoard.getPosition()[i][p_col + 1] == 'P')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+        }
+        else if (color == 'P')
+        {
+            if (p_col == 0)
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col] == 'p' || currentBoard.getPosition()[i][p_col + 1] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (p_col == 7)
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'p' || currentBoard.getPosition()[i][p_col] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                for (unsigned short int i = p_row; i < 8; i--)
+                {
+                    if (currentBoard.getPosition()[i][p_col - 1] == 'p' || currentBoard.getPosition()[i][p_col] == 'p' || currentBoard.getPosition()[i][p_col + 1] == 'p')
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }
+
 
     float Engine::evaluateBoardSimple(const Chessposition& currentBoard) const {
         float score = 0.0f;

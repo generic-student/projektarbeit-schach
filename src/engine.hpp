@@ -20,9 +20,11 @@
 #define AVG_ROOK 14
 #define PA_IMPACT 2
 #define CONNECTED_PAWNS 1.0f
-#define DOUBLE_PAWNS -0.3f
-#define ISOLATED_PAWNS -0.2f
+#define DOUBLE_PAWNS -0.2f
+#define ISOLATED_PAWNS -0.1f
 #define BACKWARDS_PAWNS -0.125f
+#define PAWN_CHAIN 0.1f
+#define PASSED_PAWN 0.2f
 
 namespace sm {
     /**
@@ -70,7 +72,7 @@ namespace sm {
             bool isIsolatedPawn(const char color, const unsigned short int p_col, const Chessposition& currentBoard) const;
             bool isBackwardsPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
             bool isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
-
+            bool isPassedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
 
             bool m_debugMode = false;
             bool m_ready = true;
