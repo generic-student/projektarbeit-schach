@@ -570,7 +570,7 @@ namespace sm
 
 
     /**
-     * @brief orders the given List of moves by an vague Evaluation 
+     * @brief orders the given List of moves by a vague Evaluation 
      *
      * @return std::vector<Move>
      */
