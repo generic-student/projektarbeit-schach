@@ -91,15 +91,21 @@ namespace sm
         nodes++;
 
         if (depth == 0) {
-            return evaluateBoardSimple(pos) * player;
+            return evaluateBoard(pos) * player;
         }
 
         auto moves = pos.getValidMoves(true, true);
 
-        moves = orderMoves(moves);
+        orderMoves(moves);
 
         if (moves.size() == 0) {
-            return evaluateBoardSimple(pos) * player;
+            if(pos.isMatt()) {
+                return -9999.f;
+            }
+            if(pos.isPatt()) {
+                return 0.f;
+            }
+            return evaluateBoard(pos) * player;
         }
 
         float max = alpha;
@@ -126,15 +132,21 @@ namespace sm
         nodes++;
 
         if (depth == 0) {
-            return evaluateBoardSimple(pos) * player;
+            return evaluateBoard(pos) * player;
         }
 
         auto moves = pos.getValidMoves(true, true);
 
-        moves = orderMoves(moves);
+        orderMoves(moves);
 
         if (moves.size() == 0) {
-            return evaluateBoardSimple(pos) * player;
+            if(pos.isMatt()) {
+                return 9999.f;
+            }
+            if(pos.isPatt()) {
+                return 0.f;
+            }
+            return evaluateBoard(pos) * player;
         }
 
         float min = beta;
@@ -691,7 +703,7 @@ namespace sm
      *
      * @return std::vector<Move>
      */
-    std::vector<Move> Engine::orderMoves(std::vector<Move> moves) const
+    void Engine::orderMoves(std::vector<Move>& moves) const
     {
         float moveEval[218];
         float captureMultiplier = 3;
@@ -810,8 +822,6 @@ namespace sm
                 }
             }
         }
-
-        return moves;
     }
 
 
