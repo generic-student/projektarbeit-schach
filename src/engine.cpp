@@ -94,6 +94,9 @@ namespace sm
         }
 
         auto moves = pos.getValidMoves(true, true);
+
+        moves = orderMoves(moves);
+
         if (moves.size() == 0) {
             return evaluateBoardSimple(pos) * player;
         }
@@ -126,6 +129,9 @@ namespace sm
         }
 
         auto moves = pos.getValidMoves(true, true);
+
+        moves = orderMoves(moves);
+
         if (moves.size() == 0) {
             return evaluateBoardSimple(pos) * player;
         }
@@ -568,7 +574,7 @@ namespace sm
      *
      * @return std::vector<Move>
      */
-    std::vector<Move> Engine::orderMoves(std::vector<Move> moves)
+    std::vector<Move> Engine::orderMoves(std::vector<Move> moves) const
     {
         float moveEval[218];
         float captureMultiplier = 3;
