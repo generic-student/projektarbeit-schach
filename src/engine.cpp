@@ -490,6 +490,11 @@ namespace sm
         return m_position;
     }
 
+    std::vector<Move> Engine::orderMoves(std::vector<Move> moves)
+    {
+        return std::vector<Move>();
+    }
+
 
     
 }
