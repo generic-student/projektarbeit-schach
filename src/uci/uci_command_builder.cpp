@@ -10,7 +10,7 @@ namespace sm
          * @brief List of regular expressions for validating and filtering uci commands
          * 
          */
-        const std::array<const std::string, 11U> COMMAND_VALIDATION_MAP = {
+        const std::array<const std::string, 13U> COMMAND_VALIDATION_MAP = {
             "^uci$",
             "^debug (on|off)$",
             "^isready$",
@@ -21,6 +21,8 @@ namespace sm
             "^stop$",
             "^ponderhit$",
             "^register (later)|(?:(name .*(?= code))? (code .*)?)$",
+            "^evaluate$",
+            "^getvalidmoves$",
             "^ucinewgame$"
         };
 

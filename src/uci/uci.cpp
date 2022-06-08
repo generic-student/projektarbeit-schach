@@ -64,6 +64,12 @@ namespace sm
             case Command::UCINEWGAME:
                 handleUciNewGameCommand(command);
                 break;
+            case Command::EVALUATE:
+                handleEvaluateCommand(command);
+                break;
+            case Command::GETVALIDMOVES:
+                handleGetValidMovesCommand(command);
+                break;
             case Command::INVALID:
             default:
                 std::cout << "invalid command!" << std::endl;
@@ -392,6 +398,23 @@ namespace sm
         void UniversalChessInterface::handleUciNewGameCommand(Command &cmd)
         {
             m_pEngine->getPosition() = Chessposition(Chessposition::STARTPOS_FEN);
+        }
+        
+        void UniversalChessInterface::handleEvaluateCommand(Command& cmd)
+        {
+            std::cout << m_pEngine->evaluateBoard(m_pEngine->getPosition()) << std::endl;
+        }
+        
+        void UniversalChessInterface::handleGetValidMovesCommand(Command& cmd)
+        {
+            auto moves = m_pEngine->getPosition().getValidMoves();
+            for(size_t i = 0; i < moves.size() - 1; ++i) {
+                std::cout << ChessHelper::moveToString(moves[i]) << ",";
+            }
+            if(!moves.empty())
+                std::cout << ChessHelper::moveToString(moves.back()) << std::endl;
+            else
+                std::cout << "null" << std::endl; 
         }
         
         void UniversalChessInterface::go(std::shared_ptr<GoSubcommandData> p_data)

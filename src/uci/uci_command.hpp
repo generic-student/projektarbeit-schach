@@ -21,6 +21,8 @@ namespace sm
                 STOP,
                 PONDERHIT,
                 REGISTER,
+                EVALUATE,
+                GETVALIDMOVES,
                 UCINEWGAME,
                 INVALID
             };
