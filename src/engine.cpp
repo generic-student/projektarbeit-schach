@@ -333,6 +333,8 @@ namespace sm
 
     }
 
+    
+
     float Engine::evaluateBoardSimple(const Chessposition& currentBoard) const {
         float score = 0.0f;
         // TODO: 
@@ -578,6 +580,7 @@ namespace sm
     {
         float moveEval[218];
         float captureMultiplier = 3;
+        float pawnControl = 3;
 
         moveEval[0] = 0;
 
@@ -673,6 +676,16 @@ namespace sm
                 }
             }
 
+            //Wenn kein Bauer bewegt wird und dies höherwertige Figur von einem gegnerischen Bauer geschlagen werden kann,
+            //ist dies eher schlecht und der move sollte erst später bewertet werden
+            if (movedPiece != 'p' && movedPiece != 'P')
+            {
+                if (isAttackableByPawn(m.targetRow,m.targetCol))
+                {
+                    score -= pawnControl;
+                }
+            }
+
             moveEval[i] = score;
         }
 
@@ -697,5 +710,32 @@ namespace sm
     }
 
 
+    /**
+     * @brief checks if the Position is atacked by an enemy Pawn
+     *
+     * @return bool
+     */
+    bool Engine::isAttackableByPawn(int row, int col) const
+    {
+        switch (m_position.getActivePlayer())
+        {
+        case(Chessposition::Player::WHITE):
+            if (m_position.getType(row - 1, col - 1) == 'p' || m_position.getType(row - 1, col + 1) == 'p')
+            {
+                return true;
+            }
+            break;
+        case(Chessposition::Player::BLACK):
+            if (m_position.getType(row + 1, col + 1) == 'P' || m_position.getType(row + 1, col - 1) == 'P')
+            {
+                return true;
+            }
+            break;
+        default:
+            break;
+        }
+        
+        return false;
+    }
     
 }

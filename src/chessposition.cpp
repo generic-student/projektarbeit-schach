@@ -42,6 +42,14 @@ namespace sm
 
     char Chessposition::getType(int row, int column) const
     {
+        if(row < 0 || row > 7)
+        {
+            return '\0';
+        }
+        if (column < 0 || column > 7)
+        {
+            return '\0';
+        }
         return m_position[row][column];
     }
 

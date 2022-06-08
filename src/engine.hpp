@@ -71,6 +71,7 @@ namespace sm {
             bool isBackwardsPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
             bool isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
 
+            bool isAttackableByPawn(int row, int col) const;
 
             bool m_debugMode = false;
             bool m_ready = true;
