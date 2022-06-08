@@ -573,9 +573,12 @@ namespace sm
         float moveEval[218];
         float captureMultiplier = 3;
 
+        moveEval[0] = 0;
 
-        for (Move m : moves)
+        for (int i = 0; i< moves.size(); i++)
         {
+            Move m = moves[i];
+
             float score = 0;
             char movedPiece = m_position.getType(m.startRow, m.startCol);
             char capturePiece = m_position.getType(m.captureRow, m.captureCol);
@@ -663,6 +666,8 @@ namespace sm
                     break;
                 }
             }
+
+            moveEval[i] = score;
         }
 
         //Züge anhand der groben Evaluierung sortieren
