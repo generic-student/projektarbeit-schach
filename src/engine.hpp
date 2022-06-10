@@ -19,12 +19,14 @@
 #define AVG_KNIGHT 8
 #define AVG_ROOK 14
 #define PA_IMPACT 2
-#define CONNECTED_PAWNS 1.0f
+#define CONNECTED_PAWNS 0.1f
 #define DOUBLE_PAWNS -0.2f
 #define ISOLATED_PAWNS -0.1f
 #define BACKWARDS_PAWNS -0.125f
 #define PAWN_CHAIN 0.1f
 #define PASSED_PAWN 0.2f
+#define PROMOTION_RANGE_MOD 0.015f
+#define KNIGHT_EDGE 0.5f
 
 namespace sm {
     /**
