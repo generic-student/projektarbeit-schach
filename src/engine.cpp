@@ -570,7 +570,7 @@ namespace sm
                 case 'p':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_p += mod;
-                    score += -PAWN *mod;
+                    score += -PAWN *mod - j * PROMOTION_RANGE_MOD;
                     if (isConnectedPawn('p', i, j, currentBoard))
                     {
                         score -= CONNECTED_PAWNS;
@@ -587,7 +587,7 @@ namespace sm
                 case 'P':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_PAWN);
                     mod_P += mod;
-                    score += PAWN * mod;
+                    score += PAWN * mod + (7 - j) * PROMOTION_RANGE_MOD;
                     if (isConnectedPawn('P', i, j, currentBoard))
                     {
                         score += CONNECTED_PAWNS;
@@ -617,11 +617,19 @@ namespace sm
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_KNIGHT);
                     mod_n += mod;
                     score += -KNIGHT * mod;
+                    if (i == 0 || i == 7 || j == 0 || j == 7)
+                    {
+                        score += KNIGHT_EDGE;
+                    }
                     break;
                 case 'N':
                     mod = (currentBoard.getValidMovesForField(i, j, false, false).size() / AVG_KNIGHT);
                     mod_N += mod;
                     score += KNIGHT * mod;
+                    if (i == 0 || i == 7 || j == 0 || j == 7)
+                    {
+                        score -= KNIGHT_EDGE;
+                    }
                     break;
 
                 case 'q':
