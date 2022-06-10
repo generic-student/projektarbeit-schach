@@ -46,8 +46,8 @@ namespace sm {
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
 
-            float max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
-            float min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const;
+            float max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const;
+            float min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const;
 
             MinMaxResult findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth);
             /**

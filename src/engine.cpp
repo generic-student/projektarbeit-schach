@@ -85,12 +85,12 @@ namespace sm
         return m_engineOptions;
     }
 
-    float Engine::max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const {
+    float Engine::max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
         if(m_stop) return -9999.f;
 
         nodes++;
 
-        if (depth == 0) {
+        if (depth == desiredDepth) {
             return evaluateBoard(pos) * player;
         }
 
@@ -113,25 +113,28 @@ namespace sm
             Chessposition p = pos;
             p.applyMove(move, false);
 
-            float val = this->min(p, player, depth - 1, desiredDepth, max, beta, nodes, out_pMove);
+            float val = this->min(p, player, depth + 1, desiredDepth, max, beta, nodes, out_pMove, depth_best_move);
             if (val > max) {
                 max = val;
-                if (depth == desiredDepth) {
+                if (depth == 0) {
                     *out_pMove = move;
-                    std::cout << "info score cp " << max * player << " depth " << depth << " seldepth " << desiredDepth << " nodes " << nodes << " time 0 pv " << ChessHelper::moveToString(move) << std::endl;
-                }
+                    std::cout << "info score cp " << max * player << " depth " << depth_best_move << " seldepth " << desiredDepth << " nodes " << nodes << " time 0 pv " << ChessHelper::moveToString(move) << std::endl;
+                    //reset the depth for the next branch
+                    depth_best_move = 0;
+                } 
+                depth_best_move = (depth > depth_best_move && (depth != 0 || desiredDepth == 0)) ? (depth+1) : depth_best_move;
                 if (max >= beta) break;
             }
         }
         return max;
     }
 
-    float Engine::min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove) const {
+    float Engine::min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
         if(m_stop) return -9999.f;
         
         nodes++;
 
-        if (depth == 0) {
+        if (depth == desiredDepth) { 
             return evaluateBoard(pos) * player;
         }
 
@@ -154,8 +157,9 @@ namespace sm
             Chessposition p = pos;
             p.applyMove(move, false);
 
-            float val = this->max(p, player, depth - 1, desiredDepth, alpha, min, nodes, out_pMove);
+            float val = this->max(p, player, depth + 1, desiredDepth, alpha, min, nodes, out_pMove, depth_best_move);
             if (val < min) {
+                depth_best_move = (depth > depth_best_move && (depth != 0 || desiredDepth == 0)) ? (depth+1) : depth_best_move;
                 min = val;
                 if (min <= alpha) break;
             }
@@ -174,7 +178,7 @@ namespace sm
         
         int p = (player == Chessposition::Player::WHITE) ? 1 : -1;
         MinMaxResult result = {Move::null(), 99999.f * -p, 0, 0};
-        float score = max(m_position, p, desiredDepth, desiredDepth, -99999.f, 99999.f, result.nodes, &result.move);
+        float score = max(m_position, p, 0, desiredDepth, -99999.f, 99999.f, result.nodes, &result.move, result.depth);
 
         m_mutex.lock();
         this->m_ready = true;
@@ -459,6 +463,7 @@ namespace sm
                 return true;
             }
         }
+        return false;
     }
 
     

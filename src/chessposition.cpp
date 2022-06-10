@@ -20,11 +20,6 @@ namespace sm
         m_activePlayer = p_id;
     }
 
-    const std::array<std::array<int, 8>, 8> &Chessposition::getMoveCount() const
-    {
-        return m_moveCount;
-    }
-
     const std::array<std::array<char, 8>, 8> &Chessposition::getPosition() const
     {
         return m_position;
