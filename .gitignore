@@ -13,3 +13,5 @@ Makefile
 *.txt
 *.bat
 *.log
+*.png
+*.csv
