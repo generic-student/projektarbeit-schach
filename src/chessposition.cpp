@@ -236,19 +236,22 @@ namespace sm
      */
     bool Chessposition::applyMove(const Move &move, bool validate)
     {
-        m_MovesSinceCaptureOrPawn++;
-
-        if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
-            m_MovesSinceCaptureOrPawn = 0;
-
         if (validate && !isViableMove(move))
         {
             return false;
         }
 
+        unsigned int movesSinceCaputureOrPawn = m_MovesSinceCaptureOrPawn;
+        m_MovesSinceCaptureOrPawn++;
+
+        if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
+            m_MovesSinceCaptureOrPawn = 0;
+
         // CAPTURE the target
+        char capturePiece = '\0';
         if (move.capture)
         {
+            capturePiece = m_position[move.captureRow][move.captureCol];
             m_position[move.captureRow][move.captureCol] = 0;
 
             m_MovesSinceCaptureOrPawn = 0;
@@ -267,16 +270,61 @@ namespace sm
 
         m_position[move.startRow][move.startCol] = '\0';
 
+        //update the movestack
+        moveStack.push(std::make_tuple(move, capturePiece, m_moveCount[move.targetRow][move.targetCol], movesSinceCaputureOrPawn));
+
         //  update moveCount
         m_moveCount[move.targetRow][move.targetCol] = m_moveCount[move.startRow][move.startCol] + 1;
         m_moveCount[move.startRow][move.startCol] = 0;
 
-        m_previousMove = move;
 
         // update active Player
         m_activePlayer = (m_activePlayer == Player::BLACK) ? Player::WHITE : Player::BLACK;
 
         return true;
+    }
+    
+    bool Chessposition::undoLastMove()
+    {
+        if(moveStack.size() == 1) return false;
+
+        auto& top = moveStack.top();
+        Move& move = std::get<0>(top);
+        char capturePiece = std::get<1>(top);
+        int count = std::get<2>(top);
+        unsigned int movesSinceCaputureOrPawn = std::get<3>(top);
+
+        // update active Player
+        m_activePlayer = (m_activePlayer == Player::BLACK) ? Player::WHITE : Player::BLACK;
+
+        //  update moveCount
+        m_moveCount[move.startRow][move.startCol] = m_moveCount[move.targetRow][move.targetCol] - 1;
+        m_moveCount[move.targetRow][move.targetCol] = count;
+
+        //set the moves since captured or pawn
+        m_MovesSinceCaptureOrPawn = movesSinceCaputureOrPawn;
+
+        //revert the move
+        if(move.promotion) {
+            m_position[move.startRow][move.startCol] = m_activePlayer == Player::WHITE ? 'P' : 'p';
+        }
+        else {
+            m_position[move.startRow][move.startCol] = m_position[move.targetRow][move.targetCol];
+        }
+
+        //clear the target
+        m_position[move.targetRow][move.targetCol] = '\0';
+
+        //restore the captured piece
+        if(move.capture) {
+            m_position[move.captureRow][move.captureCol] = capturePiece;
+        }
+
+        //pop the stack
+        moveStack.pop();
+
+        return true;
+        
     }
 
     bool Chessposition::isKingAttackableInNextMove(Move move) const
@@ -417,14 +465,14 @@ namespace sm
         }
 
         // enemy knights
-        if(king_col > 0 && king_row > 1 && simulated.getType(king_row - 2, king_col - 1) == ENEMY_KNIGHT || 
-        king_col < 7 && king_row > 1 && simulated.getType(king_row - 2, 7 - king_col) == ENEMY_KNIGHT ||
-        king_col < 6 && king_row > 0 && simulated.getType(king_row - 1, 6 - king_col) == ENEMY_KNIGHT ||
-        king_col < 6 && king_row < 7 && simulated.getType(7 - king_row, 6 - king_col) == ENEMY_KNIGHT ||
-        king_col < 7 && king_row < 6 && simulated.getType(6 - king_row, 7 - king_col) == ENEMY_KNIGHT ||
-        king_col > 0 && king_row < 6 && simulated.getType(6 - king_row, king_col - 1) == ENEMY_KNIGHT ||
-        king_col > 1 && king_row < 7 && simulated.getType(7 - king_row, king_col - 2) == ENEMY_KNIGHT ||
-        king_col > 1 && king_row > 0 && simulated.getType(king_row - 1, king_col - 2) == ENEMY_KNIGHT) {
+        if(king_col > 0 && king_row > 1 && simulated.getType(king_row - 2, king_col - 1) == ENEMY_KNIGHT || //up-up-left
+        king_col < 7 && king_row > 1 && simulated.getType(king_row - 2, king_col + 1) == ENEMY_KNIGHT || // up-up-right
+        king_col < 6 && king_row > 0 && simulated.getType(king_row - 1, king_col + 2) == ENEMY_KNIGHT || // right-right-up
+        king_col < 6 && king_row < 7 && simulated.getType(king_row + 1, king_col + 2) == ENEMY_KNIGHT || //right-right-down
+        king_col < 7 && king_row < 6 && simulated.getType(king_row + 2, king_col + 1) == ENEMY_KNIGHT || //down-down-right
+        king_col > 0 && king_row < 6 && simulated.getType(king_row + 2, king_col - 1) == ENEMY_KNIGHT || //down-down-left
+        king_col > 1 && king_row < 7 && simulated.getType(king_row + 1, king_col - 2) == ENEMY_KNIGHT || //left-left-down
+        king_col > 1 && king_row > 0 && simulated.getType(king_row - 1, king_col - 2) == ENEMY_KNIGHT) { //left-left-up
               return true;
           }
                 
@@ -550,14 +598,47 @@ namespace sm
             std::array<char, 8>{'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'}};
 
         clearMoveCount();
-        m_previousMove = Move();
+        moveStack.push(std::make_tuple(Move(), '\0', 0, 0));
     }
 
     Chessposition::Chessposition(const std::string &fen)
         : m_position()
     {
         setFEN(fen);
-        m_previousMove = Move();
+        moveStack.push(std::make_tuple(Move(), '\0', 0, 0));
+    }
+    
+    bool Chessposition::operator==(const Chessposition& p) const
+    {
+        bool pos_eq = true;
+        bool count_eq = true;
+        for (size_t i = 0; i < 8; i++)
+        {
+            for (size_t j = 0; j < 8; j++)
+            {
+                if(m_position[i][j] != p.m_position[i][j]) {
+                    pos_eq = false;
+                }
+                if(m_moveCount[i][j] != p.m_moveCount[i][j]) {
+                    count_eq = false;
+                }
+            }
+            if(pos_eq == false && count_eq == false) break;
+        }
+
+        bool eq = (
+            m_activePlayer == p.m_activePlayer &&
+            m_moveNumber == p.m_moveNumber &&
+            pos_eq &&
+            count_eq &&
+            m_MovesSinceCaptureOrPawn == p.m_MovesSinceCaptureOrPawn
+        );
+
+        if(eq == false) {
+            int i = 0;
+        }
+
+        return eq;
     }
 
     bool Chessposition::isViableMoveForPawn(const Move &move, bool checkCaptureTarget) const
@@ -566,6 +647,10 @@ namespace sm
         int difY = move.targetRow - move.startRow;
         char figureChr = m_position[move.startRow][move.startCol];
         char figureChrTrgt = m_position[move.targetRow][move.targetCol];
+        const Move& m_previousMove = std::get<0>(moveStack.top());
+
+        if(move.capture == false && m_position[move.targetRow][move.targetCol] != '\0')
+            return false;
 
         /*
                 Bauern Logik
@@ -620,25 +705,29 @@ namespace sm
                 // mehr als 1 nach vorne
                 if (difY != -1)
                     return false;
+
                 // keine generische Figur auf dem Feld
-                if ((figureChrTrgt < 97 || figureChrTrgt == '\0') && checkCaptureTarget)
+                if (figureChrTrgt > 'Z' || (figureChrTrgt == '\0' && checkCaptureTarget))
                 {
                     // En Passant
-                    if (m_previousMove.targetCol == move.targetCol)
-                    {
-                        if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
+                    if(move.captureRow != move.targetRow) {
+
+                        if (m_previousMove.targetCol == move.targetCol && 
+                        m_previousMove.targetRow - m_previousMove.startRow == 2 &&
+                        m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
                         {
-                            if (move.targetRow == 5 || move.targetRow == 2)
+                            if (move.targetRow == 2)
                             {
-                                if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
+                                if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p' &&
+                                m_position[m_previousMove.targetRow][m_previousMove.targetCol] == m_position[move.captureRow][move.captureCol])
                                 {
                                     break;
                                 }
                             }
                         }
-                    }
 
-                    return false;
+                        return false;
+                    }
                 }
                 break;
             default:
@@ -684,24 +773,26 @@ namespace sm
                 if (difY != 1)
                     return false;
                 // Pr�fen ob gegnerische figur auf dem feld
-                if ((figureChrTrgt > 90 || figureChrTrgt == '\0') && checkCaptureTarget)
+                if (figureChrTrgt < 'a' || (figureChrTrgt == '\0' && checkCaptureTarget))
                 {
                     // En Passant
-                    if (m_previousMove.targetCol == move.targetCol)
-                    {
-                        if (m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
+                    if(move.captureRow != move.targetRow) {
+
+                        if (m_previousMove.targetCol == move.targetCol && 
+                        m_previousMove.startRow - m_previousMove.targetRow == 2 &&
+                        m_moveCount[m_previousMove.targetRow][m_previousMove.targetCol] == 1)
                         {
-                            if (move.targetRow == 5 || move.targetRow == 2)
+                            if (move.targetRow == 5)
                             {
-                                if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' || m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'p')
+                                if (m_position[m_previousMove.targetRow][m_previousMove.targetCol] == 'P' &&
+                                m_position[m_previousMove.targetRow][m_previousMove.targetCol] == m_position[move.captureRow][move.captureCol])
                                 {
                                     break;
                                 }
                             }
                         }
-                    }
-
-                    return false;
+                        return false;
+                    } 
                 }
                 break;
             default:
@@ -739,7 +830,12 @@ namespace sm
 
                 */
 
+        if(move.capture == false && m_position[move.targetRow][move.targetCol] != '\0')
+            return false;
+
         if ((difX * difX) != (difY * difY))
+            return false;
+        if (difX == 0 && difY == 0)
             return false;
 
         // pr�fen ob weg frei ist diagonal
@@ -807,6 +903,9 @@ namespace sm
         char figureChr = m_position[move.startRow][move.startCol];
         char figureChrTrgt = m_position[move.targetRow][move.targetCol];
 
+        if(move.capture == false && m_position[move.targetRow][move.targetCol] != '\0')
+            return false;
+
         /*
 
                 Springer Logik
@@ -844,6 +943,9 @@ namespace sm
         char figureChr = m_position[move.startRow][move.startCol];
         char figureChrTrgt = m_position[move.targetRow][move.targetCol];
 
+        if(move.capture == false && m_position[move.targetRow][move.targetCol] != '\0')
+            return false;
+
         /*
                Turm Logik
 
@@ -855,6 +957,8 @@ namespace sm
                 */
 
         if (difX != 0 && difY != 0)
+            return false;
+        if (difX == 0 && difY == 0)
             return false;
 
         // pr�fen ob der weg frei ist gerade
@@ -1064,7 +1168,9 @@ namespace sm
         int difY = move.targetRow - move.startRow;
         char figureChr = m_position[move.startRow][move.startCol];
         char figureChrTrgt = m_position[move.targetRow][move.targetCol];
-        Chessposition simulated;// = *this;
+
+        if(move.capture == false && m_position[move.targetRow][move.targetCol] != '\0')
+            return false;
 
         /*
                K�nig Logik

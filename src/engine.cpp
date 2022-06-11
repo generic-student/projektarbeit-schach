@@ -85,7 +85,7 @@ namespace sm
         return m_engineOptions;
     }
 
-    float Engine::max(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
+    float Engine::max(Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
         if(m_stop) return -9999.f;
 
         nodes++;
@@ -110,14 +110,19 @@ namespace sm
 
         float max = alpha;
         for (const auto& move : moves) {
-            Chessposition p = pos;
-            p.applyMove(move, false);
+            //Chessposition p = pos;
+            pos.applyMove(move, false);
 
-            float val = this->min(p, player, depth + 1, desiredDepth, max, beta, nodes, out_pMove, depth_best_move);
+            float val = this->min(pos, player, depth + 1, desiredDepth, max, beta, nodes, out_pMove, depth_best_move);
+            pos.undoLastMove();
+
             if (val > max) {
                 max = val;
                 if (depth == 0) {
                     *out_pMove = move;
+                    if(move.targetRow == move.targetCol && move.targetCol == 8) {
+                        int kl = 9;
+                    }
                     std::cout << "info score cp " << max * player << " depth " << depth_best_move << " seldepth " << desiredDepth << " nodes " << nodes << " time 0 pv " << ChessHelper::moveToString(move) << std::endl;
                     //reset the depth for the next branch
                     depth_best_move = 0;
@@ -129,7 +134,7 @@ namespace sm
         return max;
     }
 
-    float Engine::min(const Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
+    float Engine::min(Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const {
         if(m_stop) return -9999.f;
         
         nodes++;
@@ -154,15 +159,17 @@ namespace sm
 
         float min = beta;
         for (const auto& move : moves) {
-            Chessposition p = pos;
-            p.applyMove(move, false);
+            //Chessposition p = pos;
+            pos.applyMove(move, false);
 
-            float val = this->max(p, player, depth + 1, desiredDepth, alpha, min, nodes, out_pMove, depth_best_move);
+            float val = this->max(pos, player, depth + 1, desiredDepth, alpha, min, nodes, out_pMove, depth_best_move);
+            pos.undoLastMove();
             if (val < min) {
                 depth_best_move = (depth > depth_best_move && (depth != 0 || desiredDepth == 0)) ? (depth+1) : depth_best_move;
                 min = val;
                 if (min <= alpha) break;
             }
+
         }
 
         return min;
@@ -178,7 +185,8 @@ namespace sm
         
         int p = (player == Chessposition::Player::WHITE) ? 1 : -1;
         MinMaxResult result = {Move::null(), 99999.f * -p, 0, 0};
-        float score = max(m_position, p, 0, desiredDepth, -99999.f, 99999.f, result.nodes, &result.move, result.depth);
+        Chessposition position = pos;
+        float score = max(position, p, 0, desiredDepth, -99999.f, 99999.f, result.nodes, &result.move, result.depth);
 
         m_mutex.lock();
         this->m_ready = true;

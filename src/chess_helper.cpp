@@ -168,14 +168,14 @@ namespace sm
         }
 
         extern const std::array<const Move, 16> KNIGHT_MOVES = {
-            Move(0, 0, 1, 2, false, 0, 0, '\0'),
-            Move(0, 0, 2, 1, false, 0, 0, '\0'),
-            Move(0, 0, -1, -2, false, 0, 0, '\0'),
-            Move(0, 0, -2, -1, false, 0, 0, '\0'),
-            Move(0, 0, -1, 2, false, 0, 0, '\0'),
-            Move(0, 0, 2, -1, false, 0, 0, '\0'),
-            Move(0, 0, -2, 1, false, 0, 0, '\0'),
-            Move(0, 0, 1, -2, false, 0, 0, '\0'),
+            Move(0, 0, 1, 2, false, 1, 2, '\0'),
+            Move(0, 0, 2, 1, false, 2, 1, '\0'),
+            Move(0, 0, -1, -2, false, -1, -2, '\0'),
+            Move(0, 0, -2, -1, false, -2, -1, '\0'),
+            Move(0, 0, -1, 2, false, -1, 2, '\0'),
+            Move(0, 0, 2, -1, false, 2, -1, '\0'),
+            Move(0, 0, -2, 1, false, -2, 1, '\0'),
+            Move(0, 0, 1, -2, false, 1, -2, '\0'),
             Move(0, 0, 1, 2, true, 1, 2, '\0'),
             Move(0, 0, 2, 1, true, 2, 1, '\0'),
             Move(0, 0, -1, -2, true, -1, -2, '\0'),
@@ -186,24 +186,24 @@ namespace sm
             Move(0, 0, 1, -2, true, 1, -2, '\0')};
 
         extern const std::array<const Move, 36> PAWN_MOVES = {
-            Move(0, 0, 1, 0, false, 0, 0, '\0'),    // einen nach unten
-            Move(0, 0, 2, 0, false, 0, 0, '\0'),    // zwei nach unten
-            Move(0, 0, -1, 0, false, 0, 0, '\0'),   // einen nach oben
-            Move(0, 0, -2, 0, false, 0, 0, '\0'),   // zwei nach oben
+            Move(0, 0, 1, 0, false, 1, 0, '\0'),    // einen nach unten
+            Move(0, 0, 2, 0, false, 2, 0, '\0'),    // zwei nach unten
+            Move(0, 0, -1, 0, false, -1, 0, '\0'),   // einen nach oben
+            Move(0, 0, -2, 0, false, -2, 0, '\0'),   // zwei nach oben
             Move(0, 0, 1, 1, true, 1, 1, '\0'),     // diagonal unten rechts
             Move(0, 0, 1, -1, true, 1, -1, '\0'),   // diagonal unten links
             Move(0, 0, -1, 1, true, -1, 1, '\0'),   // diagonal oben rechts
             Move(0, 0, -1, -1, true, -1, -1, '\0'), // diagonal oben link
 
-            Move(0, 0, 1, 1, true, 1, 0, '\0'),    // en passent diagonal unten rechts
-            Move(0, 0, 1, -1, true, 1, 0, '\0'),   // en passent diagonal unten links
-            Move(0, 0, -1, 1, true, -1, 0, '\0'),  // en passent diagonal oben rechts
-            Move(0, 0, -1, -1, true, -1, 0, '\0'), // en passent diagonal oben link
+            Move(0, 0, 1, 1, true, 0, 1, '\0'),    // en passent diagonal unten rechts
+            Move(0, 0, 1, -1, true, 0, -1, '\0'),   // en passent diagonal unten links
+            Move(0, 0, -1, 1, true, 0, 1, '\0'),  // en passent diagonal oben rechts
+            Move(0, 0, -1, -1, true, 0, -1, '\0'), // en passent diagonal oben link
 
-            Move(0, 0, -1, 0, false, 0, 0, 'Q'), // promotion ohne capture oben
-            Move(0, 0, -1, 0, false, 0, 0, 'R'),
-            Move(0, 0, -1, 0, false, 0, 0, 'B'),
-            Move(0, 0, -1, 0, false, 0, 0, 'N'),
+            Move(0, 0, -1, 0, false, -1, 0, 'Q'), // promotion ohne capture oben
+            Move(0, 0, -1, 0, false, -1, 0, 'R'),
+            Move(0, 0, -1, 0, false, -1, 0, 'B'),
+            Move(0, 0, -1, 0, false, -1, 0, 'N'),
             Move(0, 0, -1, 1, true, -1, 1, 'Q'), // promotion mit capture oben
             Move(0, 0, -1, 1, true, -1, 1, 'R'),
             Move(0, 0, -1, 1, true, -1, 1, 'B'),
@@ -213,10 +213,10 @@ namespace sm
             Move(0, 0, -1, -1, true, -1, -1, 'B'),
             Move(0, 0, -1, -1, true, -1, -1, 'N'),
 
-            Move(0, 0, 1, 0, false, 0, 0, 'q'), // promotion ohne capture unten
-            Move(0, 0, 1, 0, false, 0, 0, 'r'),
-            Move(0, 0, 1, 0, false, 0, 0, 'b'),
-            Move(0, 0, 1, 0, false, 0, 0, 'n'),
+            Move(0, 0, 1, 0, false, 1, 0, 'q'), // promotion ohne capture unten
+            Move(0, 0, 1, 0, false, 1, 0, 'r'),
+            Move(0, 0, 1, 0, false, 1, 0, 'b'),
+            Move(0, 0, 1, 0, false, 1, 0, 'n'),
             Move(0, 0, 1, 1, true, 1, 1, 'q'), // promotin mit capture unten
             Move(0, 0, 1, 1, true, 1, 1, 'r'),
             Move(0, 0, 1, 1, true, 1, 1, 'b'),
@@ -227,13 +227,13 @@ namespace sm
             Move(0, 0, 1, -1, true, 1, -1, 'n')};
 
         extern const std::array<const Move, 56> BISHOP_MOVES = {
-            Move(0, 0, 1, 1, false, 0, 0, '\0'), // diagonal rechts unten ohne capture
-            Move(0, 0, 2, 2, false, 0, 0, '\0'),
-            Move(0, 0, 3, 3, false, 0, 0, '\0'),
-            Move(0, 0, 4, 4, false, 0, 0, '\0'),
-            Move(0, 0, 5, 5, false, 0, 0, '\0'),
-            Move(0, 0, 6, 6, false, 0, 0, '\0'),
-            Move(0, 0, 7, 7, false, 0, 0, '\0'),
+            Move(0, 0, 1, 1, false, 1, 1, '\0'), // diagonal rechts unten ohne capture
+            Move(0, 0, 2, 2, false, 2, 2, '\0'),
+            Move(0, 0, 3, 3, false, 3, 3, '\0'),
+            Move(0, 0, 4, 4, false, 4, 4, '\0'),
+            Move(0, 0, 5, 5, false, 5, 5, '\0'),
+            Move(0, 0, 6, 6, false, 6, 6, '\0'),
+            Move(0, 0, 7, 7, false, 7, 7, '\0'),
             Move(0, 0, 1, 1, true, 1, 1, '\0'), // diagonal rechts unten mit capture
             Move(0, 0, 2, 2, true, 2, 2, '\0'),
             Move(0, 0, 3, 3, true, 3, 3, '\0'),
@@ -288,60 +288,60 @@ namespace sm
             Move(0, 0, -7, -7, true, -7, -7, '\0')};
 
         extern const std::array<const Move, 20> KING_MOVES{
-            Move(0, 0, 1, 0, false, 0, 0, '\0'),    // einen nach unten ohne capture
-            Move(0, 0, -1, 0, false, 0, 0, '\0'),   // einen nach oben ohne capture
-            Move(0, 0, 0, 1, false, 0, 0, '\0'),    // einen nach rechts ohne capture
-            Move(0, 0, 0, -1, false, 0, 0, '\0'),   // einen nach links ohne capture
-            Move(0, 0, 1, 1, true, 1, 1, '\0'),     // diagonal unten rechts ohne capture
-            Move(0, 0, 1, -1, true, 1, -1, '\0'),   // diagonal unten links ohne capture
-            Move(0, 0, -1, 1, true, -1, 1, '\0'),   // diagonal oben rechts ohne capture
-            Move(0, 0, -1, -1, true, -1, -1, '\0'), // diagonal oben link ohne capture
+            Move(0, 0, 1, 0, false, 1, 0, '\0'),    // einen nach unten ohne capture
+            Move(0, 0, -1, 0, false, -1, 0, '\0'),   // einen nach oben ohne capture
+            Move(0, 0, 0, 1, false, 0, 1, '\0'),    // einen nach rechts ohne capture
+            Move(0, 0, 0, -1, false, 0, -1, '\0'),   // einen nach links ohne capture
+            Move(0, 0, 1, 1, false, 1, 1, '\0'),     // diagonal unten rechts ohne capture
+            Move(0, 0, 1, -1, false, 1, -1, '\0'),   // diagonal unten links ohne capture
+            Move(0, 0, -1, 1, false, -1, 1, '\0'),   // diagonal oben rechts ohne capture
+            Move(0, 0, -1, -1, false, -1, -1, '\0'), // diagonal oben link ohne capture
 
-            Move(0, 0, 1, 0, true, 0, 0, '\0'),     // einen nach unten mit capture
-            Move(0, 0, -1, 0, true, 0, 0, '\0'),    // einen nach oben mit capture
-            Move(0, 0, 0, 1, true, 0, 0, '\0'),     // einen nach rechts mit capture
-            Move(0, 0, 0, -1, true, 0, 0, '\0'),    // einen nach links mit capture
+            Move(0, 0, 1, 0, true, 1, 0, '\0'),     // einen nach unten mit capture
+            Move(0, 0, -1, 0, true, -1, 0, '\0'),    // einen nach oben mit capture
+            Move(0, 0, 0, 1, true, 0, 1, '\0'),     // einen nach rechts mit capture
+            Move(0, 0, 0, -1, true, 0, -1, '\0'),    // einen nach links mit capture
             Move(0, 0, 1, 1, true, 1, 1, '\0'),     // diagonal unten rechts mit capture
             Move(0, 0, 1, -1, true, 1, -1, '\0'),   // diagonal unten links mit capture
             Move(0, 0, -1, 1, true, -1, 1, '\0'),   // diagonal oben rechts mit capture
             Move(0, 0, -1, -1, true, -1, -1, '\0'), // diagonal oben link mit capture
 
-            Move(0, 0, 0, 2, false, 0, 0, '\0'), // rochade rechts
-            Move(0, 0, 0, -2, false, 0, 0, '\0') // rochade links
+            Move(0, 0, 0, 2, false, 0, 2, '\0'), // rochade rechts
+            Move(0, 0, 0, -2, false, 0, -2, '\0') // rochade links
         };
 
         extern const std::array<const Move, 58> ROOK_MOVES{
-            Move(0, 0, 1, 0, false, 0, 0, '\0'), // nach unten ohne capture
-            Move(0, 0, 2, 0, false, 0, 0, '\0'),
-            Move(0, 0, 3, 0, false, 0, 0, '\0'),
-            Move(0, 0, 4, 0, false, 0, 0, '\0'),
-            Move(0, 0, 5, 0, false, 0, 0, '\0'),
-            Move(0, 0, 6, 0, false, 0, 0, '\0'),
-            Move(0, 0, 7, 0, false, 0, 0, '\0'),
+            Move(0, 0, 1, 0, false, 1, 0, '\0'), // nach unten ohne capture
+            Move(0, 0, 2, 0, false, 2, 0, '\0'),
+            Move(0, 0, 3, 0, false, 3, 0, '\0'),
+            Move(0, 0, 4, 0, false, 4, 0, '\0'),
+            Move(0, 0, 5, 0, false, 5, 0, '\0'),
+            Move(0, 0, 6, 0, false, 6, 0, '\0'),
+            Move(0, 0, 7, 0, false, 7, 0, '\0'),
 
-            Move(0, 0, -1, 0, false, 0, 0, '\0'), // nach oben ohne capture
-            Move(0, 0, -2, 0, false, 0, 0, '\0'),
-            Move(0, 0, -3, 0, false, 0, 0, '\0'),
-            Move(0, 0, -4, 0, false, 0, 0, '\0'),
-            Move(0, 0, -5, 0, false, 0, 0, '\0'),
-            Move(0, 0, -6, 0, false, 0, 0, '\0'),
-            Move(0, 0, -7, 0, false, 0, 0, '\0'),
+            Move(0, 0, -1, 0, false, -1, 0, '\0'), // nach oben ohne capture
+            Move(0, 0, -2, 0, false, -2, 0, '\0'),
+            Move(0, 0, -3, 0, false, -3, 0, '\0'),
+            Move(0, 0, -4, 0, false, -4, 0, '\0'),
+            Move(0, 0, -5, 0, false, -5, 0, '\0'),
+            Move(0, 0, -6, 0, false, -6, 0, '\0'),
+            Move(0, 0, -7, 0, false, -7, 0, '\0'),
 
-            Move(0, 0, 0, 1, false, 0, 0, '\0'), // nach rechts ohne capture
-            Move(0, 0, 0, 2, false, 0, 0, '\0'),
-            Move(0, 0, 0, 3, false, 0, 0, '\0'),
-            Move(0, 0, 0, 4, false, 0, 0, '\0'),
-            Move(0, 0, 0, 5, false, 0, 0, '\0'),
-            Move(0, 0, 0, 6, false, 0, 0, '\0'),
-            Move(0, 0, 0, 7, false, 0, 0, '\0'),
+            Move(0, 0, 0, 1, false, 0, 1, '\0'), // nach rechts ohne capture
+            Move(0, 0, 0, 2, false, 0, 2, '\0'),
+            Move(0, 0, 0, 3, false, 0, 3, '\0'),
+            Move(0, 0, 0, 4, false, 0, 4, '\0'),
+            Move(0, 0, 0, 5, false, 0, 5, '\0'),
+            Move(0, 0, 0, 6, false, 0, 6, '\0'),
+            Move(0, 0, 0, 7, false, 0, 7, '\0'),
 
-            Move(0, 0, 0, -1, false, 0, 0, '\0'), // nach links ohne capture
-            Move(0, 0, 0, -2, false, 0, 0, '\0'),
-            Move(0, 0, 0, -3, false, 0, 0, '\0'),
-            Move(0, 0, 0, -4, false, 0, 0, '\0'),
-            Move(0, 0, 0, -5, false, 0, 0, '\0'),
-            Move(0, 0, 0, -6, false, 0, 0, '\0'),
-            Move(0, 0, 0, -7, false, 0, 0, '\0'),
+            Move(0, 0, 0, -1, false, 0, -1, '\0'), // nach links ohne capture
+            Move(0, 0, 0, -2, false, 0, -2, '\0'),
+            Move(0, 0, 0, -3, false, 0, -3, '\0'),
+            Move(0, 0, 0, -4, false, 0, -4, '\0'),
+            Move(0, 0, 0, -5, false, 0, -5, '\0'),
+            Move(0, 0, 0, -6, false, 0, -6, '\0'),
+            Move(0, 0, 0, -7, false, 0, -7, '\0'),
 
             Move(0, 0, 1, 0, true, 1, 0, '\0'), // nach unten mit capture
             Move(0, 0, 2, 0, true, 2, 0, '\0'),
@@ -375,8 +375,8 @@ namespace sm
             Move(0, 0, 0, -6, true, 0, -6, '\0'),
             Move(0, 0, 0, -7, true, 0, -7, '\0'),
 
-            Move(0, 0, 0, -2, false, 0, 0, '\0'), // rochade rechts
-            Move(0, 0, 0, 3, false, 0, 0, '\0'),  // rochade links
+            Move(0, 0, 0, -2, false, 0, -2, '\0'), // rochade rechts
+            Move(0, 0, 0, 3, false, 0, 3, '\0'),  // rochade links
         };
 
         std::string moveToString(sm::Move p_move)

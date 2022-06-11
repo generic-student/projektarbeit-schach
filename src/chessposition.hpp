@@ -3,6 +3,7 @@
 #include <array>
 #include "move.hpp"
 #include <vector>
+#include <stack>
 
 namespace sm {
 
@@ -16,12 +17,14 @@ namespace sm {
 		explicit Chessposition();
 		explicit Chessposition(const std::string& fen);
 
+		bool operator==(const Chessposition& p) const;
+
 	private:
 		Chessposition::Player m_activePlayer = Player::WHITE;
 		unsigned int m_moveNumber = 0;				
 		std::array<std::array<char, 8>, 8> m_position;
 		std::array<std::array<int, 8>, 8> m_moveCount = std::array<std::array<int, 8>, 8>();
-		Move m_previousMove;
+		std::stack<std::tuple<Move, char, int, unsigned int>> moveStack;
 		unsigned int m_MovesSinceCaptureOrPawn = 0;
 	
 
@@ -42,6 +45,7 @@ namespace sm {
 		std::vector<Move> getValidMovesForField(int row, int column, bool checkCaptureTarget = true, bool checkKingSafety = true) const;
 		std::vector<Move> getValidMoves(bool checkCaptureTarget = true, bool checkKingSafety = true) const;
 		bool applyMove(const Move& move, bool validate);
+		bool undoLastMove();
 
 		bool isKingAttackableInNextMove(Move move = Move()) const;
 		std::array<std::array<bool, 8>, 8> generateThreatMap() const;

@@ -10,13 +10,18 @@
  */
 class Benchmark {
     public:
-        explicit Benchmark(const std::string& filename, const std::string& testname, const std::string& loggername) 
+        explicit Benchmark(const std::string& filename, const std::string& testname, const std::string& loggername, bool prettify = true) 
             : name(testname)
         {
             m_pLogger = spdlog::basic_logger_mt(loggername, filename);
             m_pLogger->set_level(spdlog::level::info);
             m_pLogger->flush_on(spdlog::level::info);
-            m_pLogger->set_pattern("[%l] %v");
+
+            if(prettify) {
+                m_pLogger->set_pattern("[%l] %v");
+            } else {
+                m_pLogger->set_pattern("%v");
+            }
         }
 
         virtual ~Benchmark() {}
@@ -26,9 +31,17 @@ class Benchmark {
             m_pLogger->info("Test: {0}", name);
             m_pLogger->info("**************************************************************");
         }
+
+        void start_test(const std::string& message) {
+            m_pLogger->info(message);
+        }
         
         void end_test() {
             m_pLogger->info("**************************************************************");
+        }
+
+        void end_test(const std::string& message) {
+            m_pLogger->info(message);
         }
 
         void begin() {
@@ -39,6 +52,12 @@ class Benchmark {
             auto now = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_timepoint);
             m_pLogger->info("Elapsed: {0:05.3f} s", elapsed.count());
+        }
+
+        template<typename... Args>
+        void begin(fmt::format_string<Args...> fmt, Args &&...args) {
+            m_timepoint = std::chrono::high_resolution_clock::now();
+            m_pLogger->info(fmt, std::forward<Args>(args)...);
         }
 
         template<typename... Args>

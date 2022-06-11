@@ -246,6 +246,7 @@ namespace sm
                 }
             }
 
+            //go(subcommandData);
             this->m_minmaxThread = std::thread(&UniversalChessInterface::go, this, subcommandData);
         }
 
@@ -408,7 +409,7 @@ namespace sm
         void UniversalChessInterface::handleGetValidMovesCommand(Command& cmd)
         {
             auto moves = m_pEngine->getPosition().getValidMoves();
-            for(size_t i = 0; i < moves.size() - 1; ++i) {
+            for(int i = 0; i < (int)(moves.size()) - 1; ++i) {
                 std::cout << ChessHelper::moveToString(moves[i]) << ",";
             }
             if(!moves.empty())
@@ -422,7 +423,7 @@ namespace sm
             const Chessposition& pos = m_pEngine->getPosition();
             const Chessposition::Player player = pos.getActivePlayer();
 
-            int depth = p_data->depth == 0 ? 5 : p_data->depth;
+            int depth = p_data->depth == 0 ? 4 : p_data->depth;
 
             MinMaxResult result = m_pEngine->findMove(pos, player, depth);
 
