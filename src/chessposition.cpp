@@ -238,6 +238,9 @@ namespace sm
     {
         m_MovesSinceCaptureOrPawn++;
 
+        if (m_MovesSinceCaptureOrPawn > 50)
+            return false;
+
         if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
             m_MovesSinceCaptureOrPawn = 0;
 
