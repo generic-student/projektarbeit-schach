@@ -236,13 +236,11 @@ namespace sm
      */
     bool Chessposition::applyMove(const Move &move, bool validate)
     {
-        m_MovesSinceCaptureOrPawn++;
-
-        if (m_MovesSinceCaptureOrPawn > 50)
+       
+        if (!checkEnding(move))
+        {
             return false;
-
-        if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
-            m_MovesSinceCaptureOrPawn = 0;
+        }
 
         if (validate && !isViableMove(move))
         {
@@ -253,8 +251,6 @@ namespace sm
         if (move.capture)
         {
             m_position[move.captureRow][move.captureCol] = 0;
-
-            m_MovesSinceCaptureOrPawn = 0;
         }
 
         // MOVE the chess piece
@@ -529,6 +525,83 @@ namespace sm
         }
 
         return false;
+    }
+
+    bool Chessposition::checkPositionRepitition()
+    {
+        std::string currentFEN = getFEN();
+        int repititions = 0;
+        
+        for (auto f : m_lastPositions)
+        {
+            if (!f.compare(currentFEN))
+            {
+                repititions++;
+            }
+        }
+
+        if (repititions == 2)
+        {
+            return true;
+        }
+        else
+        {
+            m_lastPositions.push_back(currentFEN);
+        }
+        
+        return false;
+    }
+
+    bool Chessposition::checkMoveCount(const Move& move)
+    {
+        if (m_MovesSinceCaptureOrPawn == 50)
+            return true;
+
+        m_MovesSinceCaptureOrPawn++;
+
+        if (m_position[move.startRow][move.startCol] == 'P' || m_position[move.startRow][move.startCol] == 'p')
+            m_MovesSinceCaptureOrPawn = 0;
+
+        if (move.capture)
+        {
+            m_MovesSinceCaptureOrPawn = 0;
+        }
+
+        return false;
+    }
+
+    Chessposition::Ending Chessposition::checkEnding(const Move &move)
+    {
+        if (isPatt())
+        {
+            return Chessposition::Ending::Draw;
+        }
+
+        if (isMatt())
+        {
+            switch (getActivePlayer())
+            {
+            case Chessposition::Player::WHITE:
+                return Chessposition::Ending::BlackWins;
+                break;
+
+            case Chessposition::Player::BLACK:
+                return Chessposition::Ending::WhiteWins;
+                break;
+            }
+        }
+
+        if (checkPositionRepitition())
+        {
+            return Chessposition::Ending::Draw;
+        }
+
+        if (checkMoveCount(move))
+        {
+            return Chessposition::Ending::Draw; 
+        }
+
+        return Chessposition::Ending::Ongoing;
     }
 
     void Chessposition::clearMoveCount()
