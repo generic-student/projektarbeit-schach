@@ -237,7 +237,7 @@ namespace sm
     bool Chessposition::applyMove(const Move &move, bool validate)
     {
        
-        if (!checkEnding(move))
+        if (checkEnding(move))
         {
             return false;
         }
