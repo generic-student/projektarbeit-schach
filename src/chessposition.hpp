@@ -12,6 +12,7 @@ namespace sm {
 		//Variablen
 	public :
 		enum Player { WHITE = 0, BLACK = 1 };
+		enum Ending { Ongoing = 0, WhiteWins = 1, BlackWins = 2, Draw = 3};
 		static const std::string STARTPOS_FEN;
 
 		explicit Chessposition();
@@ -26,6 +27,7 @@ namespace sm {
 		std::array<std::array<int, 8>, 8> m_moveCount = std::array<std::array<int, 8>, 8>();
 		std::stack<std::tuple<Move, char, int, unsigned int>> moveStack;
 		unsigned int m_MovesSinceCaptureOrPawn = 0;
+		std::vector<std::string> m_lastPositions;
 	
 
 		//Methoden
@@ -51,10 +53,14 @@ namespace sm {
 		std::array<std::array<bool, 8>, 8> generateThreatMap() const;
 		bool isPatt() const;
 		bool isMatt() const;
+		bool checkPositionRepitition();
+		bool checkMoveCount(const Move& move);
+
+		Chessposition::Ending checkEnding(const Move &move);
 
 	private:
 		void clearMoveCount();
-		
+
 		//split the isViableMove function into smaller subfunctions
 		bool isViableMoveForPawn(const Move& move, bool checkCaptureTarget) const;
 		bool isViableMoveForQueen(const Move& move, bool checkCaptureTarget) const;
