@@ -18,7 +18,6 @@ project "SchwachMatt"
    }
 
    includedirs {
-      "external/boost_1_77_0",
       "external/spdlog",
    }
 
