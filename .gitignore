@@ -12,3 +12,6 @@ Makefile
 .vs/**
 *.txt
 *.bat
+*.log
+*.png
+*.csv

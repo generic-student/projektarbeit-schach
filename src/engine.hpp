@@ -1,8 +1,33 @@
 #pragma once
 #include <string>
 #include <array>
+#include <mutex>
 #include "chessposition.hpp"
 #include "engine_options.hpp"
+#include "minMaxResult.hpp"
+
+#define PAWN 1.0f
+#define ROOK 5.0f
+#define KNIGHT 3.25f
+#define QUEEN 9.75f
+#define BISHOP 3.25f
+#define BISHOP_PAIR_MOD 0.25f
+#define AVG_KING 8
+#define AVG_QUEEN 27
+#define AVG_PAWN 4
+#define AVG_BISHOP 13
+#define AVG_KNIGHT 8
+#define AVG_ROOK 14
+#define PA_IMPACT 2
+#define CONNECTED_PAWNS 0.1f
+#define DOUBLE_PAWNS -0.2f
+#define ISOLATED_PAWNS -0.1f
+#define BACKWARDS_PAWNS -0.125f
+#define PAWN_CHAIN 0.1f
+#define PASSED_PAWN 0.2f
+#define PROMOTION_RANGE_MOD 0.015f
+#define KNIGHT_EDGE 0.5f
+
 namespace sm {
     /**
      * @brief The engine class contains all the functions and algorithms
@@ -18,9 +43,15 @@ namespace sm {
             const std::string getAuthor() const;
             bool inDebugMode() const;
             void setDebugMode(bool debug);
+            void stop();
             bool isReady() const;
             void setOption(const std::string& option, const std::string& value);
             const EngineOptions& getOptions() const;
+
+            float max(Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const;
+            float min(Chessposition& pos, int player, int depth, int desiredDepth, float alpha, float beta, int& nodes, Move* out_pMove, int& depth_best_move) const;
+
+            MinMaxResult findMove(const Chessposition& pos, Chessposition::Player player, int desiredDepth);
             /**
             * @brief Evaluate the board layout that is given to this function based on common chess evaluation rules.
             * 
@@ -28,18 +59,32 @@ namespace sm {
             * 
             * @return float: Returns the evaluation value as a float.
             */
-            float evaluateBoard(const std::array<std::array<char, 8>, 8>& currentBoard);
+            float evaluateBoard(const Chessposition& currentBoard) const;
+            float evaluateBoardSimple(const Chessposition& currentBoard) const;
             Chessposition& getPosition();
             const Chessposition& getPosition() const;
+            void orderMoves(std::vector<Move>& out_moves) const;
 
         private:
             const std::string m_id = "SchwachMatt 0.1";
             const std::string m_author = "No U";
 
+            bool isConnectedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isDoublePawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isIsolatedPawn(const char color, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isBackwardsPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isPawnChain(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+            bool isPassedPawn(const char color, const unsigned short int p_row, const unsigned short int p_col, const Chessposition& currentBoard) const;
+
+            bool isAttackableByPawn(int row, int col) const;
+
             bool m_debugMode = false;
             bool m_ready = true;
+            bool m_stop = false;
 
             Chessposition m_position;
             EngineOptions m_engineOptions;
+
+            std::mutex m_mutex;
     };
 }

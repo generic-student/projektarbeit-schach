@@ -8,13 +8,17 @@ project "SchwachMatt"
    cppdialect "C++17"
    targetdir "build/server/%{cfg.buildcfg}"
 
+   buildoptions {
+      "-gdwarf-3"
+   }
+
    files { 
       "src/**.hpp",
       "src/**.cpp",
    }
 
    includedirs {
-      "external/boost_1_77_0"
+      "external/spdlog",
    }
 
    filter "configurations:Debug"

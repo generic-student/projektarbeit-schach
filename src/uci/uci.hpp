@@ -2,6 +2,8 @@
 #include <string>
 #include "../chess_interface.hpp"
 #include "uci_command.hpp"
+#include <memory>
+#include <thread>
 
 namespace sm
 {
@@ -26,11 +28,18 @@ namespace sm
                 void handlePonderhitCommand(Command& cmd);
                 void handleRegisterCommand(Command& cmd);
                 void handleUciNewGameCommand(Command& cmd);
+                void handleEvaluateCommand(Command& cmd);
+                void handleGetValidMovesCommand(Command& cmd);
+
+                void go(std::shared_ptr<GoSubcommandData> p_data);
 
             private:
                 bool m_isReady = false;
                 bool m_isInitialized = false;
                 bool m_debugMode = false;
+                bool m_readyCheckQueued = false;
+
+                std::thread m_minmaxThread;
         };
     }
 };

@@ -3,12 +3,8 @@
 
 namespace sm
 {
-    /**
-     * @brief Construct a new IChessInterface::IChessInterface object
-     * 
-     */
     IChessInterface::IChessInterface()
-        : m_pEngine(boost::shared_ptr<Engine>(new sm::Engine))
+        : m_pEngine(std::make_shared<Engine>())
     {
     }
 

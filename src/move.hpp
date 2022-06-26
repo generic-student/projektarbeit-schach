@@ -10,6 +10,10 @@ namespace sm
 			promotion = '\0';
 		}
 
+		static Move null() {
+			return Move(0,0,0,0, false, 0, 0,  '\0');
+		}
+
 		constexpr Move( unsigned short sRow, unsigned short sCol,
 			unsigned short tRow, unsigned short tCol,
 			bool c, unsigned short cRow, unsigned short cCol, char p) 

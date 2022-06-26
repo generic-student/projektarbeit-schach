@@ -10,17 +10,19 @@ namespace sm
          * @brief List of regular expressions for validating and filtering uci commands
          * 
          */
-        const std::array<const std::string, 11U> COMMAND_VALIDATION_MAP = {
+        const std::array<const std::string, 13U> COMMAND_VALIDATION_MAP = {
             "^uci$",
             "^debug (on|off)$",
             "^isready$",
             "^setoption name (.*?)(?:\\svalue (.+))?$",
-            "^position (startpos|[knprqbKNPRQB1-8\\/]+) moves ((?:[a-hA-H0-8x\\+]{4,6}\\s?)*)",
+            "^position (startpos|(?:[knprqbKNPRQB1-8\\/]+ [wb] [KQkq\\-]{1,4} [a-h1-8\\-]{1,2} \\d+ \\d+)) moves ((?:[a-h0-8xqbrnQBRN\\+]{4,7}\\s?)*)",
             "^quit$",
-            "^go(?: (?:(infinite)|(searchmoves (?:[a-hA-H0-8x\\+]{4,6}\\s?)+)|(ponder)|(wtime \\d+)|(btime \\d+)|(winc -?\\d+)|(binc -?\\d+)|(movestogo \\d+)|(depth \\d+)|(nodes \\d+)|(mate \\d+)|(movetime \\d+)|(infinite)))+$",
+            "^go(?: (?:(infinite)|(searchmoves (?:[a-h0-8x\\+]{4,6}\\s?)+)|(ponder)|(wtime \\d+)|(btime \\d+)|(winc -?\\d+)|(binc -?\\d+)|(movestogo \\d+)|(depth \\d+)|(nodes \\d+)|(mate \\d+)|(movetime \\d+)|(infinite)))+$",
             "^stop$",
             "^ponderhit$",
             "^register (later)|(?:(name .*(?= code))? (code .*)?)$",
+            "^evaluate$",
+            "^getvalidmoves$",
             "^ucinewgame$"
         };
 
