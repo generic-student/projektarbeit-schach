@@ -1,5 +1,7 @@
 external/**
 build/**
+bin/**
+bin-int/**
 obj/**
 .vscode/**
 Makefile
@@ -12,3 +14,6 @@ Makefile
 .vs/**
 *.txt
 *.bat
+*.log
+*.png
+*.csv
